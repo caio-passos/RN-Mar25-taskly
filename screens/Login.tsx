@@ -1,14 +1,81 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TextInput, Button, Pressable } from 'react-native';
 import Icon from '@react-native-vector-icons/ionicons';
-import Logo from '../components/taskly.svg';
-import Colorscheme from '../hooks/Colorscheme';
+import Logo from '../assets/taskly.svg';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types/routingTypes';
+import { AppContext } from '../App';
+
+interface LoginProps {
+    navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
+}
 
 
-const { DarkPrimary, Primary, Background, PrimaryLight, SecundaryAccent, MainText, SecundaryText, Error } = Colorscheme();
 
+function Login({ navigation }: LoginProps) {
 
-function Login() {
+    const colors = useContext(AppContext);
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            paddingHorizontal: 32,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.Background,
+        },
+        boxLogo: {
+            justifyContent: 'center',
+            paddingBottom: 24,
+        },
+        loginForm: {
+            width: '100%',
+            marginBottom: 20,
+            gap: 4,
+        },
+        boxInput: {
+            width: '100%',
+            height: 47,
+            borderWidth: 2,
+            borderColor: colors.Primary,
+            borderRadius: 8,
+            justifyContent: 'center',
+        },
+        boxLembrar: {
+            flexDirection: 'row',
+            alignSelf: 'flex-start',
+        },
+        textLembrar: {
+            alignSelf: 'flex-start',
+            paddingHorizontal: 4,
+        },
+        buttonFilled: {
+            backgroundColor: colors.Primary,
+            borderRadius: 8,
+            width: '100%',
+            height: 47,
+            justifyContent: 'center',
+            marginTop: 25,
+        },
+        textEntrar: {
+            color: '#FFFFFF',
+            textAlign: 'center',
+        },
+        buttonEmptyFill: {
+            borderColor: colors.Primary,
+            borderWidth: 2,
+            borderRadius: 8,
+            width: '100%',
+            height: 47,
+            justifyContent: 'center',
+            marginTop: 25,
+        },
+        textCriarConta: {
+            color: colors.Primary,
+            textAlign: 'center',
+        },
+
+    });
     return (
         <View style={styles.container}>
             <View style={styles.boxLogo}>
@@ -41,7 +108,9 @@ function Login() {
             <Pressable style={styles.buttonFilled}>
                 <Text style={styles.textEntrar}>Entrar</Text>
             </Pressable>
-            <Pressable style={styles.buttonEmptyFill}>
+            <Pressable style={styles.buttonEmptyFill}
+                onPress={() => navigation.navigate('Cadastro')}
+            >
                 <Text style={styles.textCriarConta}>Criar conta</Text>
             </Pressable>
 
@@ -49,65 +118,5 @@ function Login() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingHorizontal: 80,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: Background,
-    },
-    boxLogo: {
-        justifyContent: 'center',
-        paddingBottom: 24,
-    },
-    loginForm: {
-        width: '100%',
-        marginBottom: 20,
-        gap: 4,
-    },
-    boxInput: {
-        width: '100%',
-        height: 47,
-        borderWidth: 2,
-        borderColor: Primary,
-        borderRadius: 8,
-        justifyContent: 'center',
-    },
-    boxLembrar: {
-        flexDirection: 'row',
-        alignSelf: 'flex-start',
-    },
-    textLembrar: {
-        alignSelf: 'flex-start',
-        paddingHorizontal: 4,
-    },
-    buttonFilled: {
-        backgroundColor: Primary,
-        borderRadius: 8,
-        width: '100%',
-        height: 47,
-        justifyContent: 'center',
-        marginTop: 25,
-    },
-    textEntrar: {
-        color: '#FFFFFF',
-        textAlign: 'center',
-    },
-    buttonEmptyFill: {
-        borderColor: Primary,
-        borderWidth: 2,
-        borderRadius: 8,
-        width: '100%',
-        height: 47,
-        justifyContent: 'center',
-        marginTop: 25,
-    },
-    textCriarConta: {
-        color: Primary,
-        textAlign: 'center',
-    },
-
-});
 
 export default Login;
