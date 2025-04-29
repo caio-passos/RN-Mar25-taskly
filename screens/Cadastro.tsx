@@ -6,12 +6,12 @@ import type { RootStackParamList } from '../types/routingTypes';
 import { AppContext } from '../App';
 import CaretLeft from '../assets/caretLeft.svg';
 
-interface LoginProps {
+interface CadastroProps {
     navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro', 'Home'>;
 }
 
 
-function Cadastro({ navigation }: LoginProps) {
+function Cadastro({ navigation }: CadastroProps) {
     const colors = useContext(AppContext);
 
     const styles = StyleSheet.create({
@@ -158,7 +158,10 @@ function Cadastro({ navigation }: LoginProps) {
                 </View>
             </View>
 
-            <Pressable style={styles.buttonFilled}>
+            <Pressable 
+            style={styles.buttonFilled}
+            onPress={() => navigation.navigate('ModalBiometria')}
+            >
                 <Text style={styles.textCriarConta}>CRIAR CONTA</Text>
             </Pressable>
 
