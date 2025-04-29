@@ -1,19 +1,26 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Pressable } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal } from 'react-native';
 import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
 import { AppContext } from '../App';
 import CaretLeft from '../assets/caretLeft.svg';
+import ModalBiometria from './Modal/Biometria';
 
-interface LoginProps {
+interface CadastroProps {
     navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro', 'Home'>;
 }
 
 
-function Cadastro({ navigation }: LoginProps) {
+function Cadastro({ navigation }: CadastroProps) {
     const colors = useContext(AppContext);
+    const [modalVisible, setModalVisible] = useState(false);
 
+    const handleOpenModal = () => {
+        setModalVisible(true);
+    }
+
+    { console.log('Modal visible: ', modalVisible); }
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -22,7 +29,7 @@ function Cadastro({ navigation }: LoginProps) {
             alignItems: 'center',
             backgroundColor: '#F5FCFF',
         },
-        title:{
+        title: {
             top: 40,
             fontSize: 24,
             fontWeight: 'bold',
@@ -102,12 +109,11 @@ function Cadastro({ navigation }: LoginProps) {
 
     });
 
-
     return (
         <View style={styles.container}>
-            <Pressable 
-            style={styles.returnPressable}
-            onPress={() => navigation.goBack()}>
+            <Pressable
+                style={styles.returnPressable}
+                onPress={() => navigation.goBack()}>
                 <CaretLeft width={23} height={17.25} />
                 <View style={styles.boxTextVoltar}>
                     <Text style={styles.textVoltar}>VOLTAR</Text>
@@ -158,11 +164,20 @@ function Cadastro({ navigation }: LoginProps) {
                 </View>
             </View>
 
-            <Pressable style={styles.buttonFilled}>
+            <Pressable
+                style={styles.buttonFilled}
+                onPress={() => handleOpenModal()}>
                 <Text style={styles.textCriarConta}>CRIAR CONTA</Text>
             </Pressable>
+            <ModalBiometria
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+            />
 
         </View>
+
     );
+
 }
+
 export default Cadastro;
