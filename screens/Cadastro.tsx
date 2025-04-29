@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput, Button, Pressable } from 'react-native';
 import Icon from '@react-native-vector-icons/ionicons';
-import Logo from '../../components/taskly.svg';
+import Logo from '../components/taskly.svg';
 
 function Login() {
     return (

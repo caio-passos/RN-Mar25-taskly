@@ -1,11 +1,14 @@
 import * as React from 'react';
+import { createContext } from 'react';
 import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from './screens/login/Login';
+import Login from './screens/Login';
 import { HeaderTitle } from '@react-navigation/elements';
+import Colorscheme from './hooks/Colorscheme';
 
 const Stack = createNativeStackNavigator();
+const AppContext = createContext<typeof Colorscheme>(Colorscheme);
 
 function RootStack() {
   return (
@@ -17,8 +20,11 @@ function RootStack() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RootStack />
-    </NavigationContainer>
+    <AppContext.Provider
+      value={Colorscheme}>
+      <NavigationContainer>
+        <RootStack />
+      </NavigationContainer>
+    </AppContext.Provider>
   );
 }
