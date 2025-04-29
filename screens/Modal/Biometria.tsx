@@ -95,13 +95,20 @@ const ModalBiometria = ({ visible, onClose }: ModalBiometriaProps) => {
                             style={[styles.buttonFilled, { backgroundColor: colors.Background, borderColor: colors.Primary, borderWidth: 2 }]}
                             onPress={onClose}
                         >
-                            <Text style={styles.buttonText}>Agora não</Text>
+                            <Pressable>
+
+                                <Text style={styles.buttonText}>Agora não</Text>
+                            </Pressable>
                         </Pressable>
                         <Pressable
                             style={styles.buttonFilled}
                             onPress={onClose}
                         >
-                            <Text style={styles.buttonText}>ATIVAR</Text>
+                            <Pressable
+                            onPress={onClose}
+                            >
+                                <Text style={styles.buttonText}>ATIVAR</Text>
+                            </Pressable>
                         </Pressable>
 
                     </View>
