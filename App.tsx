@@ -9,7 +9,7 @@ import { HeaderTitle } from '@react-navigation/elements';
 import Colorscheme from './hooks/Colorscheme';
 import type { RootStackParamList } from './types/routingTypes';
 import ModalBiometria from './screens/Modal/Biometria';
-
+import Inicio from './screens/(auth)/Inicio';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 export const AppContext = createContext<ReturnType<typeof Colorscheme>>(Colorscheme());
@@ -20,6 +20,9 @@ function Root() {
       <RootStack.Group>
         <RootStack.Screen name="Home" component={Login} />
         <RootStack.Screen name="Cadastro" component={Cadastro} options={{ animation: 'slide_from_right' }} />
+      </RootStack.Group>
+      <RootStack.Group>
+        <RootStack.Screen name="Inicio" component={Inicio} options={{ animation: 'slide_from_right' }} />
       </RootStack.Group>
     
     </RootStack.Navigator>
