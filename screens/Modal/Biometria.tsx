@@ -4,9 +4,12 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
 
-const ModalBiometria = () => {
-    const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(false);
+interface ModalBiometriaProps {
+    visible: boolean;
+    onClose: () => void;
+}
+
+const ModalBiometria = ({ visible, onClose }: ModalBiometriaProps) => {
     const colors = React.useContext(AppContext);
 
     const styles = StyleSheet.create({
@@ -14,26 +17,21 @@ const ModalBiometria = () => {
             flex: 1,
             justifyContent: 'center',
             alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            paddingHorizontal: 32,
         },
         modalView: {
-            margin: 20,
-            backgroundColor: 'white',
-            borderRadius: 20,
-            padding: 35,
+            width: '90%',
+            paddingVertical: 30,
+            paddingHorizontal: 20,
             alignItems: 'center',
-            shadowColor: '#000',
-            shadowOffset: {
-                width: 0,
-                height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
             elevation: 5,
+            backgroundColor: colors.Background,
+            borderRadius: 12,
         },
-        button: {
-            borderRadius: 20,
-            padding: 10,
-            elevation: 2,
+        boxButtons: {
+            flexDirection: 'row',
+            gap: 12,
         },
         buttonOpen: {
             backgroundColor: '#F194FF',
@@ -41,49 +39,77 @@ const ModalBiometria = () => {
         buttonClose: {
             backgroundColor: '#2196F3',
         },
+        buttonFilled: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            flex: 1,
+            backgroundColor: '#5B3CC4',
+            borderRadius: 8,
+            height: 37,
+            justifyContent: 'space-around',
+            marginTop: 25,
+        },
+        buttonEmptyFill: {
+            borderColor: colors.Primary,
+            borderWidth: 2,
+            borderRadius: 8,
+            width: '100%',
+            height: 47,
+            justifyContent: 'center',
+            marginTop: 25,
+        },
         textStyle: {
-            color: 'white',
-            fontWeight: 'bold',
+            width: '100%',
+            textAlign: 'justify',
+            justifyContent: 'center',
+        },
+        buttonText: {
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
             textAlign: 'center',
         },
-        modalText: {
+        titleText: {
+            width: '100%',
+            fontSize: 17,
             marginBottom: 15,
             textAlign: 'center',
+            fontWeight: 'bold',
         },
     });
     return (
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={visible}
+            onRequestClose={onClose}
+        >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <Text style={styles.titleText} numberOfLines={1}>Ative o Desbloqueio por Biometria</Text>
+                    <Text style={styles.textStyle}>
+                        Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.
+                    </Text>
+                    <View style={styles.boxButtons}>
+                        <Pressable
+                            style={[styles.buttonFilled, { backgroundColor: colors.Background, borderColor: colors.Primary, borderWidth: 2 }]}
+                            onPress={onClose}
+                        >
+                            <Text style={styles.buttonText}>Agora não</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.buttonFilled}
+                            onPress={onClose}
+                        >
+                            <Text style={styles.buttonText}>ATIVAR</Text>
+                        </Pressable>
 
-        <SafeAreaProvider>
-            <SafeAreaView style={styles.centeredView}>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => {
-                        setModalVisible(!modalVisible);
-                    }}>
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.modalText}>Hello World!</Text>
-                            <Pressable
-                                style={[styles.button, styles.buttonClose]}
-                                onPress={() => {
-                                    setModalVisible(!modalVisible);
-                                    navigation.navigate('Cadastro');
-                                }}>
-                                <Text style={styles.textStyle}>Hide Modal</Text>
-                            </Pressable>
-                        </View>
                     </View>
-                </Modal>
-                <Pressable
-                    style={[styles.button, styles.buttonOpen]}
-                    onPress={() => setModalVisible(true)}>
-                    <Text style={styles.textStyle}>Ative o Desbloqueio por Biometria </Text>
-                    <Text style={styles.textStyle}>Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.</Text>
-                </Pressable>
-            </SafeAreaView>
-        </SafeAreaProvider>
+
+                </View>
+            </View>
+        </Modal>
+
     );
 };
 

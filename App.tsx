@@ -21,9 +21,7 @@ function Root() {
         <RootStack.Screen name="Home" component={Login} />
         <RootStack.Screen name="Cadastro" component={Cadastro} options={{ animation: 'slide_from_right' }} />
       </RootStack.Group>
-      <RootStack.Group screenOptions={{ presentation: 'modal' }}>
-          <RootStack.Screen name="ModalBiometria" component={ModalBiometria} />
-        </RootStack.Group>
+    
     </RootStack.Navigator>
   );
 }
