@@ -6,20 +6,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-function HomeTabBar() {
-    return (
-        <Tab.Navigator>
-            <Tab.Screen name="HomeScreen" component={InicioContent} />
-        </Tab.Navigator>
-    );
-}
 
 function InicioContent() {
     const colors = React.useContext(AppContext);
-    
     const styles = StyleSheet.create({
         container: {
             flex: 1,
+            justifyContent: 'center',
             backgroundColor: colors.Background,
         },
         buttonFilled: {
