@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-vector-icons/common": "^11.0.0",
     "@react-native-vector-icons/ionicons": "^7.4.0",
+    "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native-stack": "^7.3.10",
     "react": "19.0.0",

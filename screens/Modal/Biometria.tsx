@@ -104,7 +104,9 @@ const ModalBiometria = ({ visible, onClose }: ModalBiometriaProps) => {
                             style={styles.buttonFilled}
                             onPress={onClose}
                         >
-                            <Pressable>
+                            <Pressable
+                            onPress={onClose}
+                            >
                                 <Text style={styles.buttonText}>ATIVAR</Text>
                             </Pressable>
                         </Pressable>
