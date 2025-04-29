@@ -8,18 +8,21 @@ import Cadastro from './screens/Cadastro';
 import { HeaderTitle } from '@react-navigation/elements';
 import Colorscheme from './hooks/Colorscheme';
 import type { RootStackParamList } from './types/routingTypes';
+import ModalBiometria from './screens/Modal/Biometria';
 
 
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const RootStack = createNativeStackNavigator<RootStackParamList>();
 export const AppContext = createContext<ReturnType<typeof Colorscheme>>(Colorscheme());
 
-function RootStack() {
+function Root() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={Login} />
-      <Stack.Screen name="Cadastro" component={Cadastro} options={{animation: 'slide_from_right'}}/>
-    </Stack.Navigator>
+    <RootStack.Navigator screenOptions={{ headerShown: false }}>
+      <RootStack.Group>
+        <RootStack.Screen name="Home" component={Login} />
+        <RootStack.Screen name="Cadastro" component={Cadastro} options={{ animation: 'slide_from_right' }} />
+      </RootStack.Group>
+    
+    </RootStack.Navigator>
   );
 }
 
@@ -29,7 +32,7 @@ export default function App() {
     <AppContext.Provider
       value={colors}>
       <NavigationContainer>
-        <RootStack />
+        <Root />
       </NavigationContainer>
     </AppContext.Provider>
   );
