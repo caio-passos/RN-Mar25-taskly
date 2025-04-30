@@ -361,55 +361,53 @@ function Cadastro({ navigation }: CadastroProps) {
                 </View>
                 {<Text style={styles.textError}>{errorsNumberPhone.map((value) => `${value.error}\n`)}</Text>}
             </View>
-        </View>
 
-        <View style={styles.loginForm}>
-            <Text>Senha</Text>
-            <View style={styles.boxInput}>
-                <TextInput
-                    secureTextEntry={true}
-                    placeholder="Digite sua senha"
-                    value={password}
-                    onChangeText={(text) => {
-                      setSenha(text);
-                      setPassword(String(text))
-                    }}
-                />
+            <View style={styles.loginForm}>
+                <Text>Senha</Text>
+                <View style={styles.boxInput}>
+                    <TextInput
+                        secureTextEntry={true}
+                        placeholder="Digite sua senha"
+                        value={password}
+                        onChangeText={(text) => {
+                          setSenha(text);
+                          setPassword(String(text))
+                        }}
+                    />
+                </View>
+                {<Text style={styles.textError}>{errorsPasswordShow.map((value) => `${value.error}\n`)}</Text>}
             </View>
-            {<Text style={styles.textError}>{errorsPasswordShow.map((value) => `${value.error}\n`)}</Text>}
-        </View>
-        <View style={styles.loginForm}>
-            <Text>Confirmar senha</Text>
-            <View style={styles.boxInput}>
-                <TextInput
-                    secureTextEntry={true}
-                    placeholder="Confirme sua senha"
-                    value={confirmPassword}
-                    onChangeText={(value) => setConfirmPassword(String(value))}
-                />
+            <View style={styles.loginForm}>
+                <Text>Confirmar senha</Text>
+                <View style={styles.boxInput}>
+                    <TextInput
+                        secureTextEntry={true}
+                        placeholder="Confirme sua senha"
+                        value={confirmPassword}
+                        onChangeText={(value) => setConfirmPassword(String(value))}
+                    />
+                </View>
+                {<Text style={styles.textError}>{errorsConfirmPassword.map((value) => `${value.error}\n`)}</Text>}
             </View>
-            {<Text style={styles.textError}>{errorsConfirmPassword.map((value) => `${value.error}\n`)}</Text>}
+
+            <Pressable
+                style={styles.buttonFilled}
+                onPress={() => {
+                  handleOpenModal();
+                  createAccount({ nameAndSurname: nameAndSurname, email: emailValidation, numberPhone: numberPhone, password: password, confirmPassword: confirmPassword });
+                }}>
+                <Text style={styles.textCriarConta}>CRIAR CONTA</Text>
+            </Pressable>
+            <ModalBiometria
+                visible={modalVisible}
+                onClose={() => {
+                    setModalVisible(false)
+                    navigation.navigate('Dashboard');
+                }}
+            />
         </View>
 
-        <Pressable
-            style={styles.buttonFilled}
-            onPress={() => {
-              handleOpenModal();
-              createAccount({ nameAndSurname: nameAndSurname, email: emailValidation, numberPhone: numberPhone, password: password, confirmPassword: confirmPassword });
-            }}>
-            <Text style={styles.textCriarConta}>CRIAR CONTA</Text>
-        </Pressable>
-        <ModalBiometria
-            visible={modalVisible}
-            onClose={() => {
-                setModalVisible(false)
-                navigation.navigate('Dashboard');
-            }}
-        />
-
-    </View>
-
-);
+    );
 }
 
 export default Cadastro;
