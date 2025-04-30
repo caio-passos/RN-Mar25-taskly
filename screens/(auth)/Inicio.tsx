@@ -1,15 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import { AppContext } from "../../App";
 import { } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import NoTasks from "../../assets/icons/darkmode/nocontent";
+import ModalCriarTarefas from "../Modal/Criartarefa";
 
 const Tab = createBottomTabNavigator();
 
-
 function InicioContent() {
     const colors = useContext(AppContext);
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const handleModalOpen = () => {
+        setModalVisible(true);
+    }
+
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -65,11 +71,15 @@ function InicioContent() {
                 </View>
 
                 <View>
-                    <Pressable>
+                    <Pressable onPress={ handleModalOpen}>
                         <View style={styles.buttonFilled}>
                             <Text style={styles.buttonTextCriarTarefa}>Criar Tarefa</Text>
                         </View>
                     </Pressable>
+                    <ModalCriarTarefas
+                    visible={modalVisible} 
+                    onClose={() => setModalVisible(false)}
+                    />
 
                 </View>
             </View>
