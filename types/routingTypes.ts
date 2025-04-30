@@ -1,6 +1,13 @@
 export type RootStackParamList = {
-    Home: undefined;
+    Login: undefined;
     Cadastro: undefined;
+    ModalBiometria: undefined;
+    MainApp: undefined;
+    Dashboard: undefined;
+    Notifications: undefined;
+    Menu: undefined;
+    View: undefined;
+
   };
   
   declare global {

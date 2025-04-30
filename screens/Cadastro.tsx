@@ -1,21 +1,22 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Pressable } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal } from 'react-native';
 import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
 import { AppContext } from '../App';
 import CaretLeft from '../assets/caretLeft.svg';
+import ModalBiometria from './Modal/Biometria';
 
-interface LoginProps {
+interface CadastroProps {
     navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro', 'Home'>;
 }
 
 type DataInfoUser = { nameAndSurname: string, email: string, numberPhone: string, password: string, confirmPassword: string }
 
-function Cadastro({ navigation }: LoginProps) {
+function Cadastro({ navigation }: CadastroProps) {
     const colors = useContext(AppContext);
     const [nameAndSurname, setNameAndSurname] = useState('');
-    const [email, setEmail] = useState('');
+    const [emailValidation, setEmailValidation] = useState('');
     const [numberPhone, setNumberPhone] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -26,103 +27,146 @@ function Cadastro({ navigation }: LoginProps) {
     const [errorsNumberPhone, setErrorsNumberPhone] = useState(error);
     const [errorsPasswordShow, setErrorsPasswordShow] = useState(error);
     const [errorsConfirmPassword, setErrorsConfirmPassword] = useState(error);
+    
+    const [modalVisible, setModalVisible] = useState(false);
+    const [isFilled, setIsFilled] = useState(false);
+    const [nome, setNome] = useState('');
+    const [email, setEmail] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const [senha, setSenha] = useState<string>('');
+    const [checkSenha, setCheckSenha] = useState<string>('');
+    const [senhaError, setSenhaError] = useState(false);
+    
+    const handleFormSubmit = () => {
+        if (isFilled && !senhaError) {
+            console.log('Formulário enviado com sucesso!');
+            navigation.navigate('Inicio');
+        }
+    }
+    useEffect(() => {
+        const handlePasswordVerification = () => {
+            if (senha !== checkSenha) {
+                setSenhaError(true);
+            }
+            if(senha === checkSenha && senha.length > 0) {
+                setSenhaError(false);
+            }
+            handlePasswordVerification();
+        }
+    }, [senha, checkSenha]);
 
+    useEffect(() => {
+        const handleFormValidation = () => {
+            if (nome && email && telefone && senhaError===false) {
+                setIsFilled(true);
+            } else {
+                setIsFilled(false);
+            }
+        }
+        handleFormValidation();
+    },[nome, email, telefone, senhaError]);
+
+    const handleOpenModal = () => {
+        setModalVisible(true);
+    }
+
+    { console.log('Modal visible: ', modalVisible); }
     const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            paddingHorizontal: 32,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#F5FCFF',
-        },
-        title:{
-            top: 40,
-            fontSize: 24,
-            fontWeight: 'bold',
-            color: colors.MainText,
-            marginBottom: 20,
-        },
-        returnPressable: {
-            position: 'absolute',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            top: 50,
-            left: 20,
-            backgroundColor: colors.SecundaryText,
-            padding: 10,
-            borderRadius: 5,
-        },
-        boxTextVoltar: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginLeft: 2,
+          container: {
+              flex: 1,
+              paddingHorizontal: 32,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#F5FCFF',
+          },
+          title: {
+              top: 40,
+              fontSize: 24,
+              fontWeight: 'bold',
+              color: colors.MainText,
+              marginBottom: 20,
+          },
+          returnPressable: {
+              position: 'absolute',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              top: 50,
+              left: 20,
+              backgroundColor: colors.SecundaryText,
+              padding: 10,
+              borderRadius: 5,
+          },
+          boxTextVoltar: {
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginLeft: 2,
 
-        },
-        textVoltar: {
-            color: colors.Background,
-            fontSize: 18,
-        },
-        boxLogo: {
-            justifyContent: 'center',
-            paddingBottom: 24,
-        },
-        loginForm: {
-            width: '100%',
-            marginTop: 33,
-            gap: 4,
-            position: 'relative',
-        },
-        boxInput: {
-            width: '100%',
-            height: 47,
-            borderWidth: 2,
-            borderColor: '#5B3CC4',
-            borderRadius: 8,
-            justifyContent: 'center',
-        },
-        boxLembrar: {
-            flexDirection: 'row',
-            alignSelf: 'flex-start',
-        },
-        textLembrar: {
-            alignSelf: 'flex-start',
-            paddingHorizontal: 4,
-        },
-        buttonFilled: {
-            backgroundColor: '#5B3CC4',
-            borderRadius: 8,
-            width: '100%',
-            height: 47,
-            justifyContent: 'center',
-            marginTop: 25,
-        },
-        textCriarConta: {
-            color: '#FFFFFF',
-            textAlign: 'center',
-            fontWeight: 700,
-        },
-        buttonEmptyFill: {
-            borderColor: '#5B3CC4',
-            borderWidth: 2,
-            borderRadius: 8,
-            width: '100%',
-            height: 47,
-            justifyContent: 'center',
-            marginTop: 25,
-        },
-        textError: {
-            color: '#EF4444',
-            fontWeight: 400,
-            fontSize: 12,
-            position: 'absolute',
-            left: 0,
-            bottom: -35,
-        },
-    });
-
-    function createAccount(data: DataInfoUser) {
+          },
+          textVoltar: {
+              color: colors.Background,
+              fontSize: 18,
+          },
+          boxLogo: {
+              justifyContent: 'center',
+              paddingBottom: 24,
+          },
+          loginForm: {
+              width: '100%',
+              marginTop: 33,
+              gap: 4,
+              position: 'relative',
+          },
+          boxInput: {
+              width: '100%',
+              height: 47,
+              borderWidth: 2,
+              borderColor: '#5B3CC4',
+              borderRadius: 8,
+              justifyContent: 'center',
+          },
+          boxLembrar: {
+              flexDirection: 'row',
+              alignSelf: 'flex-start',
+          },
+          textLembrar: {
+              alignSelf: 'flex-start',
+              paddingHorizontal: 4,
+          },
+          buttonFilled: {
+              backgroundColor: '#5B3CC4',
+              borderRadius: 8,
+              width: '100%',
+              height: 47,
+              justifyContent: 'center',
+              marginTop: 25,
+          },
+          textCriarConta: {
+              color: '#FFFFFF',
+              textAlign: 'center',
+              fontWeight: 700,
+          },
+          buttonEmptyFill: {
+              borderColor: '#5B3CC4',
+              borderWidth: 2,
+              borderRadius: 8,
+              width: '100%',
+              height: 47,
+              justifyContent: 'center',
+              marginTop: 25,
+          },
+          textError: {
+              color: '#EF4444',
+              fontWeight: 400,
+              fontSize: 12,
+              position: 'absolute',
+              left: 0,
+              bottom: -35,
+          },
+      });
+    
+      function createAccount(data: DataInfoUser) {
         const { isValid, errors } = verifyData(data);
         !isValid ? showErrors(isValid, errors) : hideErrors();
     }
@@ -236,7 +280,7 @@ function Cadastro({ navigation }: LoginProps) {
 
     function hideErrors() {
         setNameAndSurname('');
-        setEmail('');
+        setEmailValidation('');
         setNumberPhone('');
         setPassword('');
         setConfirmPassword('');
@@ -279,7 +323,10 @@ function Cadastro({ navigation }: LoginProps) {
                         placeholder="Digite seu nome completo"
                         keyboardType="default"
                         value={nameAndSurname}
-                        onChangeText={(value) => setNameAndSurname(String(value))}
+                        onChangeText={(value) => {
+                          setNameAndSurname(String(value));
+                          setNome(value)
+                        }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsNameAndSurname.map((value) => `${value.error}\n`)}</Text>}
@@ -290,8 +337,11 @@ function Cadastro({ navigation }: LoginProps) {
                     <TextInput
                         placeholder="Digite seu e-mail"
                         keyboardType="email-address"
-                        value={email}
-                        onChangeText={(value) => setEmail(String(value))}
+                        value={emailValidation}
+                        onChangeText={(value) => {
+                          setEmailValidation(String(value));
+                          setEmail(value);
+                        }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsEmailShow.map((value) => `${value.error}\n`)}</Text>}
@@ -305,41 +355,61 @@ function Cadastro({ navigation }: LoginProps) {
                         value={numberPhone}
                         onChangeText={(value) => {
                             formatPhone(String(value));
+                            setTelefone(value)
                         }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsNumberPhone.map((value) => `${value.error}\n`)}</Text>}
             </View>
-
-            <View style={styles.loginForm}>
-                <Text>Senha</Text>
-                <View style={styles.boxInput}>
-                    <TextInput
-                        secureTextEntry={true}
-                        placeholder="Digite sua senha"
-                        value={password}
-                        onChangeText={(value) => setPassword(String(value))}
-                    />
-                </View>
-                {<Text style={styles.textError}>{errorsPasswordShow.map((value) => `${value.error}\n`)}</Text>}
-            </View>
-            <View style={styles.loginForm}>
-                <Text>Confirmar senha</Text>
-                <View style={styles.boxInput}>
-                    <TextInput
-                        secureTextEntry={true}
-                        placeholder="Confirme sua senha"
-                        value={confirmPassword}
-                        onChangeText={(value) => setConfirmPassword(String(value))}
-                    />
-                </View>
-                {<Text style={styles.textError}>{errorsConfirmPassword.map((value) => `${value.error}\n`)}</Text>}
-            </View>
-
-            <Pressable style={styles.buttonFilled} onPress={() => createAccount({ nameAndSurname: nameAndSurname, email: email, numberPhone: numberPhone, password: password, confirmPassword: confirmPassword })}>
-                <Text style={styles.textCriarConta}>CRIAR CONTA</Text>
-            </Pressable>
         </View>
-    );
+
+        <View style={styles.loginForm}>
+            <Text>Senha</Text>
+            <View style={styles.boxInput}>
+                <TextInput
+                    secureTextEntry={true}
+                    placeholder="Digite sua senha"
+                    value={password}
+                    onChangeText={(text) => {
+                      setSenha(text);
+                      setPassword(String(text))
+                    }}
+                />
+            </View>
+            {<Text style={styles.textError}>{errorsPasswordShow.map((value) => `${value.error}\n`)}</Text>}
+        </View>
+        <View style={styles.loginForm}>
+            <Text>Confirmar senha</Text>
+            <View style={styles.boxInput}>
+                <TextInput
+                    secureTextEntry={true}
+                    placeholder="Confirme sua senha"
+                    value={confirmPassword}
+                    onChangeText={(value) => setConfirmPassword(String(value))}
+                />
+            </View>
+            {<Text style={styles.textError}>{errorsConfirmPassword.map((value) => `${value.error}\n`)}</Text>}
+        </View>
+
+        <Pressable
+            style={styles.buttonFilled}
+            onPress={() => {
+              handleOpenModal();
+              createAccount({ nameAndSurname: nameAndSurname, email: emailValidation, numberPhone: numberPhone, password: password, confirmPassword: confirmPassword });
+            }}>
+            <Text style={styles.textCriarConta}>CRIAR CONTA</Text>
+        </Pressable>
+        <ModalBiometria
+            visible={modalVisible}
+            onClose={() => {
+                setModalVisible(false)
+                navigation.navigate('Dashboard');
+            }}
+        />
+
+    </View>
+
+);
 }
+
 export default Cadastro;
