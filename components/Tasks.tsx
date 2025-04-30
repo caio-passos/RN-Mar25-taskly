@@ -1,0 +1,131 @@
+import React, { useContext, useEffect, useState } from "react";
+import { FlatList, View, Text, StyleSheet, Pressable } from "react-native";
+import { AppContext } from "../App";
+import IconCheckboxUnchecked from "../assets/icons/lightmode/uncheckedcircle"
+import IconCheckboxChecked from "../assets/icons/lightmode/checkedcircle"
+import ShortPressable from "./Shortpressable";
+import LongPressable from "./LongPressable";
+import type { TaskTypes } from "../types/taskTypes";
+import {data} from "../services/db/mockData";
+
+type ItemProps = {
+    item: TaskTypes;
+
+};
+
+const TaskItem = ({ item }: ItemProps) => {
+    const [isSelected, setIsSelected] = useState(false);
+    const handleSelection = () => {
+        setIsSelected(!isSelected);
+    }
+
+    const colors = useContext(AppContext);
+    const styles = StyleSheet.create({
+        RootContainer: {
+        },
+        ShadowContainer: {
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 0,
+                height: 8,
+            },
+            shadowOpacity: 0.46,
+            shadowRadius: 11.14,
+        },
+        ContentContainer: {
+            paddingHorizontal: 32,
+            paddingBottom: 15,
+            borderRadius: 8,
+            elevation: 2,
+            backgroundColor: colors.SecondaryBG,
+        },
+        ContainerTitle: {
+            marginTop: 24,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+        },
+        TitleStyle: {
+            fontSize: 18,
+            fontWeight: 600
+        },
+        DescricaoStyle: {
+            fontSize: 14,
+            fontWeight: 500,
+        },
+        tagsContainer: {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: 8,
+        },
+        tagStyle: {
+            backgroundColor: colors.PrimaryLight,
+            paddingHorizontal: 12,
+            paddingVertical: 4,
+            borderRadius: 16,
+        },
+        ContainerShortPressable:{
+            paddingTop: 10,
+            paddingBottom:2,
+        }
+    })
+    return (
+        <View style={styles.RootContainer}>
+            <View style={styles.ShadowContainer}>
+                <View style={styles.ContentContainer}>
+                    <View style={styles.ContainerTitle}>
+                        <Text style={styles.TitleStyle}>{item.Task}</Text>
+                        <Pressable onPress={handleSelection}>
+                            {isSelected ? (
+                                <IconCheckboxUnchecked width={24} height={24} />
+                            ) : (
+                                <IconCheckboxChecked width={24} height={24} />
+                            )}
+                        </Pressable>
+                    </View>
+                    <Text style={styles.DescricaoStyle}>{item.Descricao}</Text>
+                    <View style={styles.tagsContainer}>
+                        {item.Tags.map((tag, index) => (
+                            <Text key={index} style={styles.tagStyle}>
+                                {tag}
+                            </Text>
+                        ))}
+                    </View>
+                    <View style={styles.ContainerShortPressable}>
+                        <ShortPressable textProps="VER DETALHES" />
+                    </View>
+                </View>
+            </View>
+
+        </View>
+    );
+};
+
+const renderItem = ({ item }: { item: TaskTypes }) => {
+    return (
+        <TaskItem
+            item={item}
+        />
+    )
+}
+const CriarTarefa = () => {
+    return (
+        <View style={{ paddingTop: 40 }}>
+            <LongPressable textProps="Criar Tarefa" />
+        </View>
+    );
+};
+
+const Tasks = () => {
+    return (
+        <FlatList
+            data={data}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+            ListFooterComponent={CriarTarefa}
+
+        />
+    )
+}
+
+export default Tasks;
