@@ -218,7 +218,7 @@ return (
             visible={modalVisible}
             onClose={() => {
                 setModalVisible(false)
-                navigation.navigate('Inicio');
+                navigation.navigate('Dashboard');
             }}
         />
 

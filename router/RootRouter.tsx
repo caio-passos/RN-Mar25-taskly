@@ -14,7 +14,7 @@ export default function RootNavigator() {
         <RootStack.Screen name="Cadastro" component={Cadastro} options={{ animation: 'slide_from_right' }} />
       </RootStack.Group>
       <RootStack.Group>
-        <RootStack.Screen name="Inicio" component={HomeTabBar} options={{ animation: 'slide_from_right' }} />
+        <RootStack.Screen name="Dashboard" component={HomeTabBar} options={{ animation: 'slide_from_right' }} />
       </RootStack.Group>
     </RootStack.Navigator>
   );

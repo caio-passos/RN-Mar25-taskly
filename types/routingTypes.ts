@@ -4,6 +4,9 @@ export type RootStackParamList = {
     ModalBiometria: undefined;
     MainApp: undefined;
     Dashboard: undefined;
+    Notifications: undefined;
+    Menu: undefined;
+    View: undefined;
 
   };
   
