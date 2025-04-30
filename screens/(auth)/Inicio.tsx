@@ -11,6 +11,7 @@ import IconFilter from "../../assets/icons/lightmode/filter";
 const InicioContent = () => {
     const colors = useContext(AppContext);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalCriarTarefa, setModalCriarTarefa] = useState(false);
 
     const handleModalOpen = () => {
         setModalVisible(true);
@@ -79,7 +80,11 @@ const InicioContent = () => {
                             <IconFilter width={24} height={24} />
                         </Pressable>
                     </View>
-                    <Tasks />
+                    <Tasks onOpenModal={() => setModalCriarTarefa(true)}/>
+                    <ModalCriarTarefas
+                        visible={modalCriarTarefa}
+                        onClose={() => setModalCriarTarefa(false)}
+                    />
                 </View>
                 {/* <View style={styles.svgNoTasks}>
                     <NoTasks height={173} width={259} />
@@ -90,10 +95,7 @@ const InicioContent = () => {
                             <Text style={styles.buttonTextCriarTarefa}>Criar Tarefa</Text>
                         </View>
                     </Pressable> */}
-                    <ModalCriarTarefas
-                        visible={modalVisible}
-                        onClose={() => setModalVisible(false)}
-                    />
+                
 
                 </View>
             </View>
