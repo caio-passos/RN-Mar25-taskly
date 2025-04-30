@@ -36,6 +36,7 @@ function Login({ navigation }: LoginProps) {
             width: '100%',
             marginBottom: 20,
             gap: 4,
+            position: 'relative',
         },
         boxInput: {
             width: '100%',
@@ -82,6 +83,9 @@ function Login({ navigation }: LoginProps) {
             color: '#EF4444',
             fontWeight: 400,
             fontSize: 12,
+            position: 'absolute',
+            left: 0,
+            bottom: -35,
         },
     });
 
