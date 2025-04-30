@@ -1,12 +1,13 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, Pressable} from "react-native";
 import { AppContext } from "../App";
 
 interface LongPressableProps {
     textProps: string;
+    onPress: () => void;
 }
 
-function LongPressable({ textProps }: LongPressableProps) {
+function LongPressable({ textProps, onPress}: LongPressableProps) {
 
     const colors = useContext(AppContext);
     const styles = StyleSheet.create({
@@ -28,11 +29,11 @@ function LongPressable({ textProps }: LongPressableProps) {
 
 
     return (
-        <View style={styles.buttonFilled}>
+        <Pressable onPress={onPress} style={styles.buttonFilled}>
             <Text style={styles.buttonTextCriarTarefa}>
                 {textProps}
             </Text>
-        </View>
+        </Pressable>
     )
 }
 

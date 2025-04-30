@@ -6,7 +6,7 @@ import IconCheckboxChecked from "../assets/icons/lightmode/checkedcircle"
 import ShortPressable from "./Shortpressable";
 import LongPressable from "./LongPressable";
 import type { TaskTypes } from "../types/taskTypes";
-import {data} from "../services/db/mockData";
+import { data } from "../services/db/mockData";
 
 type ItemProps = {
     item: TaskTypes;
@@ -63,9 +63,9 @@ const TaskItem = ({ item }: ItemProps) => {
             paddingVertical: 4,
             borderRadius: 16,
         },
-        ContainerShortPressable:{
+        ContainerShortPressable: {
             paddingTop: 10,
-            paddingBottom:2,
+            paddingBottom: 2,
         }
     })
     return (
@@ -107,22 +107,22 @@ const renderItem = ({ item }: { item: TaskTypes }) => {
         />
     )
 }
-const CriarTarefa = () => {
+const CriarTarefa = ({ onOpenModal }: { onOpenModal: () => void }) => {
     return (
         <View style={{ paddingTop: 40 }}>
-            <LongPressable textProps="Criar Tarefa" />
+            <LongPressable textProps="Criar Tarefa" onPress={onOpenModal} />
         </View>
     );
 };
 
-const Tasks = () => {
+const Tasks = ({ onOpenModal }: { onOpenModal: () => void }) => {
     return (
         <FlatList
             data={data}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-            ListFooterComponent={CriarTarefa}
+            ListFooterComponent={() => <CriarTarefa onOpenModal={onOpenModal} />}
 
         />
     )
