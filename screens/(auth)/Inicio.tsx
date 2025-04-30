@@ -5,10 +5,10 @@ import { } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import NoTasks from "../../assets/icons/darkmode/nocontent";
 import ModalCriarTarefas from "../Modal/Criartarefa";
+import Tasks from "../../components/Tasks";
+import IconFilter from "../../assets/icons/lightmode/filter";
 
-const Tab = createBottomTabNavigator();
-
-function InicioContent() {
+const InicioContent = () => {
     const colors = useContext(AppContext);
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -37,9 +37,16 @@ function InicioContent() {
             color: colors.MainText,
         },
         middleSection: {
-            flex: 1,
             justifyContent: 'center',
-            paddingBottom: 122,
+        },
+        TasksStyle: {
+            height: '100%',
+            paddingTop: 10,
+        },
+        IconFilterStyle:{
+            paddingTop: 40,
+            paddingBottom: 16,
+            alignItems: 'flex-end',
         },
         svgNoTasks: {
             alignItems: 'center',
@@ -66,19 +73,26 @@ function InicioContent() {
                 <Image source={require('../../assets/icons/lightmode/useravatar.png')} style={{ width: 50, height: 50 }} />
             </View>
             <View style={styles.middleSection}>
-                <View style={styles.svgNoTasks}>
-                    <NoTasks height={173} width={259} />
+                <View style={styles.TasksStyle}>
+                    <View style={styles.IconFilterStyle}>
+                        <Pressable onPress={()=> {''}}>
+                            <IconFilter width={24} height={24} />
+                        </Pressable>
+                    </View>
+                    <Tasks />
                 </View>
-
+                {/* <View style={styles.svgNoTasks}>
+                    <NoTasks height={173} width={259} />
+                </View> */}
                 <View>
-                    <Pressable onPress={ handleModalOpen}>
+                    {/* <Pressable onPress={ handleModalOpen}>
                         <View style={styles.buttonFilled}>
                             <Text style={styles.buttonTextCriarTarefa}>Criar Tarefa</Text>
                         </View>
-                    </Pressable>
+                    </Pressable> */}
                     <ModalCriarTarefas
-                    visible={modalVisible} 
-                    onClose={() => setModalVisible(false)}
+                        visible={modalVisible}
+                        onClose={() => setModalVisible(false)}
                     />
 
                 </View>

@@ -6,10 +6,9 @@ import IconNotification from '../assets/icons/lightmode/notification';
 import IconMenu from '../assets/icons/lightmode/menu';
 import { AppContext } from '../App';
 import { useContext } from 'react';
+import type { RootStackParamList } from '../types/routingTypes';
 
-
-
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootStackParamList>();
 export default function HomeTabBar() {
   const colors = useContext(AppContext)
   return (

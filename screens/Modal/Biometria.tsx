@@ -76,7 +76,7 @@ const ModalBiometria = ({ visible, onClose }: ModalBiometriaProps) => {
             textAlign: 'center',
             fontWeight: 'bold',
         },
-    });
+    })
     return (
         <Modal
             animationType="slide"
