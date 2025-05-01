@@ -1,21 +1,30 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import { AppContext } from "../../App";
 import { } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import NoTasks from "../../assets/icons/darkmode/nocontent";
 import ModalCriarTarefas from "../Modal/Criartarefa";
 import Tasks from "../../components/Tasks";
 import IconFilter from "../../assets/icons/lightmode/filter";
+import { data } from "../../services/db/mockData";
+import DetalhesTask from "../../components/DetalhesTask";
+import type { TaskTypes } from "../../types/taskTypes";
 
 const InicioContent = () => {
     const colors = useContext(AppContext);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalCriarTarefa, setModalCriarTarefa] = useState(false);
+    const [selectedTask, setSelectedTask] = useState<TaskTypes | null>(null);
+    const [ShowDetalhes, setShowDetalhes] = useState(false);
+
 
     const handleModalOpen = () => {
         setModalVisible(true);
-    }
+    };
+    const handleShowDetalhes = (item: TaskTypes) => {
+        setSelectedTask(item);
+        setShowDetalhes(true);
+    };
 
     const styles = StyleSheet.create({
         container: {
@@ -44,13 +53,10 @@ const InicioContent = () => {
             height: '100%',
             paddingTop: 10,
         },
-        IconFilterStyle:{
+        IconFilterStyle: {
             paddingTop: 40,
             paddingBottom: 16,
             alignItems: 'flex-end',
-        },
-        svgNoTasks: {
-            alignItems: 'center',
         },
         buttonFilled: {
             backgroundColor: colors.Primary,
@@ -75,27 +81,29 @@ const InicioContent = () => {
             </View>
             <View style={styles.middleSection}>
                 <View style={styles.TasksStyle}>
-                    <View style={styles.IconFilterStyle}>
-                        <Pressable onPress={()=> {''}}>
-                            <IconFilter width={24} height={24} />
-                        </Pressable>
-                    </View>
-                    <Tasks onOpenModal={() => setModalCriarTarefa(true)}/>
+                    {!ShowDetalhes &&(
+                        <View style={styles.IconFilterStyle}>
+                            <Pressable onPress={() => { '' }}>
+                                <IconFilter width={24} height={24} />
+                            </Pressable>
+                        </View>
+                    )
+                    }
+                    {ShowDetalhes ? (
+                        <DetalhesTask item={selectedTask} />
+                    ) : (
+                        <Tasks
+                            onOpenModal={() => setModalCriarTarefa(true)}
+                            onOpenDetalhes={handleShowDetalhes}
+                        />
+                    )}
                     <ModalCriarTarefas
                         visible={modalCriarTarefa}
                         onClose={() => setModalCriarTarefa(false)}
                     />
                 </View>
-                {/* <View style={styles.svgNoTasks}>
-                    <NoTasks height={173} width={259} />
-                </View> */}
                 <View>
-                    {/* <Pressable onPress={ handleModalOpen}>
-                        <View style={styles.buttonFilled}>
-                            <Text style={styles.buttonTextCriarTarefa}>Criar Tarefa</Text>
-                        </View>
-                    </Pressable> */}
-                
+
 
                 </View>
             </View>

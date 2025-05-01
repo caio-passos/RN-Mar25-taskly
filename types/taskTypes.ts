@@ -4,6 +4,7 @@ export type TaskTypes = {
     Descricao: string;
     Prazo?: string;
     Tags: string[];
+    Subtask?: string[];
     Checked?: Boolean;
 }
 
