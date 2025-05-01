@@ -7,6 +7,7 @@ import IconMenu from '../assets/icons/lightmode/menu';
 import { AppContext } from '../App';
 import { useContext } from 'react';
 import type { RootStackParamList } from '../types/routingTypes';
+import Menu from '../screens/(auth)/Menu';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -66,7 +67,7 @@ export default function HomeTabBar() {
       />
       <Tab.Screen
         name="Menu"
-        component={View}
+        component={Menu}
         options={{
           tabBarIcon: ({ color, size }) => (
             <IconMenu width={size} height={size} backgroundColor={color} />
