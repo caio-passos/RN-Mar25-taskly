@@ -9,6 +9,7 @@ import { useContext } from 'react';
 import type { RootStackParamList } from '../types/routingTypes';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
+
 export default function HomeTabBar() {
   const colors = useContext(AppContext)
   return (

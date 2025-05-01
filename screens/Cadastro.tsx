@@ -4,7 +4,7 @@ import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
 import { AppContext } from '../App';
-import CaretLeft from '../assets/caretLeft.svg';
+import ReturnLeft from '../assets/caretLeft.svg';
 import ModalBiometria from './Modal/Biometria';
 
 interface CadastroProps {
@@ -310,7 +310,7 @@ function Cadastro({ navigation }: CadastroProps) {
             <Pressable 
             style={styles.returnPressable}
             onPress={() => navigation.goBack()}>
-                <CaretLeft width={23} height={17.25} />
+                <ReturnLeft width={23} height={17.25} />
                 <View style={styles.boxTextVoltar}>
                     <Text style={styles.textVoltar}>VOLTAR</Text>
                 </View>

@@ -7,6 +7,7 @@ export const data: TaskTypes[] = [
         Descricao: "bater o ponto pelo site do kairos e depois tenho que sair para tomar café",
         Prazo: "04/28/2025",
         Tags: ["Casa"],
+        Subtask: [""]
     },
     {
         id: "3",
@@ -14,6 +15,8 @@ export const data: TaskTypes[] = [
         Descricao: "Comprar leite, ovos e pão no mercado",
         Prazo: "05/15/2025",
         Tags: ["Supermercado", "Urgente"],
+        Subtask: [""]
+
     },
     {
         id: "4",
@@ -21,6 +24,8 @@ export const data: TaskTypes[] = [
         Descricao: "Apresentar relatório trimestral para o time",
         Prazo: "04/30/2025",
         Tags: ["Trabalho"],
+        Subtask: [""]
+
     },
     {
         id: "5",
@@ -28,6 +33,8 @@ export const data: TaskTypes[] = [
         Descricao: "Completar módulo sobre navegação",
         Prazo: "05/10/2025",
         Tags: ["Estudo"],
+        Subtask: ""
+
     },
     {
         id: "6",
@@ -35,6 +42,8 @@ export const data: TaskTypes[] = [
         Descricao: "Ligar para marcar consulta de rotina",
         Prazo: "06/01/2025",
         Tags: ["Saúde"],
+        Subtask: ""
+
     },
     {
         id: "7",
@@ -42,6 +51,8 @@ export const data: TaskTypes[] = [
         Descricao: "Luz, água e internet",
         Prazo: "05/05/2025",
         Tags: ["Financeiro"],
+        Subtask: [""]
+
     },
     {
         id: "8",
@@ -49,6 +60,9 @@ export const data: TaskTypes[] = [
         Descricao: "Treino de 5km pela manhã",
         Prazo: "04/29/2025",
         Tags: ["Exercício"],
+        Subtask: [""]
+
+
     },
     {
         id: "9",
@@ -56,6 +70,9 @@ export const data: TaskTypes[] = [
         Descricao: "Terminar capítulo 7 do livro atual",
         Prazo: "05/20/2025",
         Tags: ["Lazer"],
+        Subtask: [""]
+
+
     },
     {
         id: "10",
@@ -63,5 +80,7 @@ export const data: TaskTypes[] = [
         Descricao: "Separar roupas para doação",
         Prazo: "06/15/2025",
         Tags: ["Casa"],
+        Subtask: ["Teste teste teste tste teste"]
+
     }
 ];

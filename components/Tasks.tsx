@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { FlatList, View, Text, StyleSheet, Pressable } from "react-native";
+import { FlatList, View, Text, StyleSheet, Pressable, Task } from "react-native";
 import { AppContext } from "../App";
 import IconCheckboxUnchecked from "../assets/icons/lightmode/uncheckedcircle"
 import IconCheckboxChecked from "../assets/icons/lightmode/checkedcircle"
@@ -7,18 +7,20 @@ import ShortPressable from "./Shortpressable";
 import LongPressable from "./LongPressable";
 import type { TaskTypes } from "../types/taskTypes";
 import { data } from "../services/db/mockData";
+import NoTasks from "../assets/icons/darkmode/nocontent";
 
 type ItemProps = {
     item: TaskTypes;
-
+    onOpenDetalhes?: (item: TaskTypes) => void;
 };
 
-const TaskItem = ({ item }: ItemProps) => {
+
+
+const TaskItem = ({ item, onOpenDetalhes }: ItemProps) => {
     const [isSelected, setIsSelected] = useState(false);
     const handleSelection = () => {
         setIsSelected(!isSelected);
     }
-
     const colors = useContext(AppContext);
     const styles = StyleSheet.create({
         RootContainer: {
@@ -66,7 +68,11 @@ const TaskItem = ({ item }: ItemProps) => {
         ContainerShortPressable: {
             paddingTop: 10,
             paddingBottom: 2,
-        }
+        },
+        svgNoTasks: {
+            alignItems: 'center',
+        },
+
     })
     return (
         <View style={styles.RootContainer}>
@@ -91,7 +97,9 @@ const TaskItem = ({ item }: ItemProps) => {
                         ))}
                     </View>
                     <View style={styles.ContainerShortPressable}>
-                        <ShortPressable textProps="VER DETALHES" />
+                        <ShortPressable
+                            textProps="VER DETALHES"
+                            onPress={() => onOpenDetalhes?.(item)} />
                     </View>
                 </View>
             </View>
@@ -100,22 +108,32 @@ const TaskItem = ({ item }: ItemProps) => {
     );
 };
 
-const renderItem = ({ item }: { item: TaskTypes }) => {
+const EmptyComponent = () => {
     return (
-        <TaskItem
-            item={item}
-        />
+        <View style={{alignItems: "center"}}>
+            <NoTasks height={173} width={259} />
+        </View>
     )
 }
 const CriarTarefa = ({ onOpenModal }: { onOpenModal: () => void }) => {
     return (
         <View style={{ paddingTop: 40 }}>
-            <LongPressable textProps="Criar Tarefa" onPress={onOpenModal} />
+            <LongPressable textProps="Criar Tarefa" onPress={onOpenModal} style={{justifyContent: 'center'}} />
         </View>
     );
 };
 
-const Tasks = ({ onOpenModal }: { onOpenModal: () => void }) => {
+const Tasks = ({ onOpenModal, onOpenDetalhes }: {
+     onOpenModal: () => void; 
+     onOpenDetalhes: (item: TaskTypes) => void }) => {
+    const renderItem = ({ item }: { item: TaskTypes }) => {
+        return (
+            <TaskItem
+                item={item}
+                onOpenDetalhes={onOpenDetalhes}
+            />
+        )
+    }
     return (
         <FlatList
             data={data}
@@ -123,6 +141,7 @@ const Tasks = ({ onOpenModal }: { onOpenModal: () => void }) => {
             keyExtractor={item => item.id}
             ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
             ListFooterComponent={() => <CriarTarefa onOpenModal={onOpenModal} />}
+            ListEmptyComponent={EmptyComponent}
 
         />
     )

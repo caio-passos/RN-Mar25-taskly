@@ -1,33 +1,37 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, Pressable} from "react-native";
+import { StyleSheet, Text, Pressable, ViewStyle} from "react-native";
 import { AppContext } from "../App";
 
-interface ShortPressableProps {
+interface LongNoFillPressableProps {
     textProps: string;
-    onPress?: () => void;
+    onPress: () => void;
+    style?: ViewStyle;
 }
 
-function ShortPressable({ textProps, onPress}: ShortPressableProps) {
+function LongNoFillPressable({ textProps, onPress, style}: LongNoFillPressableProps) {
 
     const colors = useContext(AppContext);
     const styles = StyleSheet.create({
         buttonFilled: {
-            backgroundColor: colors.Primary,
             borderRadius: 8,
-            width: 127,
-            height: 27,
+            borderColor: colors.Primary,
+            borderWidth:2,
+            width: 329,
+            height: 47,
             justifyContent: 'center',
             alignSelf: 'center',
+            marginTop: 25,
         },
         buttonTextCriarTarefa: {
-            color: '#FFFFFF',
+            color: colors.Primary,
             textAlign: 'center',
             fontWeight: '600',
+            
         }
     })
 
     return (
-        <Pressable style={styles.buttonFilled} onPress={onPress}>
+        <Pressable onPress={onPress} style={[styles.buttonFilled, style]}>
             <Text style={styles.buttonTextCriarTarefa}>
                 {textProps}
             </Text>
@@ -35,4 +39,4 @@ function ShortPressable({ textProps, onPress}: ShortPressableProps) {
     )
 }
 
-export default ShortPressable;
+export default LongNoFillPressable;
