@@ -5,11 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
 
 interface ModalBiometriaProps {
+    text?: string;
     visible: boolean;
     onClose: () => void;
 }
 
-const ModalBiometria = ({ visible, onClose }: ModalBiometriaProps) => {
+const ModalBiometria = ({ visible, onClose, text}: ModalBiometriaProps) => {
     const colors = React.useContext(AppContext);
 
     const styles = StyleSheet.create({
