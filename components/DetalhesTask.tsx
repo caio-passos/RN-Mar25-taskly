@@ -5,7 +5,7 @@ import LongPressable from "./LongPressable";
 import { View, Text, StyleSheet } from "react-native";
 import { data } from "../services/db/mockData";
 import { TaskTypes } from "../types/taskTypes";
-
+import Subtask from "../components/Subtask";
 type DetalhesProps = {
     item: TaskTypes | null;
 };
@@ -16,6 +16,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     const colors = useContext(AppContext);
     const [finishTask, setFinishTask] = useState(true);
     const [addSubtask, setAddSubtask] = useState(true);
+    const [updatedSubtask, setUpdatedSubtask] = useState('');
 
     const handleFinishTask = () => {
         setFinishTask(true)
@@ -77,6 +78,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
             textAlignVertical: 'center',
             borderRadius: 8,
         },
+        SubtaskContainer: {
+            paddingTop: 32,
+        },
+        SubtaskListContainer: {
+
+        },
 
     });
     return (
@@ -84,22 +91,22 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
             <View style={styles.RootContainer}>
                 <View style={styles.ShadowContainer}>
                     <View style={styles.ContentContainer}>
-                            <Text style={styles.TitleStyle}>Título</Text>
-                            <Text style={styles.TaskStyle}>{item?.Task}</Text>
-                            <View style={styles.DescriçãoStyle}>
-                                <Text>Descrição</Text>
-                                <Text>{item?.Descricao}</Text>
+                        <Text style={styles.TitleStyle}>Título</Text>
+                        <Text style={styles.TaskStyle}>{item?.Task}</Text>
+                        <View style={styles.DescriçãoStyle}>
+                            <Text>Descrição</Text>
+                            <Text>{item?.Descricao}</Text>
+                        </View>
+                        <View style={styles.TagsStyle}>
+                            <Text>Tags</Text>
+                            <View style={styles.tagsContainer}>
+                                {item?.Tags.map((tag, index) => (
+                                    <Text key={index} style={styles.tagStyle}>
+                                        {tag}
+                                    </Text>
+                                ))}
                             </View>
-                            <View style={styles.TagsStyle}>
-                                <Text>Tags</Text>
-                                <View style={styles.tagsContainer}>
-                                    {item?.Tags.map((tag, index) => (
-                                        <Text key={index} style={styles.tagStyle}>
-                                            {tag}
-                                        </Text>
-                                    ))}
-                                </View>
-                            </View>
+                        </View>
                         <View>
                             <Text>Prioridade</Text>
                             <Text style={styles.PrioridadeTextColor}>ALTA</Text>
@@ -107,7 +114,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                                 <LongNoFillPressable
                                     textProps="RESOLVER TAREFA"
                                     onPress={handleFinishTask}
-                                    style={{ 
+                                    style={{
                                         paddingHorizontal: 32,
                                         width: '100%',
                                         marginBottom: 16,
@@ -115,19 +122,31 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                                     }}
                                 />
                             </View>
-                         
+
                         </View>
- 
+
                     </View>
-                            <LongPressable
-                                textProps="ADICIONAR SUBTASK"
-                                onPress={handleAddSubtask}
-                                style={{
-                                    justifyContent: 'center',
-                                    alignSelf: 'center',
-                                    width: '100%'
-                                }}
-                            />
+                    <View style={styles.SubtaskContainer}>
+                        {item?.Subtask && item.Subtask.length > 0 && (
+                            <View style={styles.SubtaskListContainer}>
+                                <Subtask
+                                    data={item}
+                                    onAddSubtask={(updatedSubtask)}{
+                                    ...() => ''
+                                    }
+                                />
+                            </View>
+                        )}
+                        <LongPressable
+                            textProps="ADICIONAR SUBTASK"
+                            onPress={handleAddSubtask}
+                            style={{
+                                justifyContent: 'center',
+                                alignSelf: 'center',
+                                width: '100%'
+                            }}
+                        />
+                    </View>
                 </View>
             </View>
 

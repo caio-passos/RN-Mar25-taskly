@@ -80,7 +80,6 @@ export const data: TaskTypes[] = [
         Descricao: "Separar roupas para doação",
         Prazo: "06/15/2025",
         Tags: ["Casa"],
-        Subtask: ["Teste teste teste tste teste"]
-
+        Subtask: ["Teste teste teste tste teste", "blablabla"]
     }
 ];
