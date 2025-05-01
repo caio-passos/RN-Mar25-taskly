@@ -402,7 +402,7 @@ function Cadastro({ navigation }: CadastroProps) {
                 visible={modalVisible}
                 onClose={() => {
                     setModalVisible(false)
-                    navigation.navigate('Dashboard');
+                    navigation.navigate('Avatar');
                 }}
             />
         </View>
