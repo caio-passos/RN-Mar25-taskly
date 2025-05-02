@@ -5,9 +5,9 @@ const Colorscheme = () => ({
     Background : '#F4F4F4',
     SecondaryBG: '#FFFFFF',
     PrimaryLight : '#E6E0F7',
-    SecundaryAccent : '#32C25B',
+    SecondaryAccent : '#32C25B',
     MainText : '#1E1E1E',
-    SecundaryText : '#AAAAAA',
+    SecondaryText : '#AAAAAA',
     Error : '#E63946'
 });
 

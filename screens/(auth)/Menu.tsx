@@ -151,7 +151,7 @@ const Menu = () => {
                     description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
                     leftButtonText='Agora não'
                     rightButtonText='HABILITAR'
-                    rightButtonStyle={{backgroundColor: colors.SecundaryAccent}}
+                    rightButtonStyle={{backgroundColor: colors.SecondaryAccent}}
                 />
             ) : (
                 <ModalAlert
