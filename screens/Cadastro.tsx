@@ -5,7 +5,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
 import { AppContext } from '../App';
 import ReturnLeft from '../assets/caretLeft.svg';
-import ModalBiometria from './Modal/Biometria';
+import ModalAlert from './Modal/Alert';
 
 interface CadastroProps {
     navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro', 'Home'>;
@@ -398,12 +398,16 @@ function Cadastro({ navigation }: CadastroProps) {
                 }}>
                 <Text style={styles.textCriarConta}>CRIAR CONTA</Text>
             </Pressable>
-            <ModalBiometria
+            <ModalAlert
                 visible={modalVisible}
                 onClose={() => {
                     setModalVisible(false)
                     navigation.navigate('Dashboard');
                 }}
+                title='Ative o Desbloqueio por Biometria'
+                description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
+                leftButtonText='Agora não'
+                rightButtonText='ATIVAR'
             />
         </View>
 

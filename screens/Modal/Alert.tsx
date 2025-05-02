@@ -1,16 +1,32 @@
 import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
+import { Alert, Modal, StyleSheet, Text, TextStyle, Pressable, View, StyleProp, ViewStyle } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
 
-interface ModalBiometriaProps {
-    text?: string;
+interface ModalAlertProps {
     visible: boolean;
     onClose: () => void;
+    title?: string;
+    description?: string;
+    leftButtonText?: string;
+    rightButtonText?: string;
+    style?: StyleProp<ViewStyle>;
+    rightButtonStyle?: StyleProp<ViewStyle>; 
+    rightButtonTextStyle?: StyleProp<TextStyle>;
 }
 
-const ModalBiometria = ({ visible, onClose, text}: ModalBiometriaProps) => {
+const ModalAlert = ({
+    visible,
+    onClose,
+    title,
+    description,
+    leftButtonText,
+    rightButtonText,
+    style,
+    rightButtonStyle,
+    rightButtonTextStyle
+}: ModalAlertProps) => {
     const colors = React.useContext(AppContext);
 
     const styles = StyleSheet.create({
@@ -32,31 +48,29 @@ const ModalBiometria = ({ visible, onClose, text}: ModalBiometriaProps) => {
         },
         boxButtons: {
             flexDirection: 'row',
+            justifyContent: 'space-between',
             gap: 12,
-        },
-        buttonOpen: {
-            backgroundColor: '#F194FF',
-        },
-        buttonClose: {
-            backgroundColor: '#2196F3',
+            width: '100%',
         },
         buttonFilled: {
-            flexDirection: 'row',
-            alignItems: 'center',
             flex: 1,
-            backgroundColor: '#5B3CC4',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.Primary,
             borderRadius: 8,
             height: 37,
-            justifyContent: 'space-around',
             marginTop: 25,
         },
         buttonEmptyFill: {
+            flex: 1,
+            flexDirection: 'row',
             borderColor: colors.Primary,
             borderWidth: 2,
             borderRadius: 8,
-            width: '100%',
-            height: 47,
+            height: 37,
             justifyContent: 'center',
+            alignItems: 'center',
             marginTop: 25,
         },
         textStyle: {
@@ -69,6 +83,13 @@ const ModalBiometria = ({ visible, onClose, text}: ModalBiometriaProps) => {
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
+        },
+        buttonRightText: {
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            color: colors.SecondaryBG,
         },
         titleText: {
             width: '100%',
@@ -87,31 +108,20 @@ const ModalBiometria = ({ visible, onClose, text}: ModalBiometriaProps) => {
         >
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    <Text style={styles.titleText} numberOfLines={1}>Ative o Desbloqueio por Biometria</Text>
+                    <Text style={styles.titleText} numberOfLines={1}>{title}</Text>
                     <Text style={styles.textStyle}>
-                        Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.
+                        {description}
                     </Text>
                     <View style={styles.boxButtons}>
-                        <Pressable
-                            style={[styles.buttonFilled, { backgroundColor: colors.Background, borderColor: colors.Primary, borderWidth: 2 }]}
-                            onPress={onClose}
-                        >
-                            <Pressable>
-
-                                <Text style={styles.buttonText}>Agora não</Text>
-                            </Pressable>
+                        <Pressable style={styles.buttonEmptyFill} onPress={onClose}>
+                            <Text style={[styles.buttonText]}>{leftButtonText}</Text>
                         </Pressable>
                         <Pressable
-                            style={styles.buttonFilled}
+                            style={[styles.buttonFilled, rightButtonStyle]}
                             onPress={onClose}
                         >
-                            <Pressable
-                            onPress={onClose}
-                            >
-                                <Text style={styles.buttonText}>ATIVAR</Text>
-                            </Pressable>
+                            <Text style={[rightButtonTextStyle, styles.buttonRightText]}>{rightButtonText}</Text>
                         </Pressable>
-
                     </View>
 
                 </View>
@@ -121,4 +131,4 @@ const ModalBiometria = ({ visible, onClose, text}: ModalBiometriaProps) => {
     );
 };
 
-export default ModalBiometria;  
+export default ModalAlert;  

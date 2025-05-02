@@ -1,16 +1,29 @@
-import React, { useContext } from "react";
-import { View, Image, StyleSheet, Text } from "react-native";
+import React, { useContext, useState } from "react";
+import { View, Image, StyleSheet, Text, StyleProp, TextStyle } from "react-native";
 import MenuCarrousel from "../../components/carrousel/MenuCarrousel";
 import IconEditar from '../../assets/icons/lightmode/carrousel/editarInfo';
 import IconBiometria from '../../assets/icons/lightmode/carrousel/mudarBiometria';
 import IconSair from '../../assets/icons/lightmode/carrousel/sairConta';
 import IconExcluir from '../../assets/icons/lightmode/carrousel/excluirConta';
 import IconRightArrow from '../../assets/icons/lightmode/rightArrow'
+import ModalAlert from "../Modal/Alert";
 
 import { AppContext } from "../../App";
 
+
+
 const Menu = () => {
     const colors = useContext(AppContext);
+    const [activeModal, setActiveModal] = useState<string | null>(null);
+    const [biometria, setBiometria] = useState(false);
+
+    const handleOpenModal = (modalId: string) => {
+        setActiveModal(activeModal === modalId ? null : modalId);
+    };
+
+    const handleDisableBiometria = () => {
+        setBiometria(true);
+    }
 
     const styles = StyleSheet.create({
         Container: {
@@ -37,7 +50,7 @@ const Menu = () => {
             fontSize: 18,
         },
         ContainerBottom: {
-            flex: 1,
+            flex: 3,
             gap: 16,
             justifyContent: 'flex-start',
             paddingHorizontal: 32,
@@ -64,9 +77,9 @@ const Menu = () => {
         PressablesText: {
             fontSize: 18,
             fontWeight: 'bold',
-            flex:1,
+            flex: 1,
         },
-        RightArrow:{
+        RightArrow: {
             marginRight: 8
         }
     });
@@ -93,25 +106,96 @@ const Menu = () => {
                         {
                             id: "Edit",
                             icon: <IconEditar height={131} width={134} />,
-                            onPress: () => { }
+                            onPress: () => handleOpenModal('Edit')
                         },
                         {
                             id: "Biometria",
                             icon: <IconBiometria height={131} width={134} />,
-                            onPress: () => { }
+                            onPress: () => handleOpenModal('Biometria')
                         },
                         {
                             id: "Sair",
                             icon: <IconSair height={131} width={134} />,
-                            onPress: () => { }
+                            onPress: () => handleOpenModal('Sair')
                         },
                         {
                             id: "Excluir",
                             icon: <IconExcluir height={131} width={134} />,
-                            onPress: () => { }
+                            onPress: () => handleOpenModal('Excluir')
                         }
                     ]} />
             </View>
+            {activeModal === 'Edit' && (
+                <ModalAlert
+                    visible={true}
+                    onClose={() => {
+                        setActiveModal(null)
+                    }}
+                    title='Ative o Desbloqueio por Biometria'
+                    description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
+                    leftButtonText='Agora não'
+                    rightButtonText='ATIVAR'
+                    rightButtonStyle={{ backgroundColor: colors.Primary }} 
+                />
+            )}
+
+            {activeModal === 'Biometria' && (
+                biometria ? (
+                <ModalAlert
+                    visible={true}
+                    onClose={() => {
+                        setActiveModal(null)
+                        setBiometria(false)
+                    }}
+                    title='Ativar biometria'
+                    description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
+                    leftButtonText='Agora não'
+                    rightButtonText='HABILITAR'
+                    rightButtonStyle={{backgroundColor: colors.SecundaryAccent}}
+                />
+            ) : (
+                <ModalAlert
+                    visible={true}
+                    onClose={() => {
+                        setActiveModal(null)
+                        handleDisableBiometria()
+                    }}
+                    title='Desabilitar biometria'
+                    description='Tem certeza que deseja desabilitar a autenticação por biometria? Você precisará usar seu login e senha para acessar o app.'
+                    leftButtonText='Agora não'
+                    rightButtonText='DESABILITAR'
+                    rightButtonStyle={{backgroundColor: colors.Error}}
+                />
+            ))}
+
+            {activeModal === 'Sair' && (
+                <ModalAlert
+                    visible={true}
+                    onClose={() => {
+                        setActiveModal(null)
+                    }}
+                    title='Deseja sair?'
+                    description='Tem certeza que deseja sair do aplicativo? Você poderá se conectar novamente a qualquer momento.'
+                    leftButtonText='Agora não'
+                    rightButtonText='SAIR'
+                    rightButtonStyle={{backgroundColor: colors.Error}}
+                />
+            )}
+
+            {activeModal === 'Excluir' && (
+                <ModalAlert
+                    visible={true}
+                    onClose={() => {
+                        setActiveModal(null)
+                    }}
+                    title='Excluir conta'
+                    description='Tem certeza que deseja excluir sua conta? Essa ação é permanente e todos os seus dados serão perdidos.'
+                    leftButtonText='Agora não'
+                    rightButtonText='EXCLUIR'
+                    rightButtonStyle={{backgroundColor: colors.Error}}
+                />
+            )}
+
             <View style={styles.ContainerBottom}>
                 <View style={styles.ShadowContainer}>
                     <View style={styles.ContainerPressables}>
@@ -125,12 +209,11 @@ const Menu = () => {
                 <View style={styles.ShadowContainer}>
                     <View style={styles.ContainerPressables}>
                         <Text style={styles.PressablesText}>Termos e regulamentos</Text>
-                            <View style={styles.RightArrow}>
-                                <IconRightArrow height={24} width={24} />
-                            </View>
+                        <View style={styles.RightArrow}>
+                            <IconRightArrow height={24} width={24} />
+                        </View>
                     </View>
                 </View>
-
 
             </View>
 
