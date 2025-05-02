@@ -4,6 +4,9 @@ import Cadastro from '../screens/Cadastro';
 import HomeTabBar from './AuthRouter';
 import type { RootStackParamList } from '../types/routingTypes';
 import Avatar from '../screens/(auth)/Avatar';
+import Menu from '../screens/(auth)/Menu';
+import Theme from '../screens/(auth)/Theme';
+import Terms from '../screens/(auth)/Terms';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 

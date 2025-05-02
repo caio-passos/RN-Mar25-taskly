@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { View, Image, StyleSheet, Text, StyleProp, TextStyle } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { View, Image, StyleSheet, Text, StyleProp, TextStyle, Pressable, BackHandler } from "react-native";
 import MenuCarrousel from "../../components/carrousel/MenuCarrousel";
 import IconEditar from '../../assets/icons/lightmode/carrousel/editarInfo';
 import IconBiometria from '../../assets/icons/lightmode/carrousel/mudarBiometria';
@@ -9,13 +9,37 @@ import IconRightArrow from '../../assets/icons/lightmode/rightArrow'
 import ModalAlert from "../Modal/Alert";
 
 import { AppContext } from "../../App";
+import { RootStackParamList } from "../../types/routingTypes";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import Terms from "../../screens/(auth)/Terms";
+import Theme from "../../screens/(auth)/Theme";
 
+interface MenuProps {
+    navigation: NativeStackScreenProps<RootStackParamList, 'Menu', 'Theme'>;
+}
 
-
-const Menu = () => {
+const Menu = (props: MenuProps) => {
     const colors = useContext(AppContext);
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const [biometria, setBiometria] = useState(false);
+    const [control, setControl] = useState(false);
+    const [controlTheme, setControlTheme] = useState(false);
+
+    useEffect(() => {
+        function backAction() {
+            setControl(false);
+            setControlTheme(false);
+
+            return true;
+        }
+
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            backAction,
+        );
+
+        return () => backHandler.remove();
+    }, []);
 
     const handleOpenModal = (modalId: string) => {
         setActiveModal(activeModal === modalId ? null : modalId);
@@ -83,48 +107,54 @@ const Menu = () => {
             marginRight: 8
         }
     });
+
+
+
     return (
         <View style={styles.Container}>
-            <View style={styles.Header}>
-                <Image source={require("../../assets/icons/lightmode/useravatar.png")}
-                    style={{ width: 150, height: 150 }} />
-                <View style={styles.ContainerTitle}>
-                    <Text style={styles.Title}>Rafaela Santos</Text>
+            {!control && !controlTheme && <>
+                <View style={styles.Header}>
+                    <Image source={require("../../assets/icons/lightmode/useravatar.png")}
+                        style={{ width: 150, height: 150 }} />
+                    <View style={styles.ContainerTitle}>
+                        <Text style={styles.Title}>Rafaela Santos</Text>
+                    </View>
+                    <View>
+                        <Text>rafaela.santos@compasso.com.br</Text>
+                    </View>
+                    <View>
+                        <Text>(81) 98650 - 9240</Text>
+                    </View>
                 </View>
-                <View>
-                    <Text>rafaela.santos@compasso.com.br</Text>
+                <View style={styles.ContainerCarrousel}>
+                    <MenuCarrousel
+                        height={131}
+                        width={134}
+                        items={[
+                            {
+                                id: "Edit",
+                                icon: <IconEditar height={131} width={134} />,
+                                onPress: () => handleOpenModal('Edit')
+                            },
+                            {
+                                id: "Biometria",
+                                icon: <IconBiometria height={131} width={134} />,
+                                onPress: () => handleOpenModal('Biometria')
+                            },
+                            {
+                                id: "Sair",
+                                icon: <IconSair height={131} width={134} />,
+                                onPress: () => handleOpenModal('Sair')
+                            },
+                            {
+                                id: "Excluir",
+                                icon: <IconExcluir height={131} width={134} />,
+                                onPress: () => handleOpenModal('Excluir')
+                            }
+                        ]} />
                 </View>
-                <View>
-                    <Text>(81) 98650 - 9240</Text>
-                </View>
-            </View>
-            <View style={styles.ContainerCarrousel}>
-                <MenuCarrousel
-                    height={131}
-                    width={134}
-                    items={[
-                        {
-                            id: "Edit",
-                            icon: <IconEditar height={131} width={134} />,
-                            onPress: () => handleOpenModal('Edit')
-                        },
-                        {
-                            id: "Biometria",
-                            icon: <IconBiometria height={131} width={134} />,
-                            onPress: () => handleOpenModal('Biometria')
-                        },
-                        {
-                            id: "Sair",
-                            icon: <IconSair height={131} width={134} />,
-                            onPress: () => handleOpenModal('Sair')
-                        },
-                        {
-                            id: "Excluir",
-                            icon: <IconExcluir height={131} width={134} />,
-                            onPress: () => handleOpenModal('Excluir')
-                        }
-                    ]} />
-            </View>
+            </>}
+
             {activeModal === 'Edit' && (
                 <ModalAlert
                     visible={true}
@@ -135,38 +165,38 @@ const Menu = () => {
                     description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
                     leftButtonText='Agora não'
                     rightButtonText='ATIVAR'
-                    rightButtonStyle={{ backgroundColor: colors.Primary }} 
+                    rightButtonStyle={{ backgroundColor: colors.Primary }}
                 />
             )}
 
             {activeModal === 'Biometria' && (
                 biometria ? (
-                <ModalAlert
-                    visible={true}
-                    onClose={() => {
-                        setActiveModal(null)
-                        setBiometria(false)
-                    }}
-                    title='Ativar biometria'
-                    description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
-                    leftButtonText='Agora não'
-                    rightButtonText='HABILITAR'
-                    rightButtonStyle={{backgroundColor: colors.SecondaryAccent}}
-                />
-            ) : (
-                <ModalAlert
-                    visible={true}
-                    onClose={() => {
-                        setActiveModal(null)
-                        handleDisableBiometria()
-                    }}
-                    title='Desabilitar biometria'
-                    description='Tem certeza que deseja desabilitar a autenticação por biometria? Você precisará usar seu login e senha para acessar o app.'
-                    leftButtonText='Agora não'
-                    rightButtonText='DESABILITAR'
-                    rightButtonStyle={{backgroundColor: colors.Error}}
-                />
-            ))}
+                    <ModalAlert
+                        visible={true}
+                        onClose={() => {
+                            setActiveModal(null)
+                            setBiometria(false)
+                        }}
+                        title='Ativar biometria'
+                        description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
+                        leftButtonText='Agora não'
+                        rightButtonText='HABILITAR'
+                        rightButtonStyle={{ backgroundColor: colors.SecondaryAccent }}
+                    />
+                ) : (
+                    <ModalAlert
+                        visible={true}
+                        onClose={() => {
+                            setActiveModal(null)
+                            handleDisableBiometria()
+                        }}
+                        title='Desabilitar biometria'
+                        description='Tem certeza que deseja desabilitar a autenticação por biometria? Você precisará usar seu login e senha para acessar o app.'
+                        leftButtonText='Agora não'
+                        rightButtonText='DESABILITAR'
+                        rightButtonStyle={{ backgroundColor: colors.Error }}
+                    />
+                ))}
 
             {activeModal === 'Sair' && (
                 <ModalAlert
@@ -178,7 +208,7 @@ const Menu = () => {
                     description='Tem certeza que deseja sair do aplicativo? Você poderá se conectar novamente a qualquer momento.'
                     leftButtonText='Agora não'
                     rightButtonText='SAIR'
-                    rightButtonStyle={{backgroundColor: colors.Error}}
+                    rightButtonStyle={{ backgroundColor: colors.Error }}
                 />
             )}
 
@@ -192,34 +222,36 @@ const Menu = () => {
                     description='Tem certeza que deseja excluir sua conta? Essa ação é permanente e todos os seus dados serão perdidos.'
                     leftButtonText='Agora não'
                     rightButtonText='EXCLUIR'
-                    rightButtonStyle={{backgroundColor: colors.Error}}
+                    rightButtonStyle={{ backgroundColor: colors.Error }}
                 />
             )}
 
-            <View style={styles.ContainerBottom}>
+            {!control && !controlTheme && <View style={styles.ContainerBottom}>
                 <View style={styles.ShadowContainer}>
-                    <View style={styles.ContainerPressables}>
-                        <Text style={styles.PressablesText}>Preferências</Text>
-                        <View style={styles.RightArrow}>
-                            <IconRightArrow height={24} width={24} />
+                    <Pressable onPress={() => setControlTheme(true)}>
+                        <View style={styles.ContainerPressables}>
+                            <Text style={styles.PressablesText}>Preferências</Text>
+                            <View style={styles.RightArrow}>
+                                <IconRightArrow height={24} width={24} />
+                            </View>
                         </View>
-                    </View>
-
+                    </Pressable>
                 </View>
                 <View style={styles.ShadowContainer}>
-                    <View style={styles.ContainerPressables}>
-                        <Text style={styles.PressablesText}>Termos e regulamentos</Text>
-                        <View style={styles.RightArrow}>
-                            <IconRightArrow height={24} width={24} />
+                    <Pressable onPress={() => setControl(true)}>
+                        <View style={styles.ContainerPressables}>
+                            <Text style={styles.PressablesText}>Termos e regulamentos</Text>
+                            <View style={styles.RightArrow}>
+                                <IconRightArrow height={24} width={24} />
+                            </View>
                         </View>
-                    </View>
+                    </Pressable>
                 </View>
-
-            </View>
-
+            </View>}
+            {control && <Terms setControl={setControl} />}
+            {controlTheme && <Theme setControlTheme={setControlTheme} />}
         </View>
-    )
-}
-
+    );
+};
 
 export default Menu;
