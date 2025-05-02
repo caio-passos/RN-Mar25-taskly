@@ -9,6 +9,7 @@ export type RootStackParamList = {
     View: undefined;
     Avatar: undefined;
     Theme: undefined;
+    Terms: undefined;
   };
   
   declare global {

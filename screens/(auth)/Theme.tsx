@@ -8,27 +8,20 @@ import IconExcluir from '../../assets/icons/lightmode/carrousel/excluirConta';
 import IconRightArrow from '../../assets/icons/lightmode/rightArrow'
 import ModalAlert from "../Modal/Alert";
 import DarkAndLigthMode from '../Modal/DarkAndLigthMode';
+import ReturnLeft from '../../assets/caretLeft.svg';
 
 import { AppContext } from "../../App";
 import { RootStackParamList } from "../../types/routingTypes";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-interface MenuProps {
-    navigation: NativeStackScreenProps<RootStackParamList, 'Menu', 'Theme'>;
+interface ThemeProps {
+    setControlTheme: Function
 }
 
-const Menu = (props: MenuProps) => {
+const Theme = (props: ThemeProps) => {
     const colors = useContext(AppContext);
     const [activeModal, setActiveModal] = useState<string | null>(null);
-    const [biometria, setBiometria] = useState(false);
-
-    const handleOpenModal = (modalId: string) => {
-        setActiveModal(activeModal === modalId ? null : modalId);
-    };
-
-    const handleDisableBiometria = () => {
-        setBiometria(true);
-    }
+    const [control, setControl] = useState(false);
 
     const styles = StyleSheet.create({
         Container: {
@@ -86,13 +79,60 @@ const Menu = (props: MenuProps) => {
         },
         RightArrow: {
             marginRight: 8
-        }
+        },
+        returnPressable: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: colors.SecondaryText,
+            padding: 10,
+            borderRadius: 5,
+        },
+        boxTextVoltar: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: 2,
+        },
+        textVoltar: {
+            color: colors.Background,
+            fontSize: 18,
+        },
+        containerBack: {
+            display: 'flex',
+            flexDirection: 'row',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingLeft: 30,
+            paddingRight: 30,
+            paddingTop: 20,
+            paddingBottom: 30,
+            backgroundColor: colors.Background,
+            zIndex: 1,
+        },
+        textTerms: {
+            fontWeight: 400,
+            fontSize: 16,
+        },
     });
     return (
         <View style={styles.Container}>
+            <View style={styles.containerBack}>
+                <Pressable style={styles.returnPressable} onPress={() => props.setControlTheme(false)}>
+                    <ReturnLeft width={23} height={17.25} />
+                    <View style={styles.boxTextVoltar}>
+                        <Text style={styles.textVoltar}>VOLTAR</Text>
+                    </View>
+                </Pressable>
+                <Text style={styles.textTerms}>Preferências</Text>
+            </View>
+
             <View style={styles.ContainerBottom}>
                 <View style={styles.ShadowContainer}>
-                    <Pressable onPress={() => props.navigation.navigate('Avatarx')}>
+                    <Pressable onPress={() => {
+                        setControl(true);
+                    }}>
                         <View style={styles.ContainerPressables}>
                             <Text style={styles.PressablesText}>Habilitar tema claro</Text>
                             <View style={styles.RightArrow}>
@@ -100,7 +140,7 @@ const Menu = (props: MenuProps) => {
                             </View>
                         </View>
                     </Pressable>
-                    <DarkAndLigthMode />
+                    {control && <DarkAndLigthMode setControl={setControl} />}
                 </View>
             </View>
         </View>
@@ -108,4 +148,4 @@ const Menu = (props: MenuProps) => {
 }
 
 
-export default Menu;
+export default Theme;
