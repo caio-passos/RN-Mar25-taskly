@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { AppContext } from "../App";
 import LongNoFillPressable from "./LongNoFillPressable";
 import LongPressable from "./LongPressable";
@@ -6,8 +6,18 @@ import { View, Text, StyleSheet } from "react-native";
 import { data } from "../services/db/mockData";
 import { TaskTypes } from "../types/taskTypes";
 import Subtask from "../components/Subtask";
-import EditYellow from '../assets/editYellow.svg';
-import AddSubTask from '../screens/Modal/AddSubTask';
+import { RectButton } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
+import Animated, {
+    SharedValue,
+    useSharedValue,
+    useAnimatedStyle,
+    interpolate,
+    Extrapolation
+} from 'react-native-reanimated';
+import IconTrash from "../assets/icons/lightmode/trash"
+
 
 type DetalhesProps = {
     item: TaskTypes | null;
@@ -18,7 +28,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     const [finishTask, setFinishTask] = useState(true);
     const [addSubtask, setAddSubtask] = useState(false);
     const [updatedSubtask, setUpdatedSubtask] = useState('');
-    const [subTasks, setSubTasks] = useState<Array<{}>>([]);
+    const swipeActive = useSharedValue(false);
 
     const handleFinishTask = () => {
         setFinishTask(true)
@@ -26,6 +36,39 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     const handleAddSubtask = () => {
         setAddSubtask(true);
     };
+
+    const swipeRef = useRef<SwipeableMethods>(null);
+    const translateX = useSharedValue(0);
+    const sv = useSharedValue(50);
+
+    const renderRightActions = (
+        progress: SharedValue<number>,
+        dragX: SharedValue<number>
+    ) => {
+        const scale = interpolate(
+            sv.value,
+            [0, 100],
+            [0, 1],
+            { extrapolateLeft: Extrapolation.CLAMP }
+        );
+        return (
+            <Animated.View style={{ transform: [{ scale }] }}>
+                <RectButton
+                    style={{
+                        justifyContent: "center",
+                        paddingLeft: 26,
+                        paddingRight: 44,
+                        alignItems: 'center'
+                    }}
+                    onPress={() => swipeRef.current?.close()}
+                >
+                    <IconTrash height={40} width={40}/>
+                                    </RectButton>
+            </Animated.View>
+        );
+    };
+
+
     const styles = StyleSheet.create({
         tagsContainer: {
             flexDirection: 'row',
@@ -115,81 +158,82 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
         },
     });
     return (
-        <View>
+        <GestureHandlerRootView>
             <View style={styles.RootContainer}>
-                <View style={styles.ShadowContainer}>
-                    <View style={styles.ContentContainer}>
-                        <View style={styles.ContainerTitleAndEdit}>
+                <Swipeable
+                    ref={swipeRef}
+                    friction={2}
+                    rightThreshold={40}
+                    renderRightActions={renderRightActions}
+                    onSwipeableOpen={(direction) => {
+                        console.log("Swiped", direction);
+                    }}
+                >
+
+
+                    <View style={styles.ShadowContainer}>
+                        <View style={styles.ContentContainer}>
+                            <Text style={styles.TitleStyle}>Título</Text>
+                            <Text style={styles.TaskStyle}>{item?.Task}</Text>
+                            <View style={styles.DescriçãoStyle}>
+                                <Text>Descrição</Text>
+                                <Text>{item?.Descricao}</Text>
+                            </View>
+                            <View style={styles.TagsStyle}>
+                                <Text>Tags</Text>
+                                <View style={styles.tagsContainer}>
+                                    {item?.Tags.map((tag, index) => (
+                                        <Text key={index} style={styles.tagStyle}>
+                                            {tag}
+                                        </Text>
+                                    ))}
+                                </View>
+                            </View>
                             <View>
-                                <Text style={styles.TitleStyle}>Título</Text>
-                                <Text style={styles.TaskStyle}>{item?.Task}</Text>
+                                <Text>Prioridade</Text>
+                                <Text style={styles.PrioridadeTextColor}>ALTA</Text>
+                                <View >
+                                    <LongNoFillPressable
+                                        textProps="RESOLVER TAREFA"
+                                        style={{
+                                            paddingHorizontal: 32,
+                                            width: '100%',
+                                            marginBottom: 16,
+                                            justifyContent: 'center',
+                                        }}
+                                    />
+                                </View>
+
                             </View>
 
-                            <EditYellow style={styles.EditYellowIcon} />
                         </View>
-                        
-                        <View style={styles.DescriçãoStyle}>
-                            <Text style={styles.DescriçãoStyleTitle}>Descrição</Text>
-                            <Text>{item?.Descricao}</Text>
+                        <View style={styles.SubtaskContainer}>
+                            {item?.Subtask && item.Subtask.length > 0 && (
+                                <View style={styles.SubtaskListContainer}>
+                                    <Subtask
+                                        data={item}
+                                        onAddSubtask={(updatedSubtask)}{
+                                        ...() => ''
+                                        }
+                                    />
+                                </View>
+                            )}
+                          
                         </View>
-                        <View style={styles.TagsStyle}>
-                            <Text style={styles.TagsStyleTitle}>Tags</Text>
-                            <View style={styles.tagsContainer}>
-                                {item?.Tags.map((tag, index) => (
-                                    <Text key={index} style={styles.tagStyle}>
-                                        {tag.toUpperCase()}
-                                    </Text>
-                                ))}
-                            </View>
-                        </View>
-                        <View>
-                            <Text style={styles.PrioridadeTextColorTitle}>Prioridade</Text>
-                            <Text style={styles.PrioridadeTextColor}>ALTA</Text>
-                            <View >
-                                <LongNoFillPressable
-                                    textProps="RESOLVER TAREFA"
-                                    onPress={handleFinishTask}
-                                    style={{
-                                        paddingHorizontal: 32,
-                                        width: '100%',
-                                        marginBottom: 16,
-                                        justifyContent: 'center',
-                                    }}
-                                />
-                            </View>
-                        </View>
+                    </View>
 
-                    </View>
-                    <View style={styles.SubtaskContainer}>
-                        {item?.Subtask && item.Subtask.length > 0 && (
-                            <View style={styles.SubtaskListContainer}>
-                                <Subtask
-                                    data={item}
-                                    onAddSubtask={(updatedSubtask)}{
-                                    ...() => ''
-                                    }
-                                />
-                            </View>
-                        )}
-                        <LongPressable
-                            textProps="ADICIONAR SUBTASK"
-                            onPress={() => {
-                                handleAddSubtask();
-                            }}
-                            style={{
-                                justifyContent: 'center',
-                                alignSelf: 'center',
-                                width: '100%'
-                            }}
-                        />
-                        {addSubtask && <AddSubTask setAddSubtask={setAddSubtask} />}
-                    </View>
-                </View>
+                </Swipeable>
+                    <LongPressable
+                                textProps="ADICIONAR SUBTASK"
+                                onPress={handleAddSubtask}
+                                style={{
+                                    justifyContent: 'center',
+                                    alignSelf: 'center',
+                                    width: '100%'
+                                }}
+                            />
             </View>
-
-
-
-        </View>
+        </GestureHandlerRootView>
     )
 };
 

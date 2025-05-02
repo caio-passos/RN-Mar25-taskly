@@ -1,14 +1,16 @@
 import React, { useContext } from "react";
 import { StyleSheet, Text, Pressable, ViewStyle} from "react-native";
 import { AppContext } from "../App";
+import type { TapGesture } from "react-native-gesture-handler";
 
 interface LongNoFillPressableProps {
     textProps: string;
-    onPress: () => void;
+    onPress?: () => void;
     style?: ViewStyle;
+    Tap?: TapGesture;
 }
 
-function LongNoFillPressable({ textProps, onPress, style}: LongNoFillPressableProps) {
+function LongNoFillPressable({ textProps, onPress, style, Tap}: LongNoFillPressableProps) {
 
     const colors = useContext(AppContext);
     const styles = StyleSheet.create({
