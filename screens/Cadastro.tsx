@@ -93,7 +93,7 @@ function Cadastro({ navigation }: CadastroProps) {
               justifyContent: 'center',
               top: 50,
               left: 20,
-              backgroundColor: colors.SecundaryText,
+              backgroundColor: colors.SecondaryText,
               padding: 10,
               borderRadius: 5,
           },

@@ -71,7 +71,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
         },
 
         PrioridadeTextColor: {
-            backgroundColor: colors.SecundaryAccent,
+            backgroundColor: colors.SecondaryAccent,
             width: 45,
             height: 27,
             textAlign: 'center',
