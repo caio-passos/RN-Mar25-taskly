@@ -7,11 +7,10 @@ import LightModeBtn from '../../assets/improviso2.png';
 import DarkModeBtn from '../../assets/improviso1.png';
 
 interface DarkAndLigthMode {
-    visible: boolean;
-    onClose?: () => void;
+    setControl: Function;
 }
 
-const DarkAndLigthMode = ({ visible, onClose }: DarkAndLigthMode) => {
+const DarkAndLigthMode = (props: DarkAndLigthMode) => {
     const colors = React.useContext(AppContext);
 
     const styles = StyleSheet.create({
@@ -96,6 +95,10 @@ const DarkAndLigthMode = ({ visible, onClose }: DarkAndLigthMode) => {
             top: 0,
             zIndex: -1,
         },
+        pressableStyle: {
+            width: '100%',
+            height: '100%',
+        },
     });
 
     return (
@@ -103,8 +106,6 @@ const DarkAndLigthMode = ({ visible, onClose }: DarkAndLigthMode) => {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={visible}
-                onRequestClose={onClose}
                 style={styles.modalContainer}
             >
                 <View style={styles.containerAll}>
@@ -116,11 +117,12 @@ const DarkAndLigthMode = ({ visible, onClose }: DarkAndLigthMode) => {
                     </View>
 
                     <View style={styles.containerBtn}>
-                        <Pressable style={styles.btnNotAgain}><Text style={styles.textBtnNotAgain}>Agora não</Text></Pressable>
-                        <Pressable style={styles.btnConfirm}><Text style={styles.textBtnConfirm}>Confirmar</Text></Pressable>
+                        <Pressable onPress={() => props.setControl(false)} style={styles.btnNotAgain}><Text style={styles.textBtnNotAgain}>Agora não</Text></Pressable>
+                        <Pressable onPress={() => props.setControl(false)} style={styles.btnConfirm}><Text style={styles.textBtnConfirm}>Confirmar</Text></Pressable>
                     </View>
                 </View>
-                <View style={styles.transparentContainer}></View>
+                <View style={styles.transparentContainer}><Pressable style={styles.pressableStyle} onPress={() => props.setControl(false)}></Pressable></View>
+                
             </Modal>
         </SafeAreaView>
     );
