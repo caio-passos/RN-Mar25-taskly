@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Image, StyleSheet, Text, StyleProp, TextStyle } from "react-native";
+import { View, Image, StyleSheet, Text, StyleProp, TextStyle, Pressable } from "react-native";
 import MenuCarrousel from "../../components/carrousel/MenuCarrousel";
 import IconEditar from '../../assets/icons/lightmode/carrousel/editarInfo';
 import IconBiometria from '../../assets/icons/lightmode/carrousel/mudarBiometria';
@@ -9,10 +9,14 @@ import IconRightArrow from '../../assets/icons/lightmode/rightArrow'
 import ModalAlert from "../Modal/Alert";
 
 import { AppContext } from "../../App";
+import { RootStackParamList } from "../../types/routingTypes";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
+interface MenuProps {
+    navigation: NativeStackScreenProps<RootStackParamList, 'Menu', 'Theme'>;
+}
 
-
-const Menu = () => {
+const Menu = (props: MenuProps) => {
     const colors = useContext(AppContext);
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const [biometria, setBiometria] = useState(false);
@@ -198,12 +202,14 @@ const Menu = () => {
 
             <View style={styles.ContainerBottom}>
                 <View style={styles.ShadowContainer}>
-                    <View style={styles.ContainerPressables}>
-                        <Text style={styles.PressablesText}>Preferências</Text>
-                        <View style={styles.RightArrow}>
-                            <IconRightArrow height={24} width={24} />
+                    <Pressable onPress={() => props.navigation.navigate('Theme')}>
+                        <View style={styles.ContainerPressables}>
+                            <Text style={styles.PressablesText}>Preferências</Text>
+                            <View style={styles.RightArrow}>
+                                <IconRightArrow height={24} width={24} />
+                            </View>
                         </View>
-                    </View>
+                    </Pressable>
 
                 </View>
                 <View style={styles.ShadowContainer}>

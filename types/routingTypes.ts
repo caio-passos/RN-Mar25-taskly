@@ -7,7 +7,8 @@ export type RootStackParamList = {
     Notifications: undefined;
     Menu: undefined;
     View: undefined;
-
+    Avatar: undefined;
+    Theme: undefined;
   };
   
   declare global {

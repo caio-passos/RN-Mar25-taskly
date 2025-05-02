@@ -402,7 +402,7 @@ function Cadastro({ navigation }: CadastroProps) {
                 visible={modalVisible}
                 onClose={() => {
                     setModalVisible(false)
-                    navigation.navigate('Dashboard');
+                    navigation.navigate('Avatar');
                 }}
                 title='Ative o Desbloqueio por Biometria'
                 description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
