@@ -1,35 +1,28 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { MMKV } from 'react-native-mmkv';
+import { mmkvStorage } from '../../db/storageMMKV';
 import { produce } from 'immer';
 import { UserDataTypes } from '../../../types/userTypes';
 
 
 interface UserStore {
   userData: UserDataTypes | null;
-  setUserData: (data: UserDataTypes ) => void;
+  setItemUserData: (data: UserDataTypes ) => void;
   clearUserData: () => void;
   updateUserData: (updater: (draft: UserDataTypes ) => void) => void;
   partialUpdate: (data: Partial<UserDataTypes >) => void;
 }
 
-const storage = new MMKV();
-
-const MMKVStorage = {
-  setItem: (name: string, value: string) => storage.set(name, value),
-  getItem: (name: string) => storage.getString(name) ?? null,
-  removeItem: (name: string) => storage.delete(name),
-};
-
 export const useUserStore = create<UserStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       userData: null,
-      
-      setUserData: (data) => set({ userData: data }),
-      
+      setItemUserData: (data) => {
+        console.log("Persisted userData: ", data);
+        set({ userData: data });
+        console.log("Persisted userData after setting: ", get().userData); 
+      },
       clearUserData: () => set({ userData: null }),
-      
       updateUserData: (updater) => 
         set(produce((state: UserStore) => {
           if (state.userData) {
@@ -46,7 +39,19 @@ export const useUserStore = create<UserStore>()(
     }),
     {
       name: 'user-storage',
-      storage: createJSONStorage(() => MMKVStorage),
+      storage: createJSONStorage(() => mmkvStorage),
     }
   )
 );
+
+export interface AvatarStore{
+  selectedAvatar: number | null;
+  setSelectedAvatar: (id: number | null) => void;
+  clearAvatarData: () => void;
+}
+
+export const useAvatarStore = create<AvatarStore>((set) => ({
+  selectedAvatar: null,
+  setSelectedAvatar: (id: number | null) => set({ selectedAvatar: id }),
+  clearAvatarData: () =>  set({selectedAvatar: null})
+}));

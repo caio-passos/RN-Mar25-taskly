@@ -7,24 +7,34 @@ import IconSair from '../../assets/icons/lightmode/carrousel/sairConta';
 import IconExcluir from '../../assets/icons/lightmode/carrousel/excluirConta';
 import IconRightArrow from '../../assets/icons/lightmode/rightArrow'
 import ModalAlert from "../Modal/Alert";
-
+import { useUserStore } from "../../services/cache/stores/storeZustand";
+import { AvatarStore } from "../../services/cache/stores/storeZustand";
 import { AppContext } from "../../App";
 import { RootStackParamList } from "../../types/routingTypes";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Terms from "../../screens/(auth)/Terms";
 import Theme from "../../screens/(auth)/Theme";
+import { MMKV } from "react-native-mmkv";
+import AvatarDisplay from "../../components/AvatarDisplay";
 
 interface MenuProps {
-    navigation: NativeStackScreenProps<RootStackParamList, 'Menu', 'Theme'>;
+    navigation: NativeStackScreenProps<RootStackParamList, 'Login', 'Menu'>;
 }
 
-const Menu = (props: MenuProps) => {
+const Menu = ({navigation} :MenuProps) => {
     const colors = useContext(AppContext);
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const [biometria, setBiometria] = useState(false);
     const [control, setControl] = useState(false);
     const [controlTheme, setControlTheme] = useState(false);
 
+    useEffect(() => {
+        const storage = new MMKV();
+        console.log('All MMKV keys:', storage.getAllKeys());
+        const userData = storage.getString('user-storage');
+        console.log('MMKV read:', userData);
+
+    }, []);
     useEffect(() => {
         function backAction() {
             setControl(false);
@@ -47,6 +57,12 @@ const Menu = (props: MenuProps) => {
 
     const handleDisableBiometria = () => {
         setBiometria(true);
+    }
+    const handleLogout = () => {
+     useUserStore.getState().partialUpdate({loggedIn: false});   
+     setActiveModal(null);
+     navigation.navigate('Login');
+
     }
 
     const styles = StyleSheet.create({
@@ -109,21 +125,22 @@ const Menu = (props: MenuProps) => {
     });
 
 
+    const { userData } = useUserStore();
 
     return (
         <View style={styles.Container}>
             {!control && !controlTheme && <>
                 <View style={styles.Header}>
-                    <Image source={require("../../assets/icons/lightmode/useravatar.png")}
-                        style={{ width: 150, height: 150 }} />
+                    <AvatarDisplay
+                        style={{ width: 150, height: 150}} />
                     <View style={styles.ContainerTitle}>
-                        <Text style={styles.Title}>Rafaela Santos</Text>
+                        <Text style={styles.Title}>{userData?.nome}</Text>
                     </View>
                     <View>
-                        <Text>rafaela.santos@compasso.com.br</Text>
+                        <Text>{userData?.email}</Text>
                     </View>
                     <View>
-                        <Text>(81) 98650 - 9240</Text>
+                        <Text>{userData?.telefone}</Text>
                     </View>
                 </View>
                 <View style={styles.ContainerCarrousel}>
@@ -208,6 +225,9 @@ const Menu = (props: MenuProps) => {
                     description='Tem certeza que deseja sair do aplicativo? Você poderá se conectar novamente a qualquer momento.'
                     leftButtonText='Agora não'
                     rightButtonText='SAIR'
+                    onRightButtonPress={() => {
+                        handleLogout(); 
+                    }}
                     rightButtonStyle={{ backgroundColor: colors.Error }}
                 />
             )}

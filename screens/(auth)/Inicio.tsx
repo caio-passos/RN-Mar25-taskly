@@ -9,6 +9,8 @@ import IconFilter from "../../assets/icons/lightmode/filter";
 import { data } from "../../services/db/mockData";
 import DetalhesTask from "../../components/DetalhesTask";
 import type { TaskTypes } from "../../types/taskTypes";
+import { useAvatarStore, useUserStore } from "../../services/cache/stores/storeZustand";
+import AvatarDisplay from "../../components/AvatarDisplay";
 
 const InicioContent = () => {
     const colors = useContext(AppContext);
@@ -17,6 +19,10 @@ const InicioContent = () => {
     const [selectedTask, setSelectedTask] = useState<TaskTypes | null>(null);
     const [ShowDetalhes, setShowDetalhes] = useState(false);
 
+    const {userData} = useUserStore();
+    const {selectedAvatar} = useAvatarStore();
+
+    console.log('User data:', userData)
 
     const handleModalOpen = () => {
         setModalVisible(true);
@@ -77,7 +83,7 @@ const InicioContent = () => {
         <View style={styles.container}>
             <View style={styles.topBar}>
                 <Text style={styles.title}>Taskly</Text>
-                <Image source={require('../../assets/icons/lightmode/useravatar.png')} style={{ width: 50, height: 50 }} />
+                <AvatarDisplay />
             </View>
             <View style={styles.middleSection}>
                 <View style={styles.TasksStyle}>

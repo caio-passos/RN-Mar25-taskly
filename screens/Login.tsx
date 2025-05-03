@@ -6,9 +6,17 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
 import { AppContext } from '../App';
+import { useUserStore } from '../services/cache/stores/storeZustand';
+import { UserDataTypes } from '../types/userTypes';
 
 interface LoginProps {
-    navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
+    navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro', 'Dashboard'>;
+}
+
+
+interface loginData {
+    email: string,
+    password: string
 }
 
 function Login({ navigation }: LoginProps) {
@@ -89,21 +97,35 @@ function Login({ navigation }: LoginProps) {
         },
     });
 
-    function login(data: { email: string, password: string }) {
+    function login(data: loginData) {
         const { isValid, errors } = verifyData(data);
-        !isValid ? showErrors(isValid, errors) : hideErrors();
+        const [passLogin, setPassLogin] = useState(false);
+
+        !isValid ? (
+            showErrors(isValid, errors)
+        ) : (
+            hideErrors(),
+            useUserStore.getState().userData?.email === data.email
+                &&
+                useUserStore.getState().userData?.senha === data.password ? (
+                setPassLogin(true),
+                useUserStore.getState().partialUpdate({loggedIn: true })
+            ) : (
+                setPassLogin(false)
+            )
+        )
     }
 
-    function verifyData(data: { email: string, password: string }) {
+    function verifyData(data: loginData) {
         const regexEmail: RegExp = /^[\w.-]+@[\w.-]+\.\w{2,}$/;
         const errors: Array<{ tag: string, error: string }> = [];
 
         if (!regexEmail.test(data.email)) {
-            errors.push({ tag: 'email', error: 'Email inválido' });
+            errors.push({ tag: 'email', error: 'Email invï¿½lido' });
         }
 
         if (data.password.length < 8) {
-            errors.push({ tag: 'password', error: 'A senha deve ter no mínimo 8 caracteres' });
+            errors.push({ tag: 'password', error: 'A senha deve ter no mï¿½nimo 8 caracteres' });
         }
 
         const isValid = errors.length <= 0;
@@ -141,7 +163,7 @@ function Login({ navigation }: LoginProps) {
                         placeholder="Digite seu e-mail"
                         keyboardType="email-address"
                         onChangeText={(value) => setEmail(String(value))}
-                        />
+                    />
                 </View>
                 {<Text style={styles.textError}>{errorsEmailShow.map((value) => `${value.error}\n`)}</Text>}
             </View>
@@ -154,7 +176,7 @@ function Login({ navigation }: LoginProps) {
                         placeholder="Digite sua senha"
                         keyboardType='ascii-capable'
                         onChangeText={(value) => setPassword(String(value))}
-                        />
+                    />
                 </View>
                 {<Text style={styles.textError}>{errorsPasswordShow.map((value) => `${value.error}\n`)}</Text>}
             </View>
