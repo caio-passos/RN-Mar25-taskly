@@ -11,12 +11,12 @@ import NoTasks from "../assets/icons/darkmode/nocontent";
 
 type ItemProps = {
     item: TaskTypes;
+    setInicioStackOne: Function;
+    setInicioStackTwo: Function;
     onOpenDetalhes?: (item: TaskTypes) => void;
 };
 
-
-
-const TaskItem = ({ item, onOpenDetalhes }: ItemProps) => {
+const TaskItem = ({ item, onOpenDetalhes, setInicioStackOne, setInicioStackTwo }: ItemProps) => {
     const [isSelected, setIsSelected] = useState(false);
     const handleSelection = () => {
         setIsSelected(!isSelected);
@@ -35,8 +35,8 @@ const TaskItem = ({ item, onOpenDetalhes }: ItemProps) => {
             shadowRadius: 11.14,
         },
         ContentContainer: {
-            paddingHorizontal: 32,
-            paddingBottom: 15,
+            paddingHorizontal: 12,
+            paddingBottom: 20,
             borderRadius: 8,
             elevation: 2,
             backgroundColor: colors.SecondaryBG,
@@ -53,6 +53,8 @@ const TaskItem = ({ item, onOpenDetalhes }: ItemProps) => {
         DescricaoStyle: {
             fontSize: 14,
             fontWeight: 500,
+            paddingTop: 13,
+            paddingBottom: 12,
         },
         tagsContainer: {
             flexDirection: 'row',
@@ -63,10 +65,10 @@ const TaskItem = ({ item, onOpenDetalhes }: ItemProps) => {
             backgroundColor: colors.PrimaryLight,
             paddingHorizontal: 12,
             paddingVertical: 4,
-            borderRadius: 16,
+            borderRadius: 8,
         },
         ContainerShortPressable: {
-            paddingTop: 10,
+            paddingTop: 14,
             paddingBottom: 2,
         },
         svgNoTasks: {
@@ -99,7 +101,11 @@ const TaskItem = ({ item, onOpenDetalhes }: ItemProps) => {
                     <View style={styles.ContainerShortPressable}>
                         <ShortPressable
                             textProps="VER DETALHES"
-                            onPress={() => onOpenDetalhes?.(item)} />
+                            onPress={() => {
+                                onOpenDetalhes?.(item);
+                                setInicioStackOne(false);
+                                setInicioStackTwo(true);
+                            }} />
                     </View>
                 </View>
             </View>
@@ -123,14 +129,18 @@ const CriarTarefa = ({ onOpenModal }: { onOpenModal: () => void }) => {
     );
 };
 
-const Tasks = ({ onOpenModal, onOpenDetalhes }: {
-     onOpenModal: () => void; 
-     onOpenDetalhes: (item: TaskTypes) => void }) => {
+const Tasks = ({ onOpenModal, onOpenDetalhes, setInicioStackOne, setInicioStackTwo }: {
+    onOpenModal: () => void; 
+    setInicioStackOne: Function;
+    setInicioStackTwo: Function;
+    onOpenDetalhes: (item: TaskTypes) => void }) => {
     const renderItem = ({ item }: { item: TaskTypes }) => {
         return (
             <TaskItem
                 item={item}
                 onOpenDetalhes={onOpenDetalhes}
+                setInicioStackOne={setInicioStackOne}
+                setInicioStackTwo={setInicioStackTwo}
             />
         )
     }

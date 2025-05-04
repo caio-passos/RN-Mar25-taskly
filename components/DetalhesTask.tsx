@@ -6,6 +6,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { data } from "../services/db/mockData";
 import { TaskTypes } from "../types/taskTypes";
 import Subtask from "../components/Subtask";
+import EditYellow from '../assets/editYellow.svg';
 type DetalhesProps = {
     item: TaskTypes | null;
 };
@@ -50,18 +51,32 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
         },
         ContentContainer: {
             paddingTop: 24,
-            paddingHorizontal: 32,
+            paddingHorizontal: 25,
             paddingBottom: 15,
             borderRadius: 8,
             elevation: 2,
             backgroundColor: colors.SecondaryBG,
         },
         TaskStyle: {
-            fontSize: 18,
-            fontWeight: 600,
             paddingBottom: 16,
+            fontWeight: 500,
+            fontSize: 18,
         },
         TitleStyle: {
+            color: colors.SecondaryText,
+            fontWeight: 600,
+            fontSize: 18,
+        },
+        DescriçãoStyleTitle: {
+            color: colors.SecondaryText,
+            fontWeight: 600,
+            fontSize: 18,
+        },
+        TagsStyleTitle: {
+            color: colors.SecondaryText,
+            fontWeight: 600,
+            fontSize: 18,
+            marginBottom: 3,
         },
         DescriçãoStyle: {
             paddingBottom: 16,
@@ -69,7 +84,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
         TagsStyle: {
             paddingBottom: 16,
         },
-
+        PrioridadeTextColorTitle: {
+            color: colors.SecondaryText,
+            fontWeight: 600,
+            fontSize: 18,
+            marginBottom: 3,
+        },
         PrioridadeTextColor: {
             backgroundColor: colors.SecondaryAccent,
             width: 45,
@@ -84,31 +104,45 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
         SubtaskListContainer: {
 
         },
-
+        ContainerTitleAndEdit: {
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+        },
+        EditYellowIcon: {
+            marginTop: 5,
+        },
     });
     return (
         <View>
             <View style={styles.RootContainer}>
                 <View style={styles.ShadowContainer}>
                     <View style={styles.ContentContainer}>
-                        <Text style={styles.TitleStyle}>Título</Text>
-                        <Text style={styles.TaskStyle}>{item?.Task}</Text>
+                        <View style={styles.ContainerTitleAndEdit}>
+                            <View>
+                                <Text style={styles.TitleStyle}>Título</Text>
+                                <Text style={styles.TaskStyle}>{item?.Task}</Text>
+                            </View>
+
+                            <EditYellow style={styles.EditYellowIcon} />
+                        </View>
+                        
                         <View style={styles.DescriçãoStyle}>
-                            <Text>Descrição</Text>
+                            <Text style={styles.DescriçãoStyleTitle}>Descrição</Text>
                             <Text>{item?.Descricao}</Text>
                         </View>
                         <View style={styles.TagsStyle}>
-                            <Text>Tags</Text>
+                            <Text style={styles.TagsStyleTitle}>Tags</Text>
                             <View style={styles.tagsContainer}>
                                 {item?.Tags.map((tag, index) => (
                                     <Text key={index} style={styles.tagStyle}>
-                                        {tag}
+                                        {tag.toUpperCase()}
                                     </Text>
                                 ))}
                             </View>
                         </View>
                         <View>
-                            <Text>Prioridade</Text>
+                            <Text style={styles.PrioridadeTextColorTitle}>Prioridade</Text>
                             <Text style={styles.PrioridadeTextColor}>ALTA</Text>
                             <View >
                                 <LongNoFillPressable
@@ -122,7 +156,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                                     }}
                                 />
                             </View>
-
                         </View>
 
                     </View>

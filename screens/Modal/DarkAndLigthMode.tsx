@@ -122,7 +122,6 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
                     </View>
                 </View>
                 <View style={styles.transparentContainer}><Pressable style={styles.pressableStyle} onPress={() => props.setControl(false)}></Pressable></View>
-                
             </Modal>
         </SafeAreaView>
     );

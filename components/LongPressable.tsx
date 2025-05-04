@@ -7,7 +7,6 @@ interface LongPressableProps {
     onPress: () => void;
     style?: ViewStyle;
     textStyle?: TextStyle;
-    
 }
 
 function LongPressable({ textProps, onPress, style, textStyle}: LongPressableProps) {
@@ -17,14 +16,14 @@ function LongPressable({ textProps, onPress, style, textStyle}: LongPressablePro
         buttonFilled: {
             backgroundColor: colors.Primary,
             borderRadius: 8,
-            height: 47,
+            height: 27,
         },
         buttonTextCriarTarefa: {
             color: '#FFFFFF',
             textAlign: 'center',
             fontWeight: '600',
-        }
-    })
+        },
+    });
 
 
     return (
@@ -33,7 +32,7 @@ function LongPressable({ textProps, onPress, style, textStyle}: LongPressablePro
                 {textProps}
             </Text>
         </Pressable>
-    )
+    );
 }
 
 export default LongPressable;
