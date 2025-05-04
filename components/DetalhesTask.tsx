@@ -7,17 +7,18 @@ import { data } from "../services/db/mockData";
 import { TaskTypes } from "../types/taskTypes";
 import Subtask from "../components/Subtask";
 import EditYellow from '../assets/editYellow.svg';
+import AddSubTask from '../screens/Modal/AddSubTask';
+
 type DetalhesProps = {
     item: TaskTypes | null;
 };
 
-
-
 const DetalhesTask = ({ item }: DetalhesProps) => {
     const colors = useContext(AppContext);
     const [finishTask, setFinishTask] = useState(true);
-    const [addSubtask, setAddSubtask] = useState(true);
+    const [addSubtask, setAddSubtask] = useState(false);
     const [updatedSubtask, setUpdatedSubtask] = useState('');
+    const [subTasks, setSubTasks] = useState<Array<{}>>([]);
 
     const handleFinishTask = () => {
         setFinishTask(true)
@@ -172,13 +173,16 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                         )}
                         <LongPressable
                             textProps="ADICIONAR SUBTASK"
-                            onPress={handleAddSubtask}
+                            onPress={() => {
+                                handleAddSubtask();
+                            }}
                             style={{
                                 justifyContent: 'center',
                                 alignSelf: 'center',
                                 width: '100%'
                             }}
                         />
+                        {addSubtask && <AddSubTask setAddSubtask={setAddSubtask} />}
                     </View>
                 </View>
             </View>
