@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable, Image } from "react-native";
+import { View, Text, StyleSheet, Pressable, Image, BackHandler } from "react-native";
 import { AppContext } from "../../App";
 import { } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,6 +9,7 @@ import IconFilter from "../../assets/icons/lightmode/filter";
 import { data } from "../../services/db/mockData";
 import DetalhesTask from "../../components/DetalhesTask";
 import type { TaskTypes } from "../../types/taskTypes";
+import ReturnLeft from '../../assets/caretLeft.svg';
 
 const InicioContent = () => {
     const colors = useContext(AppContext);
@@ -16,7 +17,8 @@ const InicioContent = () => {
     const [modalCriarTarefa, setModalCriarTarefa] = useState(false);
     const [selectedTask, setSelectedTask] = useState<TaskTypes | null>(null);
     const [ShowDetalhes, setShowDetalhes] = useState(false);
-
+    const [inicioStackOne, setInicioStackOne] = useState(true);
+    const [inicioStackTwo, setInicioStackTwo] = useState(false);
 
     const handleModalOpen = () => {
         setModalVisible(true);
@@ -25,6 +27,22 @@ const InicioContent = () => {
         setSelectedTask(item);
         setShowDetalhes(true);
     };
+
+    useEffect(() => {
+        function backAction() {
+            setInicioStackOne(true);
+            setInicioStackTwo(false);
+            setShowDetalhes(false);
+            return true;
+        }
+
+        const backHandler = BackHandler.addEventListener(
+            'hardwareBackPress',
+            backAction,
+        );
+
+        return () => backHandler.remove();
+    }, []);
 
     const styles = StyleSheet.create({
         container: {
@@ -38,6 +56,7 @@ const InicioContent = () => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
+            width: '100%',
         },
         title: {
             flexDirection: 'column',
@@ -71,11 +90,37 @@ const InicioContent = () => {
             textAlign: 'center',
             fontWeight: '600',
         },
+        containerBack: {
+            display: 'flex',
+            flexDirection: 'row',
+            width: 'auto',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: colors.Background,
+            zIndex: 1,
+        },
+        returnPressable: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: colors.SecondaryText,
+            padding: 10,
+            borderRadius: 5,
+        },
     });
 
     return (
         <View style={styles.container}>
             <View style={styles.topBar}>
+                {inicioStackTwo && ShowDetalhes && <View style={styles.containerBack}>
+                    <Pressable style={styles.returnPressable} onPress={() => {
+                        setInicioStackOne(true);
+                        setInicioStackTwo(false);
+                        setShowDetalhes(false);
+                    }}>
+                        <ReturnLeft width={23} height={17.25} />
+                    </Pressable>
+                </View>}
                 <Text style={styles.title}>Taskly</Text>
                 <Image source={require('../../assets/icons/lightmode/useravatar.png')} style={{ width: 50, height: 50 }} />
             </View>
@@ -89,14 +134,13 @@ const InicioContent = () => {
                         </View>
                     )
                     }
-                    {ShowDetalhes ? (
-                        <DetalhesTask item={selectedTask} />
-                    ) : (
-                        <Tasks
-                            onOpenModal={() => setModalCriarTarefa(true)}
-                            onOpenDetalhes={handleShowDetalhes}
-                        />
-                    )}
+                    {inicioStackTwo && ShowDetalhes && <DetalhesTask item={selectedTask} />}
+                    {inicioStackOne && <Tasks
+                        onOpenModal={() => setModalCriarTarefa(true)}
+                        onOpenDetalhes={handleShowDetalhes}
+                        setInicioStackOne={setInicioStackOne}
+                        setInicioStackTwo={setInicioStackTwo}
+                    />}
                     <ModalCriarTarefas
                         visible={modalCriarTarefa}
                         onClose={() => setModalCriarTarefa(false)}
