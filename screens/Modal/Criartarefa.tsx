@@ -15,6 +15,8 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
     const [descrição, setDescrição] = useState('');
     const [prazo, setPrazo] = useState('');
 
+
+
     const styles = StyleSheet.create({
         centeredView: {
             flex: 1,
