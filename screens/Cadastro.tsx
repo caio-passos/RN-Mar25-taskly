@@ -351,7 +351,7 @@ function Cadastro({ navigation }: CadastroProps) {
                     setTimeout(() => {
                         useUserStore.getState().partialUpdate({ loggedIn: true });
                     }, 100);
-                    navigation.navigate('Inicio');
+                    navigation.navigate('Avatar');
                 }}
                 title='Ative o Desbloqueio por Biometria'
                 description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
