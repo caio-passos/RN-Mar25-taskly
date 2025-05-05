@@ -11,6 +11,7 @@ import LongPressable from './LongPressable';
 import {View, Text, StyleSheet, BackHandler, TextInput} from 'react-native';
 import {data} from '../services/db/mockData';
 import {TaskTypes} from '../types/taskTypes';
+import { PrioridadeType } from '../types/taskTypes';
 import {useTaskStore} from '../services/cache/stores/storeZustand';
 import Subtask from '../components/Subtask';
 import {RectButton} from 'react-native-gesture-handler';
@@ -32,7 +33,7 @@ type DetalhesProps = {
 };
 
 const DetalhesTask = ({item}: DetalhesProps) => {
-  const colors = useContext(AppContext);
+
   const [finishTask, setFinishTask] = useState(true);
   const [updatedSubtask, setUpdatedSubtask] = useState('');
   const swipeActive = useSharedValue(false);
@@ -41,6 +42,7 @@ const DetalhesTask = ({item}: DetalhesProps) => {
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [newSubtaskText, setNewSubtaskText] = useState('');
   const [currentTask, setCurrentTask] = useState<TaskTypes | null>(null);
+  const deleteTask = useTaskStore().deleteTask;
 
   const handleOpenSubtaskInput = () => {
     setIsAddingSubtask(true);
@@ -75,7 +77,6 @@ const DetalhesTask = ({item}: DetalhesProps) => {
       setIsAddingSubtask(false);
     }
   };
-
   const handleCancelSubtask = () => {
     setNewSubtaskText('');
     setIsAddingSubtask(false);
@@ -86,6 +87,8 @@ const DetalhesTask = ({item}: DetalhesProps) => {
     }
     setFinishTask(true);
   }, []);
+
+
 
   const swipeRef = useRef<SwipeableMethods>(null);
   const translateX = useSharedValue(0);
@@ -98,6 +101,15 @@ const DetalhesTask = ({item}: DetalhesProps) => {
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
       extrapolateLeft: Extrapolation.CLAMP,
     });
+    
+    const handleDeleteTask = () => {
+      if(item?.id){
+        deleteTask(item.id);
+        swipeRef.current?.close();
+
+      }
+    }
+
     return (
       <Animated.View style={{transform: [{scale}]}}>
         <RectButton
@@ -107,11 +119,25 @@ const DetalhesTask = ({item}: DetalhesProps) => {
             paddingRight: 44,
             alignItems: 'center',
           }}
-          onPress={() => swipeRef.current?.close()}>
+          onPress={handleDeleteTask}>
           <IconTrash height={40} width={40} />
         </RectButton>
       </Animated.View>
     );
+  };
+
+  const colors = useContext(AppContext);
+  const getCorPrioridade = (priority?: PrioridadeType) => {
+    switch(priority) {
+      case 'baixa':
+        return colors.SecondaryAccent; // Define in your theme
+      case 'média':
+        return 'Yellow';
+      case 'alta':
+        return 'Red';
+      default:
+        return null;
+    }
   };
 
   const styles = StyleSheet.create({
@@ -160,7 +186,7 @@ const DetalhesTask = ({item}: DetalhesProps) => {
     },
 
     PrioridadeTextColor: {
-      backgroundColor: colors.SecondaryAccent,
+      backgroundColor: getCorPrioridade(item?.Prioridade),
       width: 45,
       height: 27,
       textAlign: 'center',
@@ -201,6 +227,7 @@ const DetalhesTask = ({item}: DetalhesProps) => {
       fontWeight: '600',
     },
   });
+
   return (
     <GestureHandlerRootView>
       <View style={styles.RootContainer}>
@@ -212,14 +239,17 @@ const DetalhesTask = ({item}: DetalhesProps) => {
           onSwipeableOpen={direction => {
             console.log('Swiped', direction);
           }}>
+
           <View style={styles.ShadowContainer}>
             <View style={styles.ContentContainer}>
               <Text style={styles.TitleStyle}>Título</Text>
               <Text style={styles.TaskStyle}>{item?.Task}</Text>
+
               <View style={styles.DescriçãoStyle}>
                 <Text>Descrição</Text>
                 <Text>{item?.Descricao}</Text>
               </View>
+
               <View style={styles.TagsStyle}>
                 <Text>Tags</Text>
                 <View style={styles.tagsContainer}>
@@ -230,23 +260,31 @@ const DetalhesTask = ({item}: DetalhesProps) => {
                   ))}
                 </View>
               </View>
+
+          <View>
+            <Text>Prioridade</Text>
+              {item?.Prioridade && (
+                <Text style={styles.PrioridadeTextColor}>
+                  {getCorPrioridade(item?.Prioridade)}
+                </Text>
+              )}
+              {!item?.Prioridade && (
+                <Text style={{color: 'gray'}}>Não definida</Text>
+              )}
               <View>
-                <Text>Prioridade</Text>
-                <Text style={styles.PrioridadeTextColor}>ALTA</Text>
-                <View>
-                  <LongNoFillPressable
-                    textProps="RESOLVER TAREFA"
-                    onPress={handleResolveTask}
-                    style={{
-                      paddingHorizontal: 32,
-                      width: '100%',
-                      marginBottom: 16,
-                      justifyContent: 'center',
-                    }}
-                  />
-                </View>
+                <LongNoFillPressable
+                  textProps="RESOLVER TAREFA"
+                  onPress={handleResolveTask}
+                  style={{
+                    paddingHorizontal: 32,
+                    width: '100%',
+                    marginBottom: 16,
+                    justifyContent: 'center',
+                  }}
+                />
               </View>
             </View>
+          </View>
             <View style={styles.SubtaskContainer}>
               {currentTask?.Subtask && currentTask.Subtask.length > 0 && (
                 <View style={styles.SubtaskListContainer}>

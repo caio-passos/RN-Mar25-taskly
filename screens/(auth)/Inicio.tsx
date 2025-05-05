@@ -8,8 +8,6 @@ import {
   BackHandler,
 } from 'react-native';
 import {AppContext} from '../../App';
-import {} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ModalCriarTarefas from '../Modal/Criartarefa';
 import Tasks from '../../components/Tasks';
 import IconFilter from '../../assets/icons/lightmode/filter';
@@ -18,6 +16,7 @@ import DetalhesTask from '../../components/DetalhesTask';
 import type {TaskTypes} from '../../types/taskTypes';
 import {
   useAvatarStore,
+  useTaskStore,
   useUserStore,
 } from '../../services/cache/stores/storeZustand';
 import AvatarDisplay from '../../components/AvatarDisplay';
@@ -32,8 +31,18 @@ const InicioContent = () => {
   const [controlTheme, setControlTheme] = useState(false);
 
   const {userData} = useUserStore();
-  const {selectedAvatar} = useAvatarStore();
+  const tasks =  useTaskStore(state => state.tasks);
 
+  useEffect(() => {
+    console.log('Tasks update: ', tasks.length);
+    if (ShowDetalhes && selectedTask) {
+      const taskExists = tasks.some(task => task.id === selectedTask.id);
+      if (!taskExists) {
+        setShowDetalhes(false);
+        setSelectedTask(null);
+      }
+    }
+  }, [tasks, selectedTask, ShowDetalhes]);
   console.log('User data:', userData);
 
   const handleModalOpen = () => {
