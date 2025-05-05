@@ -65,6 +65,11 @@ interface TaskStore {
   toggleTaskChecked: (id: string) => void;
   markTaskForDeletion: (id: string) => void;
   unmarkTaskForDeletion: (id: string) => void;
+  addSubtask: (taskId: string, subtask: {
+    id?: string;
+    title: string;
+    completed?: boolean;
+  }) => void;
   clearAllTasks: () => void;
 }
 
@@ -73,6 +78,9 @@ export const useTaskStore = create<TaskStore>()(
     (set, get) => ({
       tasks: [],
       
+      loadTasks: (tasks: TaskTypes[]) =>
+        set({tasks }),
+
       addTask: (task) => 
         set(produce((state) => {
           state.tasks.push(task);
@@ -119,6 +127,25 @@ export const useTaskStore = create<TaskStore>()(
             task.toDelete = false;
           }
         })),
+
+        addSubtask: (taskId, subtask) => 
+          set(produce((state) => {
+            const task = state.tasks.find(task => task.id === taskId);
+            if (task) {
+              const newSubtask = {
+                id: subtask.id || `subtask_${Date.now()}`,
+                title: subtask.title,
+                completed: subtask.completed || false
+              };
+  
+              if (!task.Subtask) {
+                task.Subtask = [];
+              }
+  
+              task.Subtask.push(newSubtask);
+            }
+          })),
+        
       
       clearAllTasks: () => 
         set({ tasks: [] }),
@@ -126,6 +153,9 @@ export const useTaskStore = create<TaskStore>()(
     {
       name: 'task-storage',
       storage: createJSONStorage(() => mmkvStorage),
+      onRehydrateStorage: (state) => {
+        console.log('Rehydrataded state', state);
+      }
     }
   )
 );
