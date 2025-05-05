@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef, useCallback } from "react";
 import { AppContext } from "../App";
 import LongNoFillPressable from "./LongNoFillPressable";
 import LongPressable from "./LongPressable";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, BackHandler} from "react-native";
 import { data } from "../services/db/mockData";
 import { TaskTypes } from "../types/taskTypes";
 import Subtask from "../components/Subtask";
@@ -36,6 +36,13 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     const handleAddSubtask = () => {
         setAddSubtask(true);
     };
+
+    const handleResolveTask = useCallback (() => {
+        if(swipeRef.current){
+            swipeRef.current.openRight();
+        }
+        setFinishTask(true);
+    }, []);
 
     const swipeRef = useRef<SwipeableMethods>(null);
     const translateX = useSharedValue(0);
@@ -169,6 +176,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                                 <View >
                                     <LongNoFillPressable
                                         textProps="RESOLVER TAREFA"
+                                        onPress={handleResolveTask}
                                         style={{
                                             paddingHorizontal: 32,
                                             width: '100%',
