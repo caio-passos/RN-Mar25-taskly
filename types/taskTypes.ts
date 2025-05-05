@@ -6,5 +6,5 @@ export type TaskTypes = {
     Tags: string[];
     Subtask?: string[];
     Checked?: Boolean;
+    toDelete?: Boolean;
 }
-

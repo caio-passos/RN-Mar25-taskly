@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { mmkvStorage } from '../../db/storageMMKV';
 import { produce } from 'immer';
 import { UserDataTypes } from '../../../types/userTypes';
-
+import { TaskTypes } from '../../../types/taskTypes';
 
 interface UserStore {
   userData: UserDataTypes | null;
@@ -55,3 +55,77 @@ export const useAvatarStore = create<AvatarStore>((set) => ({
   setSelectedAvatar: (id: number | null) => set({ selectedAvatar: id }),
   clearAvatarData: () =>  set({selectedAvatar: null})
 }));
+
+interface TaskStore {
+  tasks: TaskTypes[];
+  addTask: (task: TaskTypes) => void;
+  updateTask: (id: string, updater: (draft: TaskTypes) => void) => void;
+  deleteTask: (id: string) => void;
+  bulkDeleteMarkedTasks: () => void;
+  toggleTaskChecked: (id: string) => void;
+  markTaskForDeletion: (id: string) => void;
+  unmarkTaskForDeletion: (id: string) => void;
+  clearAllTasks: () => void;
+}
+
+export const useTaskStore = create<TaskStore>()(
+  persist(
+    (set, get) => ({
+      tasks: [],
+      
+      addTask: (task) => 
+        set(produce((state) => {
+          state.tasks.push(task);
+        })),
+      
+      updateTask: (id, updater) => 
+        set(produce((state) => {
+          const taskIndex = state.tasks.findIndex(task => task.id === id);
+          if (taskIndex !== -1) {
+            updater(state.tasks[taskIndex]);
+          }
+        })),
+      
+      deleteTask: (id) => 
+        set(produce((state) => {
+          state.tasks = state.tasks.filter(task => task.id !== id);
+        })),
+      
+      bulkDeleteMarkedTasks: () => 
+        set(produce((state) => {
+          state.tasks = state.tasks.filter(task => !task.toDelete);
+        })),
+      
+      toggleTaskChecked: (id) => 
+        set(produce((state) => {
+          const task = state.tasks.find(task => task.id === id);
+          if (task) {
+            task.Checked = !task.Checked;
+          }
+        })),
+      
+      markTaskForDeletion: (id) => 
+        set(produce((state) => {
+          const task = state.tasks.find(task => task.id === id);
+          if (task) {
+            task.toDelete = true;
+          }
+        })),
+      
+      unmarkTaskForDeletion: (id) => 
+        set(produce((state) => {
+          const task = state.tasks.find(task => task.id === id);
+          if (task) {
+            task.toDelete = false;
+          }
+        })),
+      
+      clearAllTasks: () => 
+        set({ tasks: [] }),
+    }),
+    {
+      name: 'task-storage',
+      storage: createJSONStorage(() => mmkvStorage),
+    }
+  )
+);

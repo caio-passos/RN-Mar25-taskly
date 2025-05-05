@@ -43,13 +43,13 @@ const Menu = ({navigation}: MenuProps) => {
     const userData = storage.getString('user-storage');
     console.log('MMKV read:', userData);
   }, []);
+
   useEffect(() => {
     function backAction() {
       setControl(false);
       setControlTheme(false);
       return true;
     }
-
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       backAction,
