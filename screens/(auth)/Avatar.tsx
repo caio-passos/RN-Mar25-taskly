@@ -31,6 +31,7 @@ function Avatar({navigation}: AvatarProps) {
 
     const handlePress = (id: number) => {
         setSelectedAvatar(selectedAvatar === id ? null : id);
+        useAvatarStore().setSelectedAvatar(selectedAvatar);
     };
 
     return (

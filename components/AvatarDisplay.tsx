@@ -16,6 +16,7 @@ const avatars = [
 const AvatarDisplay = ({style}: AvatarProp) => {
     const { selectedAvatar } = useAvatarStore();
     const selectedAvatarData = avatars.find(avatar => avatar.id === selectedAvatar);
+    console.log('Avatar: ', selectedAvatarData)
     return (
         <View style={styles.container}>
             {selectedAvatarData ? (
