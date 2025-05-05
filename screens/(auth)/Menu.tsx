@@ -39,7 +39,6 @@ const Menu = ({navigation} :MenuProps) => {
         function backAction() {
             setControl(false);
             setControlTheme(false);
-
             return true;
         }
 
@@ -59,11 +58,13 @@ const Menu = ({navigation} :MenuProps) => {
         setBiometria(true);
     }
     const handleLogout = () => {
-     useUserStore.getState().partialUpdate({loggedIn: false});   
-     setActiveModal(null);
-     navigation.navigate('Login');
+     useUserStore.getState().partialUpdate({
+        loggedIn: false,
+    });   
+     navigation.navigate('Login')
+    console.log('Navigation reset to Login');
+}
 
-    }
 
     const styles = StyleSheet.create({
         Container: {
@@ -151,22 +152,34 @@ const Menu = ({navigation} :MenuProps) => {
                             {
                                 id: "Edit",
                                 icon: <IconEditar height={131} width={134} />,
-                                onPress: () => handleOpenModal('Edit')
+                                onPress: () => {
+                                    console.log('Edit pressed');  // Debug log
+                                    handleOpenModal('Edit');
+                                }
                             },
                             {
                                 id: "Biometria",
                                 icon: <IconBiometria height={131} width={134} />,
-                                onPress: () => handleOpenModal('Biometria')
+                                onPress: () => {
+                                    console.log('Biometria pressed');  // Debug log
+                                    handleOpenModal('Biometria');
+                                }
                             },
                             {
                                 id: "Sair",
                                 icon: <IconSair height={131} width={134} />,
-                                onPress: () => handleOpenModal('Sair')
+                                onPress: () => {
+                                    console.log('Sair pressed');  // Debug log
+                                    handleOpenModal('Sair');
+                                }
                             },
                             {
                                 id: "Excluir",
                                 icon: <IconExcluir height={131} width={134} />,
-                                onPress: () => handleOpenModal('Excluir')
+                                onPress: () => {
+                                    console.log('Excluir pressed');  // Debug log
+                                    handleOpenModal('Excluir');
+                                }
                             }
                         ]} />
                 </View>
@@ -217,15 +230,18 @@ const Menu = ({navigation} :MenuProps) => {
 
             {activeModal === 'Sair' && (
                 <ModalAlert
-                    visible={true}
+                    visible={activeModal === 'Sair'}
                     onClose={() => {
-                        setActiveModal(null)
+                        console.log('Close modal triggered');
+                        console.log('Current activeModal:', activeModal);
+                        setActiveModal(null);
                     }}
                     title='Deseja sair?'
                     description='Tem certeza que deseja sair do aplicativo? Você poderá se conectar novamente a qualquer momento.'
                     leftButtonText='Agora não'
                     rightButtonText='SAIR'
                     onRightButtonPress={() => {
+                        console.log('Right button pressed in Sair modal');
                         handleLogout(); 
                     }}
                     rightButtonStyle={{ backgroundColor: colors.Error }}

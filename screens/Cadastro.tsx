@@ -11,7 +11,7 @@ import { UserDataTypes } from '../types/userTypes';
 import { mmkvStorage } from '../services/db/storageMMKV';
 
 interface CadastroProps {
-    navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro', 'Home'>;
+    navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
 }
 
 type dataUser = { nome: string, email: string, telefone: string, senha: string, checkSenha: string }
@@ -67,7 +67,7 @@ function Cadastro({ navigation }: CadastroProps) {
         if (isFilled && !senhaError) {
             createAccount(formData);
             console.log('Formulário enviado com sucesso!');
-            navigation.navigate('Inicio');
+            navigation.navigate('Dashboard');
         }
     }
     useEffect(() => {
@@ -203,7 +203,7 @@ function Cadastro({ navigation }: CadastroProps) {
             showErrors(isValid, errors);
         } else {
             hideErrors(); 
-            setItemUserData(data);
+            setItemUserData({...data, loggedIn: true});
         }
     }
 
@@ -348,7 +348,10 @@ function Cadastro({ navigation }: CadastroProps) {
                 visible={modalVisible}
                 onClose={() => {
                     setModalVisible(false)
-                    navigation.navigate('Avatar');
+                    setTimeout(() => {
+                        useUserStore.getState().partialUpdate({ loggedIn: true });
+                    }, 100);
+                    navigation.navigate('Inicio');
                 }}
                 title='Ative o Desbloqueio por Biometria'
                 description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'

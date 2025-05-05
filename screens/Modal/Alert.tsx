@@ -121,9 +121,13 @@ const ModalAlert = ({
                         <Pressable
                             style={[styles.buttonFilled, rightButtonStyle]}
                             onPress={() => {
+                                console.log('Right button pressed');
+                                
                                 if (onRightButtonPress) {
-                                    onRightButtonPress();      // Call the passed function here
+                                    onRightButtonPress();
                                 }
+                                
+                                console.log('Calling onClose'); 
                                 onClose(); 
                             }}
                         >
@@ -138,4 +142,4 @@ const ModalAlert = ({
     );
 };
 
-export default ModalAlert;  
+export default ModalAlert;

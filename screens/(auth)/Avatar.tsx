@@ -12,9 +12,10 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types/routingTypes';
 import { useAvatarStore } from '../../services/cache/stores/storeZustand';
 import type { AvatarStore } from '../../services/cache/stores/storeZustand';
+import { useUserStore } from '../../services/cache/stores/storeZustand';
 
 interface AvatarProps {
-    navigation: NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
+    navigation: NativeStackScreenProps<RootStackParamList, 'Avatar'>;
 }
 
 function Avatar({navigation}: AvatarProps) {
@@ -90,10 +91,16 @@ function Avatar({navigation}: AvatarProps) {
           </View>
 
           <View>
-            <TouchableOpacity style={styles.button} 
-            onPress={() => {
-              navigation.navigate('Dashboard');  
-            }}>
+            <TouchableOpacity 
+              style={styles.button} 
+              onPress={() => {
+                  if (selectedAvatar) {
+                      useUserStore.getState().partialUpdate({ loggedIn: true });
+                      navigation.navigate('Inicio');
+        
+              }}
+            }
+            >
               <Text style={styles.buttonText}>CONFIRMAR SELEÇÃO</Text>
             </TouchableOpacity>
           </View>

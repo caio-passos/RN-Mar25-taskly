@@ -9,25 +9,30 @@ import Theme from '../screens/(auth)/Theme';
 import Terms from '../screens/(auth)/Terms';
 import { useUserStore } from '../services/cache/stores/storeZustand';
 
+
+
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
+  const { userData } = useUserStore();
+  const isLogged = userData?.loggedIn;
 
-  const isLogged = useUserStore.getState().userData?.loggedIn;
   return (
-
-    <RootStack.Navigator screenOptions={{ headerShown: false }}>
-    {isLogged ? (
-      <>
-        <RootStack.Screen name='Avatar' component={Avatar}/>
-        <RootStack.Screen name="Dashboard" component={HomeTabBar} options={{ animation: 'slide_from_right' }} />
-        </>
-    ) : (
-      <>
-        <RootStack.Screen name="Login" component={Login} />
-        <RootStack.Screen name="Cadastro" component={Cadastro} options={{ animation: 'slide_from_right' }} />
-        </>
-    )}
+    <RootStack.Navigator 
+      screenOptions={{ headerShown: false }}
+      initialRouteName={isLogged ? 'Inicio' : 'Login'}
+    >
+      <RootStack.Screen name="Login" component={Login} />
+      <RootStack.Screen name="Cadastro" component={Cadastro} />
+      <RootStack.Screen name="Avatar" component={Avatar} />
+      <RootStack.Screen 
+        name="Inicio" 
+        component={HomeTabBar} 
+        options={{ animation: 'slide_from_right' }} 
+      />
+      <RootStack.Screen name="Menu" component={Menu} />
+      <RootStack.Screen name="Theme" component={Theme} />
+      <RootStack.Screen name="Terms" component={Terms} />
     </RootStack.Navigator>
   );
 }

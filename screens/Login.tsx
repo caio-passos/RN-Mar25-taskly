@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, Alert } from 'react-native';
 import Icon from '@react-native-vector-icons/ionicons';
 import Logo from '../assets/taskly.svg';
 import { useNavigation } from '@react-navigation/native';
@@ -10,7 +10,7 @@ import { useUserStore } from '../services/cache/stores/storeZustand';
 import { UserDataTypes } from '../types/userTypes';
 
 interface LoginProps {
-    navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro', 'Dashboard'>;
+    navigation: NativeStackScreenProps<RootStackParamList, 'Login'>;
 }
 
 
@@ -23,6 +23,7 @@ function Login({ navigation }: LoginProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const [passLogin, setPassLogin] = useState(false);
     const error: Array<{ tag: string, error: string }> = [];
     const [errorsEmailShow, setErrorsEmailShow] = useState(error);
     const [errorsPasswordShow, setErrorsPasswordShow] = useState(error);
@@ -99,21 +100,32 @@ function Login({ navigation }: LoginProps) {
 
     function login(data: loginData) {
         const { isValid, errors } = verifyData(data);
-        const [passLogin, setPassLogin] = useState(false);
 
-        !isValid ? (
-            showErrors(isValid, errors)
-        ) : (
-            hideErrors(),
-            useUserStore.getState().userData?.email === data.email
-                &&
-                useUserStore.getState().userData?.senha === data.password ? (
-                setPassLogin(true),
-                useUserStore.getState().partialUpdate({loggedIn: true })
-            ) : (
-                setPassLogin(false)
-            )
-        )
+        if (!isValid) {
+            showErrors(isValid, errors);
+            return;
+        }
+
+        hideErrors();
+        const storedUserData = useUserStore.getState().userData;
+        
+        if (
+            storedUserData && 
+            storedUserData.email === data.email && 
+            storedUserData.senha === data.password
+        ) {
+            useUserStore.getState().partialUpdate({ 
+                loggedIn: true 
+            });
+
+            navigation.navigate('Inicio');
+            
+        } else {
+            Alert.alert(
+                'Erro de Login', 
+                'Credenciais inválidas. Verifique seu e-mail e senha.'
+            );
+        }
     }
 
     function verifyData(data: loginData) {
