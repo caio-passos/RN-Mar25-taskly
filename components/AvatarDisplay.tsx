@@ -22,7 +22,6 @@ const AvatarDisplay = ({style}: AvatarProp) => {
             {selectedAvatarData ? (
                 <Image
                     style={[
-                        
                         styles.img,
                         style,
                         { borderColor: selectedAvatarData.borderColor },

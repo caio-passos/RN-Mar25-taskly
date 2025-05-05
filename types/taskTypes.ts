@@ -1,3 +1,5 @@
+export type PrioridadeType = 'baixa' | 'média' | 'alta';
+
 export type TaskTypes = {
     id: string;
     Task: string;    
@@ -9,6 +11,7 @@ export type TaskTypes = {
         title: string;
         completed: boolean;
     }[];
+    Prioridade?: PrioridadeType;
     Checked?: Boolean;
     toDelete?: Boolean;
 }
