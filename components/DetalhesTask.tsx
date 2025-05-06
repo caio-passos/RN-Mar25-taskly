@@ -8,12 +8,11 @@ import React, {
 import { AppContext } from '../App';
 import LongNoFillPressable from './LongNoFillPressable';
 import LongPressable from './LongPressable';
-import { View, Text, StyleSheet, BackHandler, TextInput } from 'react-native';
+import { View, Text, StyleSheet, BackHandler, TextInput, Pressable } from 'react-native';
 import { data } from '../services/db/mockData';
 import { TaskTypes } from '../types/taskTypes';
 import { PrioridadeType } from '../types/taskTypes';
 import { useTaskStore } from '../services/cache/stores/storeZustand';
-import Subtask from '../components/Subtask';
 import { RectButton } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Swipeable, {
@@ -39,7 +38,9 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
 
   const showSubtasks = useTaskStore.getState()
-
+  const handleToggleSubtaskStatus = (subtaskId: string) => {
+    useTaskStore.getState().toggleSubtaskStatus(item!.id, subtaskId);
+  };
 
   const [finishTask, setFinishTask] = useState(true);
   const [updatedSubtask, setUpdatedSubtask] = useState('');
@@ -48,6 +49,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   const { tasks } = useTaskStore();
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [newSubtaskText, setNewSubtaskText] = useState('');
+  const [subtaskChecked, setSubtaskChecked] = useState(false);
   const [currentTask, setCurrentTask] = useState<TaskTypes | null>(null);
   const deleteTask = useTaskStore().deleteTask;
   const deleteSubtask = useTaskStore().deleteSubtask;
@@ -55,6 +57,11 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
   const generateUniqueId = () => {
     return `subtask_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  };
+
+
+  const handleSubtaskCheck = () => {
+    setSubtaskChecked(!subtaskChecked);
   };
 
   const handleAddSubtask = () => {
@@ -72,29 +79,33 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       setIsInputFocused(false);
     }
   };
-  const handleCancelSubtask = () => {
-    setNewSubtaskText('');
-    setIsAddingSubtask(false);
-  };
-  const handleResolveTask = useCallback(() => {
-    if (swipeRef.current) {
-      swipeRef.current.openRight();
-    }
-    setFinishTask(true);
-  }, []);
-  useEffect(() => {
-    if (item) {
-      setCurrentTask(item);
-    }
-  }, [item]);
-
   const handleDeleteSubtask = (subtaskId: string) => {
     if (item?.id) {
       useTaskStore.getState().deleteSubtask(item.id, subtaskId);
     }
   };
 
-  const swipeSubtaskRef =useRef<SwipeableMethods>(null);
+
+  const handleCancelSubtask = () => {
+    setNewSubtaskText('');
+    setIsAddingSubtask(false);
+  };
+
+  const handleResolveTask = useCallback(() => {
+    if (swipeRef.current) {
+      swipeRef.current.openRight();
+    }
+    setFinishTask(true);
+  }, []);
+
+  useEffect(() => {
+    if (item) {
+      setCurrentTask(item);
+    }
+  }, [item]);
+
+
+  const swipeSubtaskRef = useRef<SwipeableMethods>(null);
   const swipeRef = useRef<SwipeableMethods>(null);
   const translateX = useSharedValue(0);
   const sv = useSharedValue(50);
@@ -109,8 +120,8 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     });
 
     const handleDeleteSubtask = () => {
-      if(item?.id){
-        useTaskStore.getState().deleteSubtask(item.id, subtaskId) 
+      if (item?.id) {
+        useTaskStore.getState().deleteSubtask(item.id, subtaskId)
       }
     };
 
@@ -129,7 +140,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       </Animated.View>
     );
   };
-    
+
   const renderRightActions = (
     progress: SharedValue<number>,
     dragX: SharedValue<number>,
@@ -211,7 +222,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     SubtaskContentContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingHorizontal: 32,
+      paddingHorizontal: 30,
       paddingTop: 24,
       paddingBottom: 15,
       borderRadius: 8,
@@ -219,7 +230,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       backgroundColor: colors.SecondaryBG,
     },
     subtaskTitle: {
-
+      justifyContent: 'center',
     },
     TaskStyle: {
       fontSize: 18,
@@ -378,26 +389,34 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
           {currentTask?.Subtask && currentTask.Subtask.length > 0 && (
             <View style={styles.SubtaskListContainer}>
               {currentTask.Subtask.map((subtask, index) => (
-                <Swipeable 
-                key={subtask.id || `subtask-${index}`}
-                ref={swipeSubtaskRef}
-                friction={2}
-                rightThreshold={40}
-                renderRightActions={(progress, dragX) => 
-                  renderRightActionsSubtask(progress, dragX, subtask.id || `subtask-${index}`)
-                }>
-              
-                 <View style={styles.subtaskItem}>
-                  <View style={styles.SubtaskContentContainer}>
-                    <View>
-                      {subtask.done ?
-                        <IconCheckboxChecked height={25} width={25} />
-                        :
-                        <IconCheckboxUnchecked height={25} width={25} />
-                      }
+                <Swipeable
+                  key={subtask.id || `subtask-${index}`}
+                  ref={swipeSubtaskRef}
+                  friction={2}
+                  rightThreshold={40}
+                  renderRightActions={(progress, dragX) =>
+                    renderRightActionsSubtask(progress, dragX, subtask.id || `subtask-${index}`)
+                  }>
+
+                  <View style={styles.subtaskItem}>
+                    <View style={styles.SubtaskContentContainer}>
+                      <Pressable onPress={() => {
+                        handleToggleSubtaskStatus(subtask.id)
+                        }}>
+                        <View>
+                          {subtask.done ?
+                            <IconCheckboxChecked height={25} width={25} />
+                            :
+                            <IconCheckboxUnchecked height={25} width={25} />
+                          }
+                        </View>
+
+                      </Pressable>
+                      <Text style={styles.subtaskTitle}>{subtask.title}</Text>
+                      <View>
+                        <IconEdit height={25} width={25} />
+                      </View>
                     </View>
-                    <Text style={styles.subtaskTitle}>{subtask.title}</Text>
-                  </View>
                   </View>
                 </Swipeable>
               ))}

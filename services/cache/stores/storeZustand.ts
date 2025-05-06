@@ -74,6 +74,7 @@ interface TaskStore {
     title: string;
     completed?: boolean;
   }) => void;
+  toggleSubtaskStatus: (taskId: string, subtaskId: string) => void;
   deleteSubtask: (taskId: string, subtaskId: string) => void;
   clearAllTasks: () => void;
 }
@@ -169,6 +170,18 @@ export const useTaskStore = create<TaskStore>()(
               : [];
           }
         }))
+      },
+      toggleSubtaskStatus: (taskId: string, subtaskId: string) => {
+        set(produce((state) => {
+          const taskIndex = state.tasks.findIndex(task => task.id === taskId);
+          if (taskIndex !== -1) {
+            const task = state.tasks[taskIndex];
+            const subtaskIndex = task.Subtask?.findIndex(sub => sub.id === subtaskId);
+            if (subtaskIndex !== undefined && subtaskIndex >= 0) {
+              task.Subtask[subtaskIndex].done = !task.Subtask[subtaskIndex].done;
+            }
+          }
+        }));
       },
 
       clearAllTasks: () =>
