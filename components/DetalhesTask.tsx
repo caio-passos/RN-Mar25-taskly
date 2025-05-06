@@ -166,17 +166,13 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
       }
     }
-    //force update para delete
-    useEffect(() => {
-      if (item) {
-        setCurrentTask(item);
-      }
-    }, [item, tasks]);
-    //force update para update tasks
+    //force update para as tasks
     useEffect(() => {
       const updatedTask = tasks.find(t => t.id === item?.id);
       if (updatedTask) {
         setCurrentTask(updatedTask);
+      } else {
+        setCurrentTask(item);
       }
     }, [tasks, item?.id]);
 
@@ -293,13 +289,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     subtaskInputContainer: {
       backgroundColor: colors.SecondaryBG,
       borderRadius: 8,
-      marginBottom: 10,
+      marginBottom: 18,
       flexDirection: 'column',
     },
     subtaskInput: {
-      borderBottomWidth: 1,
+      paddingHorizontal: 26,
       borderBottomColor: colors.Primary,
-      marginBottom: 16,
     },
     inlineSubtaskEdit: {
       flex: 1,
@@ -340,6 +335,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
           value={newSubtaskText}
           onChangeText={setNewSubtaskText}
           style={styles.subtaskInput}
+          underlineColorAndroid="transparent"
           autoFocus={true}
           onFocus={() => setIsInputFocused(true)}
           onBlur={() => {
