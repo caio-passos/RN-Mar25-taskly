@@ -14,6 +14,7 @@ interface ModalAlertProps {
     style?: StyleProp<ViewStyle>;
     rightButtonStyle?: StyleProp<ViewStyle>; 
     rightButtonTextStyle?: StyleProp<TextStyle>;
+    onRightButtonPress?: () => void;
 }
 
 const ModalAlert = ({
@@ -25,7 +26,8 @@ const ModalAlert = ({
     rightButtonText,
     style,
     rightButtonStyle,
-    rightButtonTextStyle
+    rightButtonTextStyle,
+    onRightButtonPress
 }: ModalAlertProps) => {
     const colors = React.useContext(AppContext);
 
@@ -118,7 +120,16 @@ const ModalAlert = ({
                         </Pressable>
                         <Pressable
                             style={[styles.buttonFilled, rightButtonStyle]}
-                            onPress={onClose}
+                            onPress={() => {
+                                console.log('Right button pressed');
+                                
+                                if (onRightButtonPress) {
+                                    onRightButtonPress();
+                                }
+                                
+                                console.log('Calling onClose'); 
+                                onClose(); 
+                            }}
                         >
                             <Text style={[rightButtonTextStyle, styles.buttonRightText]}>{rightButtonText}</Text>
                         </Pressable>
@@ -131,4 +142,4 @@ const ModalAlert = ({
     );
 };
 
-export default ModalAlert;  
+export default ModalAlert;

@@ -69,10 +69,14 @@ const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
             <FlatList
                 horizontal
                 data={items || iconComponents}
-                renderItem=
-                {({ item }) =>
+                renderItem={({ item }) =>
                     <View>
-                        <Pressable onPress={item.onPress}>
+                        <Pressable 
+                            onPress={() => {
+                                console.log(`Pressed item: ${item.id}`);
+                                item.onPress();
+                            }}
+                        >
                             {item.icon}
                         </Pressable>
                     </View>
