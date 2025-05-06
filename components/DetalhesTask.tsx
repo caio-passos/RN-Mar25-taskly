@@ -4,6 +4,8 @@ import React, {
   useState,
   useRef,
   useCallback,
+  createRef,
+  RefObject
 } from 'react';
 import { AppContext } from '../App';
 import LongNoFillPressable from './LongNoFillPressable';
@@ -40,6 +42,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   const showSubtasks = useTaskStore.getState()
   const handleToggleSubtaskStatus = (subtaskId: string) => {
     useTaskStore.getState().toggleSubtaskStatus(item!.id, subtaskId);
+    triggerUpdate();
   };
 
   const [finishTask, setFinishTask] = useState(true);
@@ -54,14 +57,13 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   const deleteTask = useTaskStore().deleteTask;
   const deleteSubtask = useTaskStore().deleteSubtask;
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0);
+  const [subtaskRefs, setSubtaskRefs] = useState<React.RefObject<SwipeableMethods>[]>([]);
+
+  const triggerUpdate = () => setForceUpdate(prev => prev + 1);
 
   const generateUniqueId = () => {
     return `subtask_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  };
-
-
-  const handleSubtaskCheck = () => {
-    setSubtaskChecked(!subtaskChecked);
   };
 
   const handleAddSubtask = () => {
@@ -97,12 +99,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     }
     setFinishTask(true);
   }, []);
-
-  useEffect(() => {
-    if (item) {
-      setCurrentTask(item);
-    }
-  }, [item]);
 
 
   const swipeSubtaskRef = useRef<SwipeableMethods>(null);
@@ -156,6 +152,27 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
       }
     }
+    //force update para delete
+    useEffect(() => {
+      if (item) {
+        setCurrentTask(item);
+      }
+    }, [item, tasks]);
+    //force update para update tasks
+    useEffect(() => {
+      const updatedTask = tasks.find(t => t.id === item?.id);
+      if (updatedTask) {
+        setCurrentTask(updatedTask);
+      }
+    }, [tasks, item?.id]);
+
+    //refs para todas as tasks
+    useEffect(() => {
+      const validSubtaskRefs = currentTask?.Subtask?.map(() =>
+        createRef<SwipeableMethods>() as React.RefObject<SwipeableMethods>
+      ) || [];
+      setSubtaskRefs(validSubtaskRefs);
+    }, [currentTask?.Subtask]);
 
     return (
       <Animated.View style={{ transform: [{ scale }] }}>
@@ -391,7 +408,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
               {currentTask.Subtask.map((subtask, index) => (
                 <Swipeable
                   key={subtask.id || `subtask-${index}`}
-                  ref={swipeSubtaskRef}
+                  ref={subtaskRefs[index]} //referenciar o index certo
                   friction={2}
                   rightThreshold={40}
                   renderRightActions={(progress, dragX) =>
@@ -400,8 +417,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
                   <View style={styles.subtaskItem}>
                     <View style={styles.SubtaskContentContainer}>
-                      <Pressable onPress={() => {
-                        handleToggleSubtaskStatus(subtask.id)
+                      <Pressable
+                        onPress={() => {
+                          handleToggleSubtaskStatus(subtask.id)
+                          //ambos funcionam
+                          
+                          subtaskRefs[index]?.current?.openRight();
                         }}>
                         <View>
                           {subtask.done ?
