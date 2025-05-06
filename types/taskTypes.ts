@@ -9,7 +9,7 @@ export type TaskTypes = {
     Subtask?: {
         id: string;
         title: string;
-        completed: boolean;
+        done: boolean;
     }[];
     Prioridade?: PrioridadeType;
     Checked?: Boolean;

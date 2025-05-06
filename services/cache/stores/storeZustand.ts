@@ -7,10 +7,14 @@ import { TaskTypes } from '../../../types/taskTypes';
 
 interface UserStore {
   userData: UserDataTypes | null;
-  setItemUserData: (data: UserDataTypes ) => void;
+  setItemUserData: (data: UserDataTypes) => void;
   clearUserData: () => void;
-  updateUserData: (updater: (draft: UserDataTypes ) => void) => void;
-  partialUpdate: (data: Partial<UserDataTypes >) => void;
+  updateUserData: (updater: (draft: UserDataTypes) => void) => void;
+  partialUpdate: (data: Partial<UserDataTypes>) => void;
+}
+
+export function generateUniqueId(): string {
+  return `subtask_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
 export const useUserStore = create<UserStore>()(
@@ -20,17 +24,17 @@ export const useUserStore = create<UserStore>()(
       setItemUserData: (data) => {
         console.log("Persisted userData: ", data);
         set({ userData: data });
-        console.log("Persisted userData after setting: ", get().userData); 
+        console.log("Persisted userData after setting: ", get().userData);
       },
       clearUserData: () => set({ userData: null }),
-      updateUserData: (updater) => 
+      updateUserData: (updater) =>
         set(produce((state: UserStore) => {
           if (state.userData) {
             updater(state.userData);
           }
         })),
-      
-      partialUpdate: (data) => 
+
+      partialUpdate: (data) =>
         set(produce((state: UserStore) => {
           if (state.userData) {
             Object.assign(state.userData, data);
@@ -44,7 +48,7 @@ export const useUserStore = create<UserStore>()(
   )
 );
 
-export interface AvatarStore{
+export interface AvatarStore {
   selectedAvatar: number | null;
   setSelectedAvatar: (id: number | null) => void;
   clearAvatarData: () => void;
@@ -53,7 +57,7 @@ export interface AvatarStore{
 export const useAvatarStore = create<AvatarStore>((set) => ({
   selectedAvatar: null,
   setSelectedAvatar: (id: number | null) => set({ selectedAvatar: id }),
-  clearAvatarData: () =>  set({selectedAvatar: null})
+  clearAvatarData: () => set({ selectedAvatar: null })
 }));
 
 interface TaskStore {
@@ -70,6 +74,7 @@ interface TaskStore {
     title: string;
     completed?: boolean;
   }) => void;
+  deleteSubtask: (taskId: string, subtaskId: string) => void;
   clearAllTasks: () => void;
 }
 
@@ -77,50 +82,50 @@ export const useTaskStore = create<TaskStore>()(
   persist(
     (set, get) => ({
       tasks: [],
-      
-      loadTasks: (tasks: TaskTypes[]) =>
-        set({tasks }),
 
-      addTask: (task) => 
+      loadTasks: (tasks: TaskTypes[]) =>
+        set({ tasks }),
+
+      addTask: (task) =>
         set(produce((state) => {
           state.tasks.push(task);
         })),
-      
-      updateTask: (id, updater) => 
+
+      updateTask: (id, updater) =>
         set(produce((state) => {
           const taskIndex = state.tasks.findIndex(task => task.id === id);
           if (taskIndex !== -1) {
             updater(state.tasks[taskIndex]);
           }
         })),
-      
-      deleteTask: (id) => 
+
+      deleteTask: (id) =>
         set(produce((state) => {
           state.tasks = state.tasks.filter(task => task.id !== id);
         })),
-      
-      bulkDeleteMarkedTasks: () => 
+
+      bulkDeleteMarkedTasks: () =>
         set(produce((state) => {
           state.tasks = state.tasks.filter(task => !task.toDelete);
         })),
-      
-      toggleTaskChecked: (id) => 
+
+      toggleTaskChecked: (id) =>
         set(produce((state) => {
           const task = state.tasks.find(task => task.id === id);
           if (task) {
             task.Checked = !task.Checked;
           }
         })),
-      
-      markTaskForDeletion: (id) => 
+
+      markTaskForDeletion: (id) =>
         set(produce((state) => {
           const task = state.tasks.find(task => task.id === id);
           if (task) {
             task.toDelete = true;
           }
         })),
-      
-      unmarkTaskForDeletion: (id) => 
+
+      unmarkTaskForDeletion: (id) =>
         set(produce((state) => {
           const task = state.tasks.find(task => task.id === id);
           if (task) {
@@ -128,26 +133,45 @@ export const useTaskStore = create<TaskStore>()(
           }
         })),
 
-        addSubtask: (taskId, subtask) => 
-          set(produce((state) => {
-            const task = state.tasks.find(task => task.id === taskId);
-            if (task) {
-              const newSubtask = {
-                id: subtask.id || `subtask_${Date.now()}`,
-                title: subtask.title,
-                completed: subtask.completed || false
-              };
-  
-              if (!task.Subtask) {
-                task.Subtask = [];
-              }
-  
-              task.Subtask.push(newSubtask);
-            }
-          })),
-        
-      
-      clearAllTasks: () => 
+
+      addSubtask: (taskId: string, subtask: {
+        id?: string;
+        title: string;
+        completed?: boolean
+      }) => {
+        set(produce((state) => {
+          const taskIndex = state.tasks.findIndex(task => task.id === taskId);
+
+          if (taskIndex !== -1) {
+            const task = state.tasks[taskIndex];
+            const newSubtask = {
+              id: subtask.id || generateUniqueId(),
+              title: subtask.title,
+              completed: subtask.completed ?? false
+            };
+
+            task.Subtask = task.Subtask || [];
+
+            task.Subtask.push(newSubtask);
+          }
+        }
+        ))
+      },
+      deleteSubtask: (taskId: string, subtaskId: string) => {
+        set(produce((state) => {
+          const taskIndex = state.tasks.findIndex(task => task.id === taskId);
+
+          if (taskIndex !== -1) {
+            const task = state.tasks[taskIndex];
+            
+            task.Subtask = task.Subtask 
+              ? task.Subtask.filter(subtask => subtask.id !== subtaskId)
+              : [];
+          }
+        }))
+      },
+
+      clearAllTasks: () =>
         set({ tasks: [] }),
     }),
     {
@@ -166,11 +190,11 @@ interface AuthStore {
     idToken: string | null;
     refreshToken: string | null;
   };
-  
+
   setAuthData: (userData: UserDataTypes, idToken: string, refreshToken: string) => void;
   updateUserData: (updater: (draft: UserDataTypes) => void) => void;
   updateTokens: (idToken: string, refreshToken: string) => void;
-  
+
   clearAuthData: () => void;
 }
 
@@ -182,29 +206,29 @@ export const useAuthStore = create<AuthStore>()(
         idToken: null,
         refreshToken: null
       },
-      
-      setAuthData: (userData, idToken, refreshToken) => 
-        set({ 
-          userData, 
-          tokens: { idToken, refreshToken } 
+
+      setAuthData: (userData, idToken, refreshToken) =>
+        set({
+          userData,
+          tokens: { idToken, refreshToken }
         }),
-      
-      updateUserData: (updater) => 
+
+      updateUserData: (updater) =>
         set(produce((state) => {
           if (state.userData) {
             updater(state.userData);
           }
         })),
-      
-      updateTokens: (idToken, refreshToken) => 
+
+      updateTokens: (idToken, refreshToken) =>
         set(state => ({
           tokens: { idToken, refreshToken }
         })),
-      
-      clearAuthData: () => 
-        set({ 
-          userData: null, 
-          tokens: { idToken: null, refreshToken: null } 
+
+      clearAuthData: () =>
+        set({
+          userData: null,
+          tokens: { idToken: null, refreshToken: null }
         }),
     }),
     {

@@ -15,9 +15,9 @@ interface CadastroProps {
     navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
 }
 
-type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, senha: string, checkSenha: string }
+type dataUser = { uid: V4Options, nome: string, email: string, telefone: string, senha: string, checkSenha: string }
 
-    function Cadastro({ navigation }: CadastroProps) {
+function Cadastro({ navigation }: CadastroProps) {
     const colors = useContext(AppContext);
     const error: Array<{ tag: string, error: string }> = [];
 
@@ -206,14 +206,14 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
         if (!isValid) {
             showErrors(isValid, errors);
         } else {
-            hideErrors(); 
-            setItemUserData({...data, loggedIn: true});
+            hideErrors();
+            setItemUserData({ ...data, loggedIn: true });
         }
     }
 
     function verifyData(data: dataUser) {
         console.log("DEBUG: Skipping validation, assuming valid.");
-        return { isValid: true, errors: [] }; 
+        return { isValid: true, errors: [] };
     }
 
     function showErrors(isValid: boolean, errors: Array<{ tag: string, error: string }>) {
@@ -339,8 +339,8 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
                 style={styles.buttonFilled}
                 onPress={() => {
                     if (isFilled && !senhaError) {
-                        createAccount(formData); 
-                        handleOpenModal(); 
+                        createAccount(formData);
+                        handleOpenModal();
                         // add api post to create account
                     } else {
                         console.log("Submit blocked: isFilled=", isFilled, "senhaError=", senhaError);

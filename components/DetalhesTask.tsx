@@ -5,17 +5,17 @@ import React, {
   useRef,
   useCallback,
 } from 'react';
-import {AppContext} from '../App';
+import { AppContext } from '../App';
 import LongNoFillPressable from './LongNoFillPressable';
 import LongPressable from './LongPressable';
-import {View, Text, StyleSheet, BackHandler, TextInput} from 'react-native';
-import {data} from '../services/db/mockData';
-import {TaskTypes} from '../types/taskTypes';
+import { View, Text, StyleSheet, BackHandler, TextInput } from 'react-native';
+import { data } from '../services/db/mockData';
+import { TaskTypes } from '../types/taskTypes';
 import { PrioridadeType } from '../types/taskTypes';
-import {useTaskStore} from '../services/cache/stores/storeZustand';
+import { useTaskStore } from '../services/cache/stores/storeZustand';
 import Subtask from '../components/Subtask';
-import {RectButton} from 'react-native-gesture-handler';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { RectButton } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Swipeable, {
   SwipeableMethods,
 } from 'react-native-gesture-handler/ReanimatedSwipeable';
@@ -27,54 +27,49 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated';
 import IconTrash from '../assets/icons/lightmode/trash';
+import IconEdit from '../assets/icons/lightmode/pencil';
+import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle';
+import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle';
 
 type DetalhesProps = {
   item: TaskTypes | null;
 };
 
-const DetalhesTask = ({item}: DetalhesProps) => {
+const DetalhesTask = ({ item }: DetalhesProps) => {
+
+
+  const showSubtasks = useTaskStore.getState()
+
 
   const [finishTask, setFinishTask] = useState(true);
   const [updatedSubtask, setUpdatedSubtask] = useState('');
   const swipeActive = useSharedValue(false);
   const addSubtaskToStore = useTaskStore(state => state.addSubtask);
-  const {tasks} = useTaskStore();
+  const { tasks } = useTaskStore();
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [newSubtaskText, setNewSubtaskText] = useState('');
   const [currentTask, setCurrentTask] = useState<TaskTypes | null>(null);
   const deleteTask = useTaskStore().deleteTask;
+  const deleteSubtask = useTaskStore().deleteSubtask;
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
-  const handleOpenSubtaskInput = () => {
-    setIsAddingSubtask(true);
+  const generateUniqueId = () => {
+    return `subtask_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   };
-  const handleFinishTask = () => {
-    setFinishTask(true);
-  };
+
   const handleAddSubtask = () => {
-    console.log('Add subtask:', {
-      taskId: currentTask?.id,
-      subtaskText: newSubtaskText,
-    });
-
-    if (currentTask && newSubtaskText.trim()) {
-      addSubtaskToStore(currentTask.id, {
+    if (newSubtaskText.trim() && item) {
+      const newSubtask = {
+        id: generateUniqueId(),
         title: newSubtaskText.trim(),
-        completed: false,
-      });
-      setCurrentTask(prev => prev ? {
-        ...prev,
-        Subtask: [
-          ...(prev.Subtask || []),
-          {
-            id: `subtask_${Date.now()}`,
-            title: newSubtaskText.trim(),
-            completed: false
-          }
-        ]
-      } : null);
+        done: false,
+      };
+
+      useTaskStore.getState().addSubtask(item.id, newSubtask);
 
       setNewSubtaskText('');
       setIsAddingSubtask(false);
+      setIsInputFocused(false);
     }
   };
   const handleCancelSubtask = () => {
@@ -87,13 +82,54 @@ const DetalhesTask = ({item}: DetalhesProps) => {
     }
     setFinishTask(true);
   }, []);
+  useEffect(() => {
+    if (item) {
+      setCurrentTask(item);
+    }
+  }, [item]);
 
+  const handleDeleteSubtask = (subtaskId: string) => {
+    if (item?.id) {
+      useTaskStore.getState().deleteSubtask(item.id, subtaskId);
+    }
+  };
 
-
+  const swipeSubtaskRef =useRef<SwipeableMethods>(null);
   const swipeRef = useRef<SwipeableMethods>(null);
   const translateX = useSharedValue(0);
   const sv = useSharedValue(50);
 
+  const renderRightActionsSubtask = (
+    progress: SharedValue<number>,
+    dragX: SharedValue<number>,
+    subtaskId: string
+  ) => {
+    const scale = interpolate(sv.value, [0, 100], [0, 1], {
+      extrapolateLeft: Extrapolation.CLAMP,
+    });
+
+    const handleDeleteSubtask = () => {
+      if(item?.id){
+        useTaskStore.getState().deleteSubtask(item.id, subtaskId) 
+      }
+    };
+
+    return (
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <RectButton
+          style={{
+            justifyContent: 'center',
+            paddingLeft: 26,
+            paddingRight: 44,
+            alignItems: 'center',
+          }}
+          onPress={handleDeleteSubtask}>
+          <IconTrash height={40} width={40} />
+        </RectButton>
+      </Animated.View>
+    );
+  };
+    
   const renderRightActions = (
     progress: SharedValue<number>,
     dragX: SharedValue<number>,
@@ -101,9 +137,9 @@ const DetalhesTask = ({item}: DetalhesProps) => {
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
       extrapolateLeft: Extrapolation.CLAMP,
     });
-    
+
     const handleDeleteTask = () => {
-      if(item?.id){
+      if (item?.id) {
         deleteTask(item.id);
         swipeRef.current?.close();
 
@@ -111,7 +147,7 @@ const DetalhesTask = ({item}: DetalhesProps) => {
     }
 
     return (
-      <Animated.View style={{transform: [{scale}]}}>
+      <Animated.View style={{ transform: [{ scale }] }}>
         <RectButton
           style={{
             justifyContent: 'center',
@@ -128,9 +164,9 @@ const DetalhesTask = ({item}: DetalhesProps) => {
 
   const colors = useContext(AppContext);
   const getCorPrioridade = (priority?: PrioridadeType) => {
-    switch(priority) {
+    switch (priority) {
       case 'baixa':
-        return colors.SecondaryAccent; // Define in your theme
+        return colors.SecondaryAccent;
       case 'média':
         return 'Yellow';
       case 'alta':
@@ -172,6 +208,19 @@ const DetalhesTask = ({item}: DetalhesProps) => {
       elevation: 2,
       backgroundColor: colors.SecondaryBG,
     },
+    SubtaskContentContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingHorizontal: 32,
+      paddingTop: 24,
+      paddingBottom: 15,
+      borderRadius: 8,
+      elevation: 2,
+      backgroundColor: colors.SecondaryBG,
+    },
+    subtaskTitle: {
+
+    },
     TaskStyle: {
       fontSize: 18,
       fontWeight: 600,
@@ -184,7 +233,6 @@ const DetalhesTask = ({item}: DetalhesProps) => {
     TagsStyle: {
       paddingBottom: 16,
     },
-
     PrioridadeTextColor: {
       backgroundColor: getCorPrioridade(item?.Prioridade),
       width: 45,
@@ -194,19 +242,16 @@ const DetalhesTask = ({item}: DetalhesProps) => {
       borderRadius: 8,
     },
     SubtaskContainer: {
-      paddingTop: 32,
     },
     SubtaskListContainer: {
+      paddingTop: 16,
       borderRadius: 8,
-      padding:16,
       marginTop: 16,
-      flexDirection: 'column',
     },
     subtaskInputContainer: {
       backgroundColor: colors.SecondaryBG,
       borderRadius: 8,
-      padding: 16,
-      marginTop: 16,
+      marginBottom: 10,
       flexDirection: 'column',
     },
     subtaskInput: {
@@ -226,7 +271,48 @@ const DetalhesTask = ({item}: DetalhesProps) => {
       color: colors.Primary,
       fontWeight: '600',
     },
+    subtaskItem: {
+      marginBottom: 12,
+      borderRadius: 8,
+      backgroundColor: colors.Background,
+    },
+    subtaskItemLast: {
+      marginBottom: 0,
+    },
   });
+
+
+  const renderSubtaskInput = () => {
+    if (!isAddingSubtask) return null;
+
+    return (
+      <View style={styles.subtaskInputContainer}>
+        <TextInput
+          placeholder="Digite sua subtask"
+          value={newSubtaskText}
+          onChangeText={setNewSubtaskText}
+          style={styles.subtaskInput}
+          autoFocus={true}
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => {
+            if (isInputFocused) {
+              setTimeout(() => {
+                if (newSubtaskText.trim()) {
+                  handleAddSubtask();
+                } else {
+                  handleCancelSubtask();
+                }
+              }, 100);
+            }
+          }}
+          onSubmitEditing={(e) => {
+            e.preventDefault();
+            handleAddSubtask();
+          }}
+        />
+      </View>
+    );
+  };
 
   return (
     <GestureHandlerRootView>
@@ -261,71 +347,70 @@ const DetalhesTask = ({item}: DetalhesProps) => {
                 </View>
               </View>
 
-          <View>
-            <Text>Prioridade</Text>
-              {item?.Prioridade && (
-                <Text style={styles.PrioridadeTextColor}>
-                  {getCorPrioridade(item?.Prioridade)}
-                </Text>
-              )}
-              {!item?.Prioridade && (
-                <Text style={{color: 'gray'}}>Não definida</Text>
-              )}
               <View>
-                <LongNoFillPressable
-                  textProps="RESOLVER TAREFA"
-                  onPress={handleResolveTask}
-                  style={{
-                    paddingHorizontal: 32,
-                    width: '100%',
-                    marginBottom: 16,
-                    justifyContent: 'center',
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-            <View style={styles.SubtaskContainer}>
-              {currentTask?.Subtask && currentTask.Subtask.length > 0 && (
-                <View style={styles.SubtaskListContainer}>
-                  <Subtask
-                    key={`subtasks-${currentTask.id}`}
-                    data={currentTask}
-                    onAddSubtask={subtask => {
-                      if (item) {
-                        addSubtaskToStore(item.id, subtask);
-                      }
+                <Text>Prioridade</Text>
+                {item?.Prioridade && (
+                  <Text style={styles.PrioridadeTextColor}>
+                    {getCorPrioridade(item?.Prioridade)}
+                  </Text>
+                )}
+                {!item?.Prioridade && (
+                  <Text style={{ color: 'gray' }}>Não definida</Text>
+                )}
+                <View>
+                  <LongNoFillPressable
+                    textProps="RESOLVER TAREFA"
+                    onPress={handleResolveTask}
+                    style={{
+                      paddingHorizontal: 32,
+                      width: '100%',
+                      marginBottom: 16,
+                      justifyContent: 'center',
                     }}
-                    subtaskText={updatedSubtask}
-                    onSubtaskTextChange={text => setNewSubtaskText(text)}
                   />
                 </View>
-              )}
+              </View>
             </View>
+
           </View>
         </Swipeable>
-        {isAddingSubtask && (
-          <View style={styles.subtaskInputContainer}>
-            <TextInput
-              placeholder="Digite sua subtask"
-              value={newSubtaskText}
-              onChangeText={setNewSubtaskText}
-              style={styles.subtaskInput}
-              autoFocus={true}
-              onSubmitEditing={handleAddSubtask}
-              onBlur={() => {
-                if (newSubtaskText.trim()) {
-                  handleAddSubtask();
-                } else {
-                  handleCancelSubtask();
-                }
-              }}
-            />
-          </View>
-        )}
+        <View style={styles.SubtaskContainer}>
+          {currentTask?.Subtask && currentTask.Subtask.length > 0 && (
+            <View style={styles.SubtaskListContainer}>
+              {currentTask.Subtask.map((subtask, index) => (
+                <Swipeable 
+                key={subtask.id || `subtask-${index}`}
+                ref={swipeSubtaskRef}
+                friction={2}
+                rightThreshold={40}
+                renderRightActions={(progress, dragX) => 
+                  renderRightActionsSubtask(progress, dragX, subtask.id || `subtask-${index}`)
+                }>
+              
+                 <View style={styles.subtaskItem}>
+                  <View style={styles.SubtaskContentContainer}>
+                    <View>
+                      {subtask.done ?
+                        <IconCheckboxChecked height={25} width={25} />
+                        :
+                        <IconCheckboxUnchecked height={25} width={25} />
+                      }
+                    </View>
+                    <Text style={styles.subtaskTitle}>{subtask.title}</Text>
+                  </View>
+                  </View>
+                </Swipeable>
+              ))}
+            </View>
+          )}
+        </View>
+        {renderSubtaskInput()}
         <LongPressable
           textProps="ADICIONAR SUBTASK"
-          onPress={handleOpenSubtaskInput}
+          onPress={() => {
+            setIsAddingSubtask(true);
+            setIsInputFocused(true);
+          }}
           style={{
             justifyContent: 'center',
             alignSelf: 'center',
