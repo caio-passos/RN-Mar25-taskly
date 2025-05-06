@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,14 +6,15 @@ import {
   Pressable,
   Image,
   BackHandler,
+  SafeAreaView,
 } from 'react-native';
-import {AppContext} from '../../App';
+import { AppContext } from '../../App';
 import ModalCriarTarefas from '../Modal/Criartarefa';
 import Tasks from '../../components/Tasks';
 import IconFilter from '../../assets/icons/lightmode/filter';
-import {data} from '../../services/db/mockData';
+import { data } from '../../services/db/mockData';
 import DetalhesTask from '../../components/DetalhesTask';
-import type {TaskTypes} from '../../types/taskTypes';
+import type { TaskTypes } from '../../types/taskTypes';
 import {
   useAvatarStore,
   useTaskStore,
@@ -30,8 +31,8 @@ const InicioContent = () => {
   const [control, setControl] = useState(false);
   const [controlTheme, setControlTheme] = useState(false);
 
-  const {userData} = useUserStore();
-  const tasks =  useTaskStore(state => state.tasks);
+  const { userData } = useUserStore();
+  const tasks = useTaskStore(state => state.tasks);
 
   useEffect(() => {
     console.log('Tasks update: ', tasks.length);
@@ -58,7 +59,7 @@ const InicioContent = () => {
         setModalCriarTarefa(false);
         return true;
       }
-      if(ShowDetalhes){
+      if (ShowDetalhes) {
         setShowDetalhes(false);
         setSelectedTask(null);
         return true;
@@ -123,39 +124,41 @@ const InicioContent = () => {
   });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.topBar}>
-        <Text style={styles.title}>Taskly</Text>
-        <AvatarDisplay />
-      </View>
-      <View style={styles.middleSection}>
-        <View style={styles.TasksStyle}>
-          {!ShowDetalhes && (
-            <View style={styles.IconFilterStyle}>
-              <Pressable
-                onPress={() => {
-                  ('');
-                }}>
-                <IconFilter width={24} height={24} />
-              </Pressable>
-            </View>
-          )}
-          {ShowDetalhes ? (
-            <DetalhesTask item={selectedTask} />
-          ) : (
-            <Tasks
-              onOpenModal={() => setModalCriarTarefa(true)}
-              onOpenDetalhes={handleShowDetalhes}
-            />
-          )}
-          <ModalCriarTarefas
-            visible={modalCriarTarefa}
-            onClose={() => setModalCriarTarefa(false)}
-          />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <View style={styles.topBar}>
+          <Text style={styles.title}>Taskly</Text>
+          <AvatarDisplay />
         </View>
-        <View></View>
+        <View style={styles.middleSection}>
+          <View style={styles.TasksStyle}>
+            {!ShowDetalhes && (
+              <View style={styles.IconFilterStyle}>
+                <Pressable
+                  onPress={() => {
+                    ('');
+                  }}>
+                  <IconFilter width={24} height={24} />
+                </Pressable>
+              </View>
+            )}
+            {ShowDetalhes ? (
+              <DetalhesTask item={selectedTask} />
+            ) : (
+              <Tasks
+                onOpenModal={() => setModalCriarTarefa(true)}
+                onOpenDetalhes={handleShowDetalhes}
+              />
+            )}
+            <ModalCriarTarefas
+              visible={modalCriarTarefa}
+              onClose={() => setModalCriarTarefa(false)}
+            />
+          </View>
+          <View></View>
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

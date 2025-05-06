@@ -31,6 +31,7 @@ import IconTrash from '../assets/icons/lightmode/trash';
 import IconEdit from '../assets/icons/lightmode/pencil';
 import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle';
 import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type DetalhesProps = {
   item: TaskTypes | null;
@@ -362,6 +363,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   };
 
   return (
+    <SafeAreaView style={{flex:1}}>
     <GestureHandlerRootView>
       <ScrollView style={styles.RootContainer}
         keyboardShouldPersistTaps="handled"
@@ -498,6 +500,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       />
 
     </GestureHandlerRootView>
+    </SafeAreaView>
 
   );
 };
