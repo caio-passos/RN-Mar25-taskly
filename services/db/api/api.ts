@@ -1,53 +1,25 @@
 import { MMKV } from 'react-native-mmkv';
 import { UserDataTypes } from '../../../types/userTypes';
 import { TaskTypes } from '../../../types/taskTypes';
+import { useAuthStore } from '../../cache/stores/storeZustand';
 
 // URL base
 const API_URL = 'http://15.229.11.44:3000';
-const authStorage = new MMKV(); // Armazenamento local de tokens
-
-// Chaves pra salvar os tokens no MMKV
-const AUTH_TOKEN_KEY = 'authToken';
-const REFRESH_TOKEN_KEY = 'refreshToken';
 
 const saveTokens = (idToken: string, refreshToken: string) => {
-    try {
-        authStorage.set(AUTH_TOKEN_KEY, idToken);
-        authStorage.set(REFRESH_TOKEN_KEY, refreshToken);
-        console.log('Tokens salvos com sucesso.');
-    } catch (error) {
-        console.error('Erro ao salvar tokens:', error);
-    }
+    useAuthStore.getState().updateTokens(idToken, refreshToken);
 };
 
 const getIdToken = (): string | null => {
-    try {
-        const token = authStorage.getString(AUTH_TOKEN_KEY);
-        return token ?? null;
-    } catch (error) {
-        console.error('Erro ao recuperar ID token:', error);
-        return null;
-    }
+    return useAuthStore.getState().tokens.idToken;
 };
 
 const getRefreshToken = (): string | null => {
-    try {
-        const token = authStorage.getString(REFRESH_TOKEN_KEY);
-        return token ?? null;
-    } catch (error) {
-        console.error('Erro ao recuperar refresh token:', error);
-        return null;
-    }
+    return useAuthStore.getState().tokens.refreshToken;
 };
 
 const clearTokens = () => {
-    try {
-        authStorage.delete(AUTH_TOKEN_KEY);
-        authStorage.delete(REFRESH_TOKEN_KEY);
-        console.log('Tokens removidos.');
-    } catch (error) {
-        console.error('Erro ao remover tokens:', error);
-    }
+    useAuthStore.getState().clearAuthData();
 };
 
 // --- Helper da API ---
@@ -102,7 +74,36 @@ interface LoginResponse {
     refresh_token: string;
 }
 
-export const loginUser = async (credentials: LoginRequestBody): Promise<LoginResponse | null> => { return null; };
+export const loginUser = async (credentials: LoginRequestBody): Promise<LoginResponse | null> => {
+    try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials)
+        });
+        
+        const data = await handleApiResponse(response);
+        
+        if (data) {
+            const userProfile = await fetchUserProfile();
+            
+            if (userProfile) {
+                useAuthStore.getState().setAuthData(
+                    userProfile, 
+                    data.id_token, 
+                    data.refresh_token
+                );
+            }
+            
+            return data;
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('Login failed:', error);
+        return null;
+    };
+};
 interface RefreshTokenResponse { idToken: string; refreshToken: string; expiresIn: string; }
 export const refreshAuthToken = async (): Promise<RefreshTokenResponse | null> => { return null;};
 // --- API de Perfil ---

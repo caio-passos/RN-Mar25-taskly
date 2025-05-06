@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-<<<<<<< HEAD
 import { mmkvStorage } from '../../db/storageMMKV';
 import { produce } from 'immer';
 import { UserDataTypes } from '../../../types/userTypes';
@@ -9,22 +8,11 @@ import { TaskTypes } from '../../../types/taskTypes';
 interface UserStore {
   userData: UserDataTypes | null;
   setItemUserData: (data: UserDataTypes ) => void;
-=======
-import { MMKV } from 'react-native-mmkv';
-import { produce } from 'immer';
-import { UserDataTypes } from '../../../types/userTypes';
-
-
-interface UserStore {
-  userData: UserDataTypes | null;
-  setUserData: (data: UserDataTypes ) => void;
->>>>>>> develop
   clearUserData: () => void;
   updateUserData: (updater: (draft: UserDataTypes ) => void) => void;
   partialUpdate: (data: Partial<UserDataTypes >) => void;
 }
 
-<<<<<<< HEAD
 export const useUserStore = create<UserStore>()(
   persist(
     (set, get) => ({
@@ -35,25 +23,6 @@ export const useUserStore = create<UserStore>()(
         console.log("Persisted userData after setting: ", get().userData); 
       },
       clearUserData: () => set({ userData: null }),
-=======
-const storage = new MMKV();
-
-const MMKVStorage = {
-  setItem: (name: string, value: string) => storage.set(name, value),
-  getItem: (name: string) => storage.getString(name) ?? null,
-  removeItem: (name: string) => storage.delete(name),
-};
-
-export const useUserStore = create<UserStore>()(
-  persist(
-    (set) => ({
-      userData: null,
-      
-      setUserData: (data) => set({ userData: data }),
-      
-      clearUserData: () => set({ userData: null }),
-      
->>>>>>> develop
       updateUserData: (updater) => 
         set(produce((state: UserStore) => {
           if (state.userData) {
@@ -70,7 +39,6 @@ export const useUserStore = create<UserStore>()(
     }),
     {
       name: 'user-storage',
-<<<<<<< HEAD
       storage: createJSONStorage(() => mmkvStorage),
     }
   )
@@ -191,9 +159,57 @@ export const useTaskStore = create<TaskStore>()(
     }
   )
 );
-=======
-      storage: createJSONStorage(() => MMKVStorage),
+
+interface AuthStore {
+  userData: UserDataTypes | null;
+  tokens: {
+    idToken: string | null;
+    refreshToken: string | null;
+  };
+  
+  setAuthData: (userData: UserDataTypes, idToken: string, refreshToken: string) => void;
+  updateUserData: (updater: (draft: UserDataTypes) => void) => void;
+  updateTokens: (idToken: string, refreshToken: string) => void;
+  
+  clearAuthData: () => void;
+}
+
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set, get) => ({
+      userData: null,
+      tokens: {
+        idToken: null,
+        refreshToken: null
+      },
+      
+      setAuthData: (userData, idToken, refreshToken) => 
+        set({ 
+          userData, 
+          tokens: { idToken, refreshToken } 
+        }),
+      
+      updateUserData: (updater) => 
+        set(produce((state) => {
+          if (state.userData) {
+            updater(state.userData);
+          }
+        })),
+      
+      updateTokens: (idToken, refreshToken) => 
+        set(state => ({
+          tokens: { idToken, refreshToken }
+        })),
+      
+      clearAuthData: () => 
+        set({ 
+          userData: null, 
+          tokens: { idToken: null, refreshToken: null } 
+        }),
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => mmkvStorage),
     }
   )
 );
->>>>>>> develop
