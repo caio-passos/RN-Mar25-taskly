@@ -59,6 +59,9 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
   const [subtaskRefs, setSubtaskRefs] = useState<React.RefObject<SwipeableMethods>[]>([]);
+  const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
+  const [editedSubtaskTitle, setEditedSubtaskTitle] = useState('');
+
 
   const triggerUpdate = () => setForceUpdate(prev => prev + 1);
 
@@ -81,9 +84,19 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       setIsInputFocused(false);
     }
   };
-  const handleDeleteSubtask = (subtaskId: string) => {
-    if (item?.id) {
-      useTaskStore.getState().deleteSubtask(item.id, subtaskId);
+
+  const handleEditSubtask = (subtask: { id: string; title: string }) => {
+    setEditingSubtaskId(subtask.id);
+    setEditedSubtaskTitle(subtask.title);
+  };
+
+  const saveSubtaskEdit = () => {
+    if (editingSubtaskId && editedSubtaskTitle.trim()) {
+      useTaskStore.getState().updateSubtask(item!.id, editingSubtaskId, {
+        title: editedSubtaskTitle.trim()
+      });
+      setEditingSubtaskId(null);
+      triggerUpdate();
     }
   };
 
@@ -287,6 +300,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       borderBottomColor: colors.Primary,
       marginBottom: 16,
     },
+    inlineSubtaskEdit: {
+      flex: 1,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.Primary,
+      padding: 0,
+    },
     subtaskInputActions: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -348,7 +367,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={true}
         indicatorStyle='black'
-        >
+      >
         <Swipeable
           ref={swipeRef}
           friction={2}
@@ -425,8 +444,8 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                         onPress={() => {
                           handleToggleSubtaskStatus(subtask.id)
                           //ambos funcionam
-                          if(!subtask.done){      
-                          subtaskRefs[index]?.current?.openRight();
+                          if (!subtask.done) {
+                            subtaskRefs[index]?.current?.openRight();
                           }
                         }}>
                         <View>
@@ -438,10 +457,22 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                         </View>
 
                       </Pressable>
-                      <Text style={styles.subtaskTitle}>{subtask.title}</Text>
-                      <View>
+                      {editingSubtaskId === subtask.id ? (
+                        <TextInput
+                          value={editedSubtaskTitle}
+                          onChangeText={setEditedSubtaskTitle}
+                          onBlur={saveSubtaskEdit}
+                          onSubmitEditing={saveSubtaskEdit}
+                          autoFocus
+                          style={styles.inlineSubtaskEdit}
+                        />
+                      ) : (
+                        <Text style={styles.subtaskTitle}>{subtask.title}</Text>
+                      )}
+
+                      <Pressable onPress={() => handleEditSubtask(subtask)}>
                         <IconEdit height={25} width={25} />
-                      </View>
+                      </Pressable>
                     </View>
                   </View>
                 </Swipeable>
@@ -451,7 +482,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
         </View>
 
       </ScrollView>
-      <View style={{ height: 20}} />
+      <View style={{ height: 20 }} />
       {renderSubtaskInput()}
       <LongPressable
         textProps="ADICIONAR SUBTASK"

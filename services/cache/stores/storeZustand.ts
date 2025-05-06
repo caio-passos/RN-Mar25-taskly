@@ -158,6 +158,22 @@ export const useTaskStore = create<TaskStore>()(
         }
         ))
       },
+      updateSubtask: (taskId: string, subtaskId: string, updates: Partial<Subtask>) => {
+        set(produce((state) => {
+          const taskIndex = state.tasks.findIndex(task => task.id === taskId);
+          if (taskIndex !== -1) {
+            const subtaskIndex = state.tasks[taskIndex].Subtask.findIndex(
+              subtask => subtask.id === subtaskId
+            );
+            if (subtaskIndex !== -1) {
+              state.tasks[taskIndex].Subtask[subtaskIndex] = {
+                ...state.tasks[taskIndex].Subtask[subtaskIndex],
+                ...updates
+              };
+            }
+          }
+        }));
+      },
       deleteSubtask: (taskId: string, subtaskId: string) => {
         set(produce((state) => {
           const taskIndex = state.tasks.findIndex(task => task.id === taskId);
