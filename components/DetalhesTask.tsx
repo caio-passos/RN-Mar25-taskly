@@ -10,7 +10,7 @@ import React, {
 import { AppContext } from '../App';
 import LongNoFillPressable from './LongNoFillPressable';
 import LongPressable from './LongPressable';
-import { View, Text, StyleSheet, BackHandler, TextInput, Pressable } from 'react-native';
+import { View, Text, StyleSheet, BackHandler, TextInput, Pressable, ScrollView } from 'react-native';
 import { data } from '../services/db/mockData';
 import { TaskTypes } from '../types/taskTypes';
 import { PrioridadeType } from '../types/taskTypes';
@@ -217,7 +217,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       borderRadius: 8,
     },
     RootContainer: {
-      paddingTop: 40,
+      marginTop: 40,
     },
     ShadowContainer: {
       shadowColor: '#000',
@@ -344,7 +344,11 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
   return (
     <GestureHandlerRootView>
-      <View style={styles.RootContainer}>
+      <ScrollView style={styles.RootContainer}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={true}
+        indicatorStyle='black'
+        >
         <Swipeable
           ref={swipeRef}
           friction={2}
@@ -421,8 +425,9 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                         onPress={() => {
                           handleToggleSubtaskStatus(subtask.id)
                           //ambos funcionam
-                          
+                          if(!subtask.done){      
                           subtaskRefs[index]?.current?.openRight();
+                          }
                         }}>
                         <View>
                           {subtask.done ?
@@ -444,21 +449,25 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
             </View>
           )}
         </View>
-        {renderSubtaskInput()}
-        <LongPressable
-          textProps="ADICIONAR SUBTASK"
-          onPress={() => {
-            setIsAddingSubtask(true);
-            setIsInputFocused(true);
-          }}
-          style={{
-            justifyContent: 'center',
-            alignSelf: 'center',
-            width: '100%',
-          }}
-        />
-      </View>
+
+      </ScrollView>
+      <View style={{ height: 20}} />
+      {renderSubtaskInput()}
+      <LongPressable
+        textProps="ADICIONAR SUBTASK"
+        onPress={() => {
+          setIsAddingSubtask(true);
+          setIsInputFocused(true);
+        }}
+        style={{
+          justifyContent: 'center',
+          alignSelf: 'center',
+          width: '100%',
+        }}
+      />
+
     </GestureHandlerRootView>
+
   );
 };
 
