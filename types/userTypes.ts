@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { v4 as uuidv4 } from 'uuid';
 
 export interface UserDataTypes {
@@ -9,4 +10,11 @@ export interface UserDataTypes {
   checkSenha?: string;
   loggedIn?: boolean;
   avatar?: string;
+=======
+export interface UserData {
+  nome: string;
+  email: string;
+  telefone: number;
+  senha: string;
+>>>>>>> develop
 }

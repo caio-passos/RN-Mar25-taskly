@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, Image } from 'react-native';
+import { Alert, Modal, StyleSheet, Text, Pressable, View, Image, TextInput } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
@@ -7,10 +7,10 @@ import LightModeBtn from '../../assets/improviso2.png';
 import DarkModeBtn from '../../assets/improviso1.png';
 
 interface DarkAndLigthMode {
-    setControl: Function;
+    setAddSubtask: Function;
 }
 
-const DarkAndLigthMode = (props: DarkAndLigthMode) => {
+const AddSubTask = (props: DarkAndLigthMode) => {
     const colors = React.useContext(AppContext);
 
     const styles = StyleSheet.create({
@@ -34,13 +34,11 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
             alignSelf: 'center',
             margin: 'auto',
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: 'space-evenly',
         },
         textTitle: {
             fontWeight: 500,
             fontSize: 18,
-            textDecorationLine: 'underline',
-            alignSelf: 'flex-start',
         },
         containerSvg: {
             display: 'flex',
@@ -99,6 +97,14 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
             width: '100%',
             height: '100%',
         },
+        boxInput: {
+            width: '100%',
+            height: 47,
+            borderWidth: 2,
+            borderColor: '#5B3CC4',
+            borderRadius: 8,
+            justifyContent: 'center',
+        },
     });
 
     return (
@@ -109,22 +115,28 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
                 style={styles.modalContainer}
             >
                 <View style={styles.containerAll}>
-                    <Text style={styles.textTitle}>Escolha o tema</Text>
+                    <Text style={styles.textTitle}>Adicioar SubTask</Text>
 
                     <View style={styles.containerSvg}>
-                        <Image source={DarkModeBtn} />
-                        <Image source={LightModeBtn} />
+                        <View style={styles.boxInput}>
+                            <TextInput
+                                placeholder="Digite a subtask"
+                                onChangeText={(value) => {
+                                    
+                                }}
+                            />
+                        </View>
                     </View>
 
                     <View style={styles.containerBtn}>
-                        <Pressable onPress={() => props.setControl(false)} style={styles.btnNotAgain}><Text style={styles.textBtnNotAgain}>Agora não</Text></Pressable>
-                        <Pressable onPress={() => props.setControl(false)} style={styles.btnConfirm}><Text style={styles.textBtnConfirm}>Confirmar</Text></Pressable>
+                        <Pressable onPress={() => props.setAddSubtask(false)} style={styles.btnNotAgain}><Text style={styles.textBtnNotAgain}>Agora não</Text></Pressable>
+                        <Pressable onPress={() => props.setAddSubtask(false)} style={styles.btnConfirm}><Text style={styles.textBtnConfirm}>Confirmar</Text></Pressable>
                     </View>
                 </View>
-                <View style={styles.transparentContainer}><Pressable style={styles.pressableStyle} onPress={() => props.setControl(false)}></Pressable></View>
+                <View style={styles.transparentContainer}><Pressable style={styles.pressableStyle} onPress={() => props.setAddSubtask(false)}></Pressable></View>
             </Modal>
         </SafeAreaView>
     );
 };
 
-export default DarkAndLigthMode;
+export default AddSubTask;
