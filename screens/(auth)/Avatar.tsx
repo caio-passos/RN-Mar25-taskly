@@ -96,7 +96,8 @@ function Avatar({navigation}: AvatarProps) {
               style={styles.button} 
               onPress={() => {
                   if (selectedAvatar) {
-                      useUserStore.getState().partialUpdate({ loggedIn: true });
+                      const userStore = useUserStore.getState();
+                      userStore.partialUpdate({ loggedIn: true });
                       navigation.navigate('Inicio');
         
               }}
