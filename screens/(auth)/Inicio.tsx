@@ -12,7 +12,7 @@ import type { TaskTypes } from "../../types/taskTypes";
 import ReturnLeft from '../../assets/caretLeft.svg';
 
 const InicioContent = () => {
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const [modalVisible, setModalVisible] = useState(false);
     const [modalCriarTarefa, setModalCriarTarefa] = useState(false);
     const [selectedTask, setSelectedTask] = useState<TaskTypes | null>(null);
@@ -47,7 +47,6 @@ const InicioContent = () => {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            bottom: 60,
             paddingTop: 80,
             paddingHorizontal: 32,
             backgroundColor: colors.Background,
@@ -107,48 +106,54 @@ const InicioContent = () => {
             padding: 10,
             borderRadius: 5,
         },
+        containerAllMin: {
+            position: 'relative',
+            bottom: 60,
+        },
     });
 
     return (
         <View style={styles.container}>
-            <View style={styles.topBar}>
-                {inicioStackTwo && ShowDetalhes && <View style={styles.containerBack}>
-                    <Pressable style={styles.returnPressable} onPress={() => {
-                        setInicioStackOne(true);
-                        setInicioStackTwo(false);
-                        setShowDetalhes(false);
-                    }}>
-                        <ReturnLeft width={23} height={17.25} />
-                    </Pressable>
-                </View>}
-                <Text style={styles.title}>Taskly</Text>
-                <Image source={require('../../assets/icons/lightmode/useravatar.png')} style={{ width: 50, height: 50 }} />
-            </View>
-            <View style={styles.middleSection}>
-                <View style={styles.TasksStyle}>
-                    {!ShowDetalhes &&(
-                        <View style={styles.IconFilterStyle}>
-                            <Pressable onPress={() => { '' }}>
-                                <IconFilter width={24} height={24} />
-                            </Pressable>
-                        </View>
-                    )
-                    }
-                    {inicioStackTwo && ShowDetalhes && <DetalhesTask item={selectedTask} />}
-                    {inicioStackOne && <Tasks
-                        onOpenModal={() => setModalCriarTarefa(true)}
-                        onOpenDetalhes={handleShowDetalhes}
-                        setInicioStackOne={setInicioStackOne}
-                        setInicioStackTwo={setInicioStackTwo}
-                    />}
-                    <ModalCriarTarefas
-                        visible={modalCriarTarefa}
-                        onClose={() => setModalCriarTarefa(false)}
-                    />
+            <View style={styles.containerAllMin}>
+                <View style={styles.topBar}>
+                    {inicioStackTwo && ShowDetalhes && <View style={styles.containerBack}>
+                        <Pressable style={styles.returnPressable} onPress={() => {
+                            setInicioStackOne(true);
+                            setInicioStackTwo(false);
+                            setShowDetalhes(false);
+                        }}>
+                            <ReturnLeft width={23} height={17.25} />
+                        </Pressable>
+                    </View>}
+                    <Text style={styles.title}>Taskly</Text>
+                    <Image source={require('../../assets/icons/lightmode/useravatar.png')} style={{ width: 50, height: 50 }} />
                 </View>
-                <View>
+                <View style={styles.middleSection}>
+                    <View style={styles.TasksStyle}>
+                        {!ShowDetalhes && (
+                            <View style={styles.IconFilterStyle}>
+                                <Pressable onPress={() => { '' }}>
+                                    <IconFilter width={24} height={24} />
+                                </Pressable>
+                            </View>
+                        )
+                        }
+                        {inicioStackTwo && ShowDetalhes && <DetalhesTask item={selectedTask} />}
+                        {inicioStackOne && <Tasks
+                            onOpenModal={() => setModalCriarTarefa(true)}
+                            onOpenDetalhes={handleShowDetalhes}
+                            setInicioStackOne={setInicioStackOne}
+                            setInicioStackTwo={setInicioStackTwo}
+                        />}
+                        <ModalCriarTarefas
+                            visible={modalCriarTarefa}
+                            onClose={() => setModalCriarTarefa(false)}
+                        />
+                    </View>
+                    <View>
 
 
+                    </View>
                 </View>
             </View>
         </View>

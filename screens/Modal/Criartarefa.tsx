@@ -10,7 +10,7 @@ interface ModalCriarTarefas {
 }
 
 const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
-    const colors = React.useContext(AppContext);
+    const colors = React.useContext(AppContext)!.colors;
     const [titulo, setTitulo] = useState('');
     const [descrição, setDescrição] = useState('');
     const [prazo, setPrazo] = useState('');

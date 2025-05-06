@@ -11,7 +11,7 @@ interface DarkAndLigthMode {
 }
 
 const AddSubTask = (props: DarkAndLigthMode) => {
-    const colors = React.useContext(AppContext);
+    const colors = React.useContext(AppContext)!.colors;
 
     const styles = StyleSheet.create({
         modalContainer: {

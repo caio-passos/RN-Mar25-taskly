@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types/routingTypes';
-
+import { AppContext } from '../../App';
 
 interface AvatarProps {
     navigation: NativeStackScreenProps<RootStackParamList, 'Dashboard'>;
@@ -23,7 +23,53 @@ function Avatar({navigation}: AvatarProps) {
         } else {
           setSelectedAvatar(id);
         }
-      };
+    };
+
+    const colors = useContext(AppContext)!.colors;
+
+    const styles = StyleSheet.create({
+        title: {
+            paddingTop: 120,
+            flex: 1,
+            alignItems: 'center',
+            backgroundColor: colors.Background,
+        },
+        row: {
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginVertical: 10,
+        },
+        img: {
+            borderRadius: 100,
+            width: 95,
+            height: 95,
+            borderWidth: 2,
+            marginHorizontal: 6,
+        },
+        titleText: {
+            fontWeight: 'bold',
+            fontSize: 24,
+            color: colors.MainText,
+        },
+        titleSubtext: {
+            fontWeight: '400',
+            color: colors.MainText,
+        },
+        button: {
+            marginTop: 70,
+            backgroundColor: '#5B3CC4',
+            width: 329,
+            height: 47,
+            borderRadius: 8,
+        },
+        buttonText: {
+            color: colors.Background,
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: 20,
+            paddingVertical: 10,
+        },
+    });
 
     return (
         <View style={styles.title}>
@@ -95,46 +141,5 @@ function Avatar({navigation}: AvatarProps) {
     </View>
     );
 }
-
-const styles = StyleSheet.create({
-    title: {
-      marginTop: 120,
-      flex: 1,
-      alignItems: 'center',
-    },
-    row: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      marginVertical: 10,
-    },
-    img: {
-      borderRadius: 100,
-      width: 95,
-      height: 95,
-      borderWidth: 2,
-      marginHorizontal: 6,
-    },
-    titleText: {
-      fontWeight: 'bold',
-      fontSize: 24,
-    },
-    titleSubtext: {
-      fontWeight: '400',
-    },
-    button: {
-      marginTop: 70,
-      backgroundColor: '#5B3CC4',
-      width: 329,
-      height: 47,
-      borderRadius: 8,
-    },
-    buttonText:{
-      color: '#FFFFFF',
-      textAlign: 'center',
-      fontWeight: 'bold',
-      fontSize: 20,
-      paddingVertical: 10,
-    },
-  });
 
 export default Avatar;

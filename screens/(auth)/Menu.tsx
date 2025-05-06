@@ -19,7 +19,7 @@ interface MenuProps {
 }
 
 const Menu = (props: MenuProps) => {
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const [biometria, setBiometria] = useState(false);
     const [control, setControl] = useState(false);
@@ -53,6 +53,7 @@ const Menu = (props: MenuProps) => {
         Container: {
             flex: 1,
             justifyContent: 'center',
+            backgroundColor: colors.Background,
         },
         Header: {
             flexDirection: 'column',
@@ -60,18 +61,25 @@ const Menu = (props: MenuProps) => {
             alignItems: 'center',
             paddingTop: 40,
             paddingBottom: 32,
+            color: colors.MainText,
         },
         ContainerTitle: {
             paddingTop: 12,
+            color: colors.MainText,
         },
         ContainerCarrousel: {
             flex: 2,
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
+            backgroundColor: colors.Background,
         },
         Title: {
             fontWeight: 'bold',
             fontSize: 18,
+            color: colors.MainText,
+        },
+        EmailAndPhone: {
+            color: colors.MainText,
         },
         ContainerBottom: {
             flex: 3,
@@ -102,10 +110,11 @@ const Menu = (props: MenuProps) => {
             fontSize: 18,
             fontWeight: 'bold',
             flex: 1,
+            color: colors.MainText,
         },
         RightArrow: {
-            marginRight: 8
-        }
+            marginRight: 8,
+        },
     });
 
 
@@ -120,10 +129,10 @@ const Menu = (props: MenuProps) => {
                         <Text style={styles.Title}>Rafaela Santos</Text>
                     </View>
                     <View>
-                        <Text>rafaela.santos@compasso.com.br</Text>
+                        <Text style={styles.EmailAndPhone}>rafaela.santos@compasso.com.br</Text>
                     </View>
                     <View>
-                        <Text>(81) 98650 - 9240</Text>
+                        <Text style={styles.EmailAndPhone}>(81) 98650 - 9240</Text>
                     </View>
                 </View>
                 <View style={styles.ContainerCarrousel}>

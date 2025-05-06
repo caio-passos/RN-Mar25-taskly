@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Image } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
 import LightModeBtn from '../../assets/improviso2.png';
 import DarkModeBtn from '../../assets/improviso1.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface DarkAndLigthMode {
     setControl: Function;
 }
 
 const DarkAndLigthMode = (props: DarkAndLigthMode) => {
-    const colors = React.useContext(AppContext);
+    const colors = React.useContext(AppContext)!.colors;
+    const setControlTheme = React.useContext(AppContext)!.setControlTheme;
+    const [controlThemeModal, setControlThemeModal] = useState(false);
 
     const styles = StyleSheet.create({
         modalContainer: {
@@ -41,6 +44,7 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
             fontSize: 18,
             textDecorationLine: 'underline',
             alignSelf: 'flex-start',
+            color: colors.MainText,
         },
         containerSvg: {
             display: 'flex',
@@ -112,13 +116,16 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
                     <Text style={styles.textTitle}>Escolha o tema</Text>
 
                     <View style={styles.containerSvg}>
-                        <Image source={DarkModeBtn} />
-                        <Image source={LightModeBtn} />
+                        <Pressable onPress={() => setControlThemeModal(true)}><Image source={DarkModeBtn} /></Pressable>
+                        <Pressable onPress={() => setControlThemeModal(false)}><Image source={LightModeBtn} /></Pressable>
                     </View>
 
                     <View style={styles.containerBtn}>
                         <Pressable onPress={() => props.setControl(false)} style={styles.btnNotAgain}><Text style={styles.textBtnNotAgain}>Agora não</Text></Pressable>
-                        <Pressable onPress={() => props.setControl(false)} style={styles.btnConfirm}><Text style={styles.textBtnConfirm}>Confirmar</Text></Pressable>
+                        <Pressable onPress={() => {
+                            AsyncStorage.setItem('theme', JSON.stringify(`${controlThemeModal}`)).then(() => setControlTheme(controlThemeModal));
+                            props.setControl(false);
+                        }} style={styles.btnConfirm}><Text style={styles.textBtnConfirm}>Confirmar</Text></Pressable>
                     </View>
                 </View>
                 <View style={styles.transparentContainer}><Pressable style={styles.pressableStyle} onPress={() => props.setControl(false)}></Pressable></View>

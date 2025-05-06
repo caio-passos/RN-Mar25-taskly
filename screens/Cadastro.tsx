@@ -16,7 +16,7 @@ interface CadastroProps {
 type DataInfoUser = { nome: string, email: string, telefone: string, senha: string, checkSenha: string }
 
 function Cadastro({ navigation }: CadastroProps) {
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const error: Array<{ tag: string, error: string }> = [];
 
     const [nome, setNome] = useState('');
@@ -94,7 +94,7 @@ function Cadastro({ navigation }: CadastroProps) {
             paddingHorizontal: 32,
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: '#F5FCFF',
+            backgroundColor: colors.Background,
         },
         title: {
             top: 40,
@@ -160,7 +160,7 @@ function Cadastro({ navigation }: CadastroProps) {
             marginTop: 25,
         },
         textCriarConta: {
-            color: '#FFFFFF',
+            color: colors.Background,
             textAlign: 'center',
             fontWeight: 700,
         },
@@ -180,6 +180,9 @@ function Cadastro({ navigation }: CadastroProps) {
             position: 'absolute',
             left: 0,
             bottom: -35,
+        },
+        textTitleInput: {
+            color: colors.MainText,
         },
     });
 
@@ -322,6 +325,8 @@ function Cadastro({ navigation }: CadastroProps) {
         return String(ddd);
     }
 
+    const colorPlace = styles.textTitleInput.color;
+
     return (
         <View style={styles.container}>
             <Pressable
@@ -334,7 +339,7 @@ function Cadastro({ navigation }: CadastroProps) {
             </Pressable>
             <Text style={styles.title}>CADASTRO</Text>
             <View style={styles.loginForm}>
-                <Text>Nome Completo</Text>
+                <Text style={styles.textTitleInput}>Nome Completo</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu nome completo"
@@ -344,12 +349,13 @@ function Cadastro({ navigation }: CadastroProps) {
                             setNome(String(value));
                             setNome(value)
                         }}
+                        placeholderTextColor={colorPlace}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsNome.map((value) => `${value.error}\n`)}</Text>}
             </View>
             <View style={styles.loginForm}>
-                <Text>E-mail</Text>
+                <Text style={styles.textTitleInput}>E-mail</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu e-mail"
@@ -359,12 +365,13 @@ function Cadastro({ navigation }: CadastroProps) {
                             setEmailValidation(String(value));
                             setEmail(value);
                         }}
+                        placeholderTextColor={colorPlace}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsEmail.map((value) => `${value.error}\n`)}</Text>}
             </View>
             <View style={styles.loginForm}>
-                <Text>Número</Text>
+                <Text style={styles.textTitleInput}>Número</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu número de telefone"
@@ -374,13 +381,14 @@ function Cadastro({ navigation }: CadastroProps) {
                             formatPhone(String(value));
                             setTelefone(value)
                         }}
+                        placeholderTextColor={colorPlace}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsTelefone.map((value) => `${value.error}\n`)}</Text>}
             </View>
 
             <View style={styles.loginForm}>
-                <Text>Senha</Text>
+                <Text style={styles.textTitleInput}>Senha</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         secureTextEntry={true}
@@ -390,18 +398,20 @@ function Cadastro({ navigation }: CadastroProps) {
                             setSenha(text);
                             setSenha(String(text))
                         }}
+                        placeholderTextColor={colorPlace}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsSenha.map((value) => `${value.error}\n`)}</Text>}
             </View>
             <View style={styles.loginForm}>
-                <Text>Confirmar senha</Text>
+                <Text style={styles.textTitleInput}>Confirmar senha</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         secureTextEntry={true}
                         placeholder="Confirme sua senha"
                         value={checkSenha}
                         onChangeText={(value) => setCheckSenha(String(value))}
+                        placeholderTextColor={colorPlace}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsCheckSenha.map((value) => `${value.error}\n`)}</Text>}

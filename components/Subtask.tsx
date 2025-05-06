@@ -15,7 +15,7 @@ interface SubtaskProps {
 }
 
 const Subtask = ({ data, onAddSubtask, subtaskText }: SubtaskProps) => {
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const [subtaskCheck, setSubtaskCheck] = useState<Record<number, boolean>>({});
 
     const handleAdd = () => {

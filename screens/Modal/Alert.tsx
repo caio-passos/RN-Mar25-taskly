@@ -27,7 +27,7 @@ const ModalAlert = ({
     rightButtonStyle,
     rightButtonTextStyle
 }: ModalAlertProps) => {
-    const colors = React.useContext(AppContext);
+    const colors = React.useContext(AppContext)!.colors;
 
     const styles = StyleSheet.create({
         centeredView: {
@@ -77,12 +77,14 @@ const ModalAlert = ({
             width: '100%',
             textAlign: 'justify',
             justifyContent: 'center',
+            color: colors.MainText,
         },
         buttonText: {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
+            color: colors.MainText,
         },
         buttonRightText: {
             width: '100%',
@@ -97,8 +99,12 @@ const ModalAlert = ({
             marginBottom: 15,
             textAlign: 'center',
             fontWeight: 'bold',
+            color: colors.MainText,
         },
-    })
+        textModal: {
+            color: colors.MainText,
+        },
+    });
     return (
         <Modal
             animationType="slide"

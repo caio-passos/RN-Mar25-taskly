@@ -11,7 +11,7 @@ interface LongPressableProps {
 
 function LongPressable({ textProps, onPress, style, textStyle}: LongPressableProps) {
 
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const styles = StyleSheet.create({
         buttonFilled: {
             backgroundColor: colors.Primary,

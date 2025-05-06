@@ -21,9 +21,10 @@ const TaskItem = ({ item, onOpenDetalhes, setInicioStackOne, setInicioStackTwo }
     const handleSelection = () => {
         setIsSelected(!isSelected);
     }
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const styles = StyleSheet.create({
         RootContainer: {
+            backgroundColor: colors.Background,
         },
         ShadowContainer: {
             shadowColor: "#000",
@@ -48,13 +49,15 @@ const TaskItem = ({ item, onOpenDetalhes, setInicioStackOne, setInicioStackTwo }
         },
         TitleStyle: {
             fontSize: 18,
-            fontWeight: 600
+            fontWeight: 600,
+            color: colors.MainText,
         },
         DescricaoStyle: {
             fontSize: 14,
             fontWeight: 500,
             paddingTop: 13,
             paddingBottom: 12,
+            color: colors.MainText,
         },
         tagsContainer: {
             flexDirection: 'row',

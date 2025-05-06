@@ -24,7 +24,7 @@ type DetalhesProps = {
 };
 
 const DetalhesTask = ({ item }: DetalhesProps) => {
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const [finishTask, setFinishTask] = useState(true);
     const [addSubtask, setAddSubtask] = useState(false);
     const [updatedSubtask, setUpdatedSubtask] = useState('');

@@ -19,7 +19,7 @@ interface ThemeProps {
 }
 
 const Theme = (props: ThemeProps) => {
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const [control, setControl] = useState(false);
 
@@ -76,6 +76,7 @@ const Theme = (props: ThemeProps) => {
             fontSize: 18,
             fontWeight: 'bold',
             flex: 1,
+            color: colors.MainText,
         },
         RightArrow: {
             marginRight: 8
@@ -114,6 +115,7 @@ const Theme = (props: ThemeProps) => {
         textTerms: {
             fontWeight: 400,
             fontSize: 16,
+            color: colors.MainText,
         },
     });
     return (
@@ -134,7 +136,7 @@ const Theme = (props: ThemeProps) => {
                         setControl(true);
                     }}>
                         <View style={styles.ContainerPressables}>
-                            <Text style={styles.PressablesText}>Habilitar tema claro</Text>
+                            <Text style={styles.PressablesText}>Habilitar tema {colors.Background === '#F4F4F4' ? 'escuro' : 'claro'}</Text>
                             <View style={styles.RightArrow}>
                                 <IconRightArrow height={24} width={24} />
                             </View>

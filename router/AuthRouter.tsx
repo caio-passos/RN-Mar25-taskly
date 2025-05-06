@@ -12,7 +12,7 @@ import Menu from '../screens/(auth)/Menu';
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
 export default function HomeTabBar() {
-  const colors = useContext(AppContext)
+    const colors = useContext(AppContext)!.colors;
   return (
     <Tab.Navigator
       screenOptions={{

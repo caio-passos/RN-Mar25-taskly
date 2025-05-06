@@ -42,7 +42,7 @@ const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
         }
     ];
 
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
 
     const styles = StyleSheet.create({
         ShadowContainer: {
@@ -60,7 +60,9 @@ const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
             paddingRight: 32,
             elevation: 5,
         },
-
+        boxStyle: {
+            backgroundColor: colors.Background,
+        },
     });
 
     return (
