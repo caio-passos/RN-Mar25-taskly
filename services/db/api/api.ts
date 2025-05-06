@@ -91,7 +91,7 @@ const handleApiResponse = async (response: Response) => {
 // --- API p/ Auth ---
 interface RegisterRequestBody { email: string; password: string; name: string; phone_number: string; }
 interface RegisterResponse { uid: string; idToken: string; refreshToken?: string; }
-export const registerUser = async (userData: RegisterRequestBody): Promise<RegisterResponse | null> => { return null; /* TODO: Implementar */ };
+export const registerUser = async (userData: RegisterRequestBody): Promise<RegisterResponse | null> => { return null; };;
 
 interface LoginRequestBody {
     email: string;
@@ -102,16 +102,16 @@ interface LoginResponse {
     refresh_token: string;
 }
 
-export const loginUser = async (credentials: LoginRequestBody): Promise<LoginResponse | null> => { return null; /* TODO: Implementar */ };
+export const loginUser = async (credentials: LoginRequestBody): Promise<LoginResponse | null> => { return null; };
 interface RefreshTokenResponse { idToken: string; refreshToken: string; expiresIn: string; }
-export const refreshAuthToken = async (): Promise<RefreshTokenResponse | null> => { return null; /* TODO: Implementar */ };
+export const refreshAuthToken = async (): Promise<RefreshTokenResponse | null> => { return null;};
 // --- API de Perfil ---
 interface ApiUserProfile { uid: string; email: string; name: string; picture: string; phone?: string; }
-export const fetchUserProfile = async (): Promise<ApiUserProfile | null> => { return null; /* TODO: Implementar */ };
-export const updateUserProfileName = async (name: string): Promise<boolean> => { return false; /* TODO: Implementar */ };
-export const updateUserProfileAvatar = async (picture: string): Promise<boolean> => { return false; /* TODO: Implementar */ };
+export const fetchUserProfile = async (): Promise<ApiUserProfile | null> => { return null;  };
+export const updateUserProfileName = async (name: string): Promise<boolean> => { return false;  };
+export const updateUserProfileAvatar = async (picture: string): Promise<boolean> => { return false;  };
 interface FullProfileBody { name: string; phone: string; picture: string; }
-export const createOrUpdateUserProfile = async (profileData: FullProfileBody): Promise<boolean> => { return false; /* TODO: Implementar */ };
+export const createOrUpdateUserProfile = async (profileData: FullProfileBody): Promise<boolean> => { return false;};
 
 
 
