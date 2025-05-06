@@ -109,6 +109,9 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0" // temp fix
     implementation("com.facebook.react:react-android")
 
     if (hermesEnabled.toBoolean()) {
