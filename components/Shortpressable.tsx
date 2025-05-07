@@ -9,7 +9,7 @@ interface ShortPressableProps {
 
 function ShortPressable({ textProps, onPress}: ShortPressableProps) {
 
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const styles = StyleSheet.create({
         buttonFilled: {
             backgroundColor: colors.Primary,

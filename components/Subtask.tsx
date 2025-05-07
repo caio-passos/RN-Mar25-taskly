@@ -21,7 +21,7 @@ const Subtask = ({
   subtaskText,
   onSubtaskTextChange,
 }: SubtaskProps) => {
-  const colors = useContext(AppContext);
+  const colors = useContext(AppContext)!.colors;
   const {tasks} = useTaskStore();
   const [subtaskCheck, setSubtaskCheck] = useState<Record<number, boolean>>({});
   const currentTask = tasks.find(task => task.id === data.id);

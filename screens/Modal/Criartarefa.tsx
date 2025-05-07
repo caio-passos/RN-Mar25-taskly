@@ -20,10 +20,12 @@ interface ModalCriarTarefas {
   onClose: () => void;
 }
 
-const ModalCriarTarefas = ({visible, onClose}: ModalCriarTarefas) => {
-  const [titulo, setTitulo] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [prazo, setPrazo] = useState('');
+
+const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
+    const colors = React.useContext(AppContext)!.colors;
+    const [titulo, setTitulo] = useState('');
+    const [descrição, setDescrição] = useState('');
+    const [prazo, setPrazo] = useState('');
 
   const CreateTask = useTaskStore().addTask;
 
@@ -47,7 +49,6 @@ const ModalCriarTarefas = ({visible, onClose}: ModalCriarTarefas) => {
     onClose();
   };
 
-  const colors = useContext(AppContext);
   const styles = StyleSheet.create({
     centeredView: {
       flex: 1,

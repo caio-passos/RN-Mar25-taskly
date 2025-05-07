@@ -19,9 +19,11 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
   const handleSelection = () => {
     setIsSelected(!isSelected);
   };
-  const colors = useContext(AppContext);
+  const colors = useContext(AppContext)!.colors;  
   const styles = StyleSheet.create({
-    RootContainer: {},
+    RootContainer: {
+      backgroundColor: colors.Background,
+    },
     ShadowContainer: {
       shadowColor: '#000',
       shadowOffset: {
@@ -46,10 +48,12 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
     TitleStyle: {
       fontSize: 18,
       fontWeight: 600,
+      color: colors.MainText,
     },
     DescricaoStyle: {
       fontSize: 14,
       fontWeight: 500,
+      color: colors.MainText,
     },
     tagsContainer: {
       flexDirection: 'row',

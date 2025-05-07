@@ -150,6 +150,22 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       </Animated.View>
     );
   };
+    const colors = useContext(AppContext)!.colors;
+    const [finishTask, setFinishTask] = useState(true);
+    const [addSubtask, setAddSubtask] = useState(false);
+    const [updatedSubtask, setUpdatedSubtask] = useState('');
+    const swipeActive = useSharedValue(false);
+
+    const handleFinishTask = () => {
+        setFinishTask(true)
+    };
+    const handleAddSubtask = () => {
+        setAddSubtask(true);
+    };
+
+    const swipeRef = useRef<SwipeableMethods>(null);
+    const translateX = useSharedValue(0);
+    const sv = useSharedValue(50);
 
   const renderRightActions = (
     progress: SharedValue<number>,
@@ -200,7 +216,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     );
   };
 
-  const colors = useContext(AppContext);
+  // const colors = useContext(AppContext); merge
   const getCorPrioridade = (priority?: PrioridadeType) => {
     switch (priority) {
       case 'baixa':

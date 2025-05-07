@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, {useState} from 'react';
+=======
+import React, { useContext } from 'react';
+>>>>>>> feature/changeTheme
 import {
   StyleSheet,
   Text,
@@ -9,18 +13,80 @@ import {
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types/routingTypes';
+<<<<<<< HEAD
 import { useAuthStore } from '../../services/cache/stores/storeZustand';
 import { useUserStore } from '../../services/cache/stores/storeZustand';
 import { AvatarData } from '../../types/userTypes';
+=======
+import { AppContext } from '../../App';
+>>>>>>> feature/changeTheme
 
 interface AvatarProps {
   navigation: NativeStackScreenProps<RootStackParamList, 'Avatar'>;
 }
 
+<<<<<<< HEAD
 function Avatar({ navigation }: AvatarProps) {
   const [ selectedAvatar, setSelectedAvatar ] = useState<number | null>(null);
   const authStore = useAuthStore().userData;
   const userStore = useUserStore().userData;
+=======
+function Avatar({navigation}: AvatarProps) {
+    const [selectedAvatar, setSelectedAvatar] = React.useState<number | null>(null);
+    const handlePress = (id: number) => {
+        if (selectedAvatar === id) {
+          setSelectedAvatar(null);
+        } else {
+          setSelectedAvatar(id);
+        }
+    };
+
+    const colors = useContext(AppContext)!.colors;
+
+    const styles = StyleSheet.create({
+        title: {
+            paddingTop: 120,
+            flex: 1,
+            alignItems: 'center',
+            backgroundColor: colors.Background,
+        },
+        row: {
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginVertical: 10,
+        },
+        img: {
+            borderRadius: 100,
+            width: 95,
+            height: 95,
+            borderWidth: 2,
+            marginHorizontal: 6,
+        },
+        titleText: {
+            fontWeight: 'bold',
+            fontSize: 24,
+            color: colors.MainText,
+        },
+        titleSubtext: {
+            fontWeight: '400',
+            color: colors.MainText,
+        },
+        button: {
+            marginTop: 70,
+            backgroundColor: '#5B3CC4',
+            width: 329,
+            height: 47,
+            borderRadius: 8,
+        },
+        buttonText: {
+            color: colors.Background,
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: 20,
+            paddingVertical: 10,
+        },
+    });
+>>>>>>> feature/changeTheme
 
   const avatars = [
     { id: 1, uri: require('../../assets/icons/lightmode/useravatar.png'), borderColor: '#5B3CC4' },
@@ -111,6 +177,7 @@ function Avatar({ navigation }: AvatarProps) {
   );
 }
 
+<<<<<<< HEAD
 const styles = StyleSheet.create({
   title: {
     marginTop: 120,
@@ -152,4 +219,6 @@ const styles = StyleSheet.create({
   },
 });
 
+=======
+>>>>>>> feature/changeTheme
 export default Avatar;
