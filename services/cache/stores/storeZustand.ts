@@ -4,6 +4,7 @@ import { mmkvStorage } from '../../db/storageMMKV';
 import { produce } from 'immer';
 import { AvatarData, UserDataTypes } from '../../../types/userTypes';
 import { TaskTypes } from '../../../types/taskTypes';
+import Theme from '../../../screens/(auth)/Theme';
 
 interface UserStore {
   userData: UserDataTypes | null;
@@ -211,8 +212,8 @@ interface AuthStore {
   setAuthData: (userData: UserDataTypes, idToken: string, refreshToken: string) => void;
   updateUserData: (updater: (draft: UserDataTypes) => void) => void;
   setAvatar: (avatar: AvatarData) => void;
+  setTheme: (theme : UserDataTypes) => void;
   updateTokens: (idToken: string, refreshToken: string) => void;
-
   clearAuthData: () => void;
 }
 
@@ -243,7 +244,10 @@ export const useAuthStore = create<AuthStore>()(
             state.userData.avatar = avatar;
           }
         })),
-
+        setTheme: (theme: UserDataTypes) =>
+            set(produce((state) => {
+                state.userData.theme = theme;
+            })),
       updateTokens: (idToken, refreshToken) =>
         set(state => ({
           tokens: { idToken, refreshToken }

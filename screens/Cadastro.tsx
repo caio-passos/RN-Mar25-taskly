@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal, SafeAreaView } from 'react-native';
 import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
@@ -114,22 +114,29 @@ function Cadastro({ navigation }: CadastroProps) {
             backgroundColor: colors.Background,
         },
         title: {
-            top: 40,
             fontSize: 24,
-            fontWeight: 'bold',
+            fontWeight: 700,
+            paddingTop: 32,
             color: colors.MainText,
-            marginBottom: 20,
-        },
-        returnPressable: {
-            position: 'absolute',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            top: 50,
-            left: 20,
+            marginLeft: 2,
+        },
+        headerContainer: {
+            width: '100%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignSelf: 'flex-start',
+        },
+        returnPressable: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
             backgroundColor: colors.SecondaryText,
             padding: 10,
             borderRadius: 5,
+            alignSelf: 'flex-start',
         },
         boxTextVoltar: {
             flexDirection: 'row',
@@ -266,31 +273,28 @@ function Cadastro({ navigation }: CadastroProps) {
 
     return (
         <View style={styles.container}>
-            <Pressable
-                style={styles.returnPressable}
-                onPress={() => navigation.goBack()}>
-                <ReturnLeft width={23} height={17.25} />
-                <View style={styles.boxTextVoltar}>
-                    <Text style={styles.textVoltar}>VOLTAR</Text>
-                </View>
-            </Pressable>
+            <View style={styles.headerContainer}>
+                <Pressable
+                    style={styles.returnPressable}
+                    onPress={() => navigation.goBack()}
+                >
+                    <ReturnLeft width={23} height={17.25} />
+                    <View style={styles.boxTextVoltar}>
+                        <Text style={styles.textVoltar}>VOLTAR</Text>
+                    </View>
+                </Pressable>
+            </View>
             <Text style={styles.title}>CADASTRO</Text>
             <View style={styles.loginForm}>
                 <Text style={styles.textTitleInput}>Nome Completo</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu nome completo"
+                        placeholderTextColor={colors.MainText}
                         keyboardType="default"
                         value={nome}
-<<<<<<< HEAD
                         onChangeText={setNome}
-=======
-                        onChangeText={(value) => {
-                            setNome(String(value));
-                            setNome(value)
-                        }}
-                        placeholderTextColor={colorPlace}
->>>>>>> feature/changeTheme
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsNome.map((value) => `${value.error}\n`)}</Text>}
@@ -300,18 +304,11 @@ function Cadastro({ navigation }: CadastroProps) {
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu e-mail"
+                        placeholderTextColor={colors.MainText}
                         keyboardType="email-address"
-<<<<<<< HEAD
                         value={email}
                         onChangeText={setEmail}
-=======
-                        value={emailValidation}
-                        onChangeText={(value) => {
-                            setEmailValidation(String(value));
-                            setEmail(value);
-                        }}
-                        placeholderTextColor={colorPlace}
->>>>>>> feature/changeTheme
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsEmail.map((value) => `${value.error}\n`)}</Text>}
@@ -328,6 +325,7 @@ function Cadastro({ navigation }: CadastroProps) {
                             setTelefone(value)
                         }}
                         placeholderTextColor={colorPlace}
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsTelefone.map((value) => `${value.error}\n`)}</Text>}
@@ -339,16 +337,10 @@ function Cadastro({ navigation }: CadastroProps) {
                     <TextInput
                         secureTextEntry={true}
                         placeholder="Digite sua senha"
+                        placeholderTextColor={colors.MainText}
                         value={senha}
-<<<<<<< HEAD
                         onChangeText={setSenha}
-=======
-                        onChangeText={(text) => {
-                            setSenha(text);
-                            setSenha(String(text))
-                        }}
-                        placeholderTextColor={colorPlace}
->>>>>>> feature/changeTheme
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsSenha.map((value) => `${value.error}\n`)}</Text>}
@@ -360,12 +352,9 @@ function Cadastro({ navigation }: CadastroProps) {
                         secureTextEntry={true}
                         placeholder="Confirme sua senha"
                         value={checkSenha}
-<<<<<<< HEAD
                         onChangeText={setCheckSenha}
-=======
-                        onChangeText={(value) => setCheckSenha(String(value))}
                         placeholderTextColor={colorPlace}
->>>>>>> feature/changeTheme
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsCheckSenha.map((value) => `${value.error}\n`)}</Text>}
@@ -398,6 +387,7 @@ function Cadastro({ navigation }: CadastroProps) {
                 leftButtonText='Agora não'
                 rightButtonText='ATIVAR'
             />
+
         </View>
 
     );

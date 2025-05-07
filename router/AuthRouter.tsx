@@ -21,7 +21,7 @@ export default function HomeTabBar() {
         tabBarStyle: {
           borderTopWidth: 0,
           height: 80,
-          backgroundColor: colors.Background,
+          backgroundColor: colors.SecondaryBG,
         },
       }}
     >

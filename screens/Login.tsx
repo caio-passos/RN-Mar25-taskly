@@ -111,21 +111,21 @@ function Login({ navigation }: LoginProps) {
 
         hideErrors();
         const storedUserData = useUserStore.getState().userData;
-        
+
         if (
-            storedUserData && 
-            storedUserData.email === data.email && 
+            storedUserData &&
+            storedUserData.email === data.email &&
             storedUserData.senha === data.password
         ) {
-            useUserStore.getState().partialUpdate({ 
-                loggedIn: true 
+            useUserStore.getState().partialUpdate({
+                loggedIn: true
             });
 
             navigation.navigate('Inicio');
-            
+
         } else {
             Alert.alert(
-                'Erro de Login', 
+                'Erro de Login',
                 'Credenciais inválidas. Verifique seu e-mail e senha.'
             );
         }
@@ -180,12 +180,9 @@ function Login({ navigation }: LoginProps) {
                         placeholder="Digite seu e-mail"
                         keyboardType="email-address"
                         onChangeText={(value) => setEmail(String(value))}
-<<<<<<< HEAD
-                    />
-=======
                         placeholderTextColor={colorPlace}
-                        />
->>>>>>> feature/changeTheme
+                        style={{ color: colorPlace }}
+                    />
                 </View>
                 {<Text style={styles.textError}>{errorsEmailShow.map((value) => `${value.error}\n`)}</Text>}
             </View>
@@ -198,12 +195,9 @@ function Login({ navigation }: LoginProps) {
                         placeholder="Digite sua senha"
                         keyboardType='ascii-capable'
                         onChangeText={(value) => setPassword(String(value))}
-<<<<<<< HEAD
-                    />
-=======
                         placeholderTextColor={colorPlace}
-                        />
->>>>>>> feature/changeTheme
+                        style={{ color: colorPlace }}
+                    />
                 </View>
                 {<Text style={styles.textError}>{errorsPasswordShow.map((value) => `${value.error}\n`)}</Text>}
             </View>

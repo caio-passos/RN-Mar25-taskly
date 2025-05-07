@@ -5,7 +5,9 @@ export interface AvatarData {
   uri: number | string;
   borderColor: string;
 }
-
+export interface ThemeState{
+  darkMode: boolean;
+}
 
 export interface UserDataTypes {
   uid: typeof uuidv4;
@@ -16,4 +18,5 @@ export interface UserDataTypes {
   checkSenha?: string;
   loggedIn?: boolean;
   avatar?: AvatarData;
+  theme?: ThemeState;
 }

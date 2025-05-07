@@ -127,7 +127,7 @@ const Theme = (props: ThemeProps) => {
                         <Text style={styles.textVoltar}>VOLTAR</Text>
                     </View>
                 </Pressable>
-                <Text style={styles.textTerms}>Preferências</Text>
+                <Text style={styles.textTerms}>Preferï¿½ncias</Text>
             </View>
 
             <View style={styles.ContainerBottom}>
