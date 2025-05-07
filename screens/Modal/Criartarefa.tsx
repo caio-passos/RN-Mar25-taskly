@@ -135,7 +135,6 @@ const ModalCriarTarefas = ({visible, onClose}: ModalCriarTarefas) => {
               <TextInput
                 placeholder="Ex: bater o ponto"
                 keyboardType="ascii-capable"
-                placeholderTextColor={'black'}
                 onChangeText={value => setTitulo(String(value))}
               />
             </View>
@@ -144,7 +143,6 @@ const ModalCriarTarefas = ({visible, onClose}: ModalCriarTarefas) => {
               <View style={styles.boxInput}>
                 <TextInput
                   placeholder="bater o ponto pelo site do kairos e depois tenho que sair para tomar café"
-                  placeholderTextColor={'black'}
                   keyboardType="ascii-capable"
                   multiline={true}
                   onChangeText={value => setDescricao(String(value))}
@@ -155,9 +153,8 @@ const ModalCriarTarefas = ({visible, onClose}: ModalCriarTarefas) => {
               <Text>Prazo </Text>
               <View style={styles.boxInput}>
                 <TextInput
-                  placeholder="04/28/2025"
+                  placeholder="28/04/2025"
                   keyboardType="numeric"
-                  placeholderTextColor={'black'}
                   onChangeText={value => setPrazo(String(value))}
                 />
               </View>

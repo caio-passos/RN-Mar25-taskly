@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, View, StyleSheet, Text, ImageStyle} from 'react-native';
-import { useAvatarStore } from '../services/cache/stores/storeZustand';
+import { useAuthStore } from '../services/cache/stores/storeZustand';
 
 interface AvatarProp{
     style?: ImageStyle;
@@ -14,8 +14,11 @@ const avatars = [
     { id: 5, uri: require('../assets/icons/lightmode/useravatar.png'), borderColor: '#B58B46' },
 ];
 const AvatarDisplay = ({style}: AvatarProp) => {
-    const { selectedAvatar } = useAvatarStore();
-    const selectedAvatarData = avatars.find(avatar => avatar.id === selectedAvatar);
+    const userData = useAuthStore(state => state.userData);
+    const selectedAvatarData = userData?.avatar
+    ? avatars.find(avatar => avatar.id === userData.avatar?.id)
+    : avatars[0];
+
     console.log('Avatar: ', selectedAvatarData)
     return (
         <View style={styles.container}>

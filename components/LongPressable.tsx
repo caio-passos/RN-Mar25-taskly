@@ -16,7 +16,7 @@ function LongPressable({ textProps, onPress, style, textStyle}: LongPressablePro
         buttonFilled: {
             backgroundColor: colors.Primary,
             borderRadius: 8,
-            height: 27,
+            height: 42,
         },
         buttonTextCriarTarefa: {
             color: '#FFFFFF',
