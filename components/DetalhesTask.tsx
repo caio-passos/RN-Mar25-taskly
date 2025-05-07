@@ -31,14 +31,36 @@ import IconTrash from '../assets/icons/lightmode/trash';
 import IconEdit from '../assets/icons/lightmode/pencil';
 import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle';
 import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle';
+import DarkIconTrash from '../assets/icons/darkmode/trashdarkmode';
+import DarkIconEdit from '../assets/icons/darkmode/pencildarkmode';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuthStore } from '../services/cache/stores/storeZustand';
 
 type DetalhesProps = {
   item: TaskTypes | null;
 };
 
+export const getThemedIcon = () => {
+  const userData = useAuthStore.getState().userData;
+  const isDarkMode = userData?.theme?.darkMode;
+
+  console.log('Themed icon - userData:', userData);
+  console.log('Themed icon - isDarkMode:', isDarkMode);
+  return {
+    IconTrash: isDarkMode ? DarkIconTrash : IconTrash,
+    IconEdit: isDarkMode ? DarkIconEdit : IconEdit,
+    IconCheckboxUnchecked: isDarkMode ? IconCheckboxUnchecked : IconCheckboxUnchecked,
+    IconCheckboxChecked: isDarkMode ? IconCheckboxChecked : IconCheckboxChecked,
+  };
+};
 const DetalhesTask = ({ item }: DetalhesProps) => {
 
+  const { 
+    IconTrash, 
+    IconEdit, 
+    IconCheckboxUnchecked, 
+    IconCheckboxChecked 
+  } = getThemedIcon();
 
   const showSubtasks = useTaskStore.getState()
   const handleToggleSubtaskStatus = (subtaskId: string) => {
@@ -125,6 +147,8 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     dragX: SharedValue<number>,
     subtaskId: string
   ) => {
+    const { IconTrash } = getThemedIcon(); 
+
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
       extrapolateLeft: Extrapolation.CLAMP,
     });
@@ -164,7 +188,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       if (item?.id) {
         deleteTask(item.id);
         swipeRef.current?.close();
-
       }
     }
     //force update para as tasks
@@ -258,14 +281,22 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     },
     subtaskTitle: {
       justifyContent: 'center',
+      color: colors.MainText
     },
     TaskStyle: {
+      color: colors.MainText,
       fontSize: 18,
       fontWeight: 600,
       paddingBottom: 16,
     },
-    TitleStyle: {},
+    TitleStyle: {
+      color: colors.MainText
+    },
+    ColorText:{
+      color: colors.MainText,
+    },
     DescriçãoStyle: {
+      color: colors.MainText,
       paddingBottom: 16,
     },
     TagsStyle: {
@@ -295,6 +326,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     subtaskInput: {
       paddingHorizontal: 26,
       borderBottomColor: colors.Primary,
+      color: colors.MainText
     },
     inlineSubtaskEdit: {
       flex: 1,
@@ -332,6 +364,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       <View style={styles.subtaskInputContainer}>
         <TextInput
           placeholder="Digite sua subtask"
+          placeholderTextColor={colors.MainText}
           value={newSubtaskText}
           onChangeText={setNewSubtaskText}
           style={styles.subtaskInput}
@@ -381,12 +414,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
               <Text style={styles.TaskStyle}>{item?.Task}</Text>
 
               <View style={styles.DescriçãoStyle}>
-                <Text>Descrição</Text>
-                <Text>{item?.Descricao}</Text>
+                <Text style={styles.ColorText}>Descrição</Text>
+                <Text style={styles.ColorText}>{item?.Descricao}</Text>
               </View>
 
               <View style={styles.TagsStyle}>
-                <Text>Tags</Text>
+                <Text style={styles.ColorText}>Tags</Text>
                 <View style={styles.tagsContainer}>
                   {item?.Tags?.map((tag, index) => (
                     <Text key={index} style={styles.tagStyle}>
@@ -397,7 +430,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
               </View>
 
               <View>
-                <Text>Prioridade</Text>
+                <Text style={styles.ColorText}>Prioridade</Text>
                 {item?.Prioridade && (
                   <Text style={styles.PrioridadeTextColor}>
                     {getCorPrioridade(item?.Prioridade)}
@@ -413,8 +446,11 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                     style={{
                       paddingHorizontal: 32,
                       width: '100%',
+                      height: 32,
                       marginBottom: 16,
                       justifyContent: 'center',
+                      borderWidth: 2,
+                      borderColor: colors.Primary,
                     }}
                   />
                 </View>

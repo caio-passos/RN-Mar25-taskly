@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useContext, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,7 +19,8 @@ interface AvatarProps {
 }
 
 function Avatar({ navigation }: AvatarProps) {
-  const [ selectedAvatar, setSelectedAvatar ] = useState<number | null>(null);
+  const colors = useContext(AppContext)!.colors;
+  const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
   const authStore = useAuthStore().userData;
   const userStore = useUserStore().userData;
 
@@ -38,12 +39,58 @@ function Avatar({ navigation }: AvatarProps) {
     const avatar = avatars.find(a => a.id === selectedAvatar);
 
     if (avatar) {
-      useUserStore.getState().partialUpdate({loggedIn: true})
+      useUserStore.getState().partialUpdate({ loggedIn: true })
       useAuthStore.getState().setAvatar(avatar)
       navigation.navigate('Inicio');
     }
   };
+
+  const styles = StyleSheet.create({
+    title: {
+      flex: 1,
+      alignItems: 'center',
+      backgroundColor: colors.Background
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginVertical: 10,
+    },
+    img: {
+      borderRadius: 100,
+      width: 95,
+      height: 95,
+      borderWidth: 2,
+      marginHorizontal: 6,
+    },
+    titleText: {
+      fontWeight: 'bold',
+      fontSize: 24,
+      color: colors.MainText
+    },
+    titleSubtext: {
+      fontWeight: '400',
+      color: colors.MainText
+    },
+    button: {
+      marginTop: 70,
+      backgroundColor: '#5B3CC4',
+      width: 329,
+      height: 47,
+      borderRadius: 8,
+    },
+    buttonText: {
+      color: colors.SecondaryBG,
+      textAlign: 'center',
+      fontWeight: 'bold',
+      fontSize: 20,
+      paddingVertical: 10,
+    },
+  });
+
   return (
+    <>
+    <View style={{paddingTop:120, backgroundColor: colors.Background}}/>
     <View style={styles.title}>
       <Text style={styles.titleText}>SELECIONE SEU AVATAR</Text>
       <Text style={styles.titleSubtext}>(Escolha somente um).</Text>
@@ -109,48 +156,9 @@ function Avatar({ navigation }: AvatarProps) {
         </TouchableOpacity>
       </View>
     </View >
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  title: {
-    marginTop: 120,
-    flex: 1,
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 10,
-  },
-  img: {
-    borderRadius: 100,
-    width: 95,
-    height: 95,
-    borderWidth: 2,
-    marginHorizontal: 6,
-  },
-  titleText: {
-    fontWeight: 'bold',
-    fontSize: 24,
-  },
-  titleSubtext: {
-    fontWeight: '400',
-  },
-  button: {
-    marginTop: 70,
-    backgroundColor: '#5B3CC4',
-    width: 329,
-    height: 47,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 20,
-    paddingVertical: 10,
-  },
-});
 
 export default Avatar;

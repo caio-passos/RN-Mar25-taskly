@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { createContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import Colorscheme from './hooks/Colorscheme';
@@ -8,11 +8,23 @@ import { useAuthStore } from './services/cache/stores/storeZustand';
 
 export const AppContext = createContext<colorsTypes | undefined>(undefined);
 
-const themeProvider = useAuthStore.getState().userData?.theme
 
 
 export default function App() {
-  const colors = themeProvider ? Colorscheme().darkMode : Colorscheme().lightMode;
+  const [isDarkMode, setIsDarkMode] = useState(useAuthStore.getState().userData?.theme?.darkMode);
+
+
+  useEffect(() => {
+    const unsubscribe = useAuthStore.subscribe((state) => {
+      const darkMode = state.userData?.theme?.darkMode;
+      setIsDarkMode(darkMode);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const themeProvider = useAuthStore.getState().userData?.theme;
+  const colors = themeProvider?.darkMode ? Colorscheme().darkMode : Colorscheme().lightMode;
 
   return (
     <AppContext.Provider value={{ colors }}>

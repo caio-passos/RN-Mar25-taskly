@@ -1,8 +1,9 @@
-import React from 'react';
-import { Image, View, StyleSheet, Text, ImageStyle} from 'react-native';
+import React, { useContext } from 'react';
+import { Image, View, StyleSheet, Text, ImageStyle } from 'react-native';
 import { useAuthStore } from '../services/cache/stores/storeZustand';
+import { AppContext } from '../App';
 
-interface AvatarProp{
+interface AvatarProp {
     style?: ImageStyle;
 }
 
@@ -13,13 +14,28 @@ const avatars = [
     { id: 4, uri: require('../assets/icons/lightmode/useravatar.png'), borderColor: '#FF0000' },
     { id: 5, uri: require('../assets/icons/lightmode/useravatar.png'), borderColor: '#B58B46' },
 ];
-const AvatarDisplay = ({style}: AvatarProp) => {
+const AvatarDisplay = ({ style }: AvatarProp) => {
+
+    const colors = useContext(AppContext)!.colors;
     const userData = useAuthStore(state => state.userData);
     const selectedAvatarData = userData?.avatar
-    ? avatars.find(avatar => avatar.id === userData.avatar?.id)
-    : avatars[0];
+        ? avatars.find(avatar => avatar.id === userData.avatar?.id)
+        : avatars[0];
 
     console.log('Avatar: ', selectedAvatarData)
+    const styles = StyleSheet.create({
+        container: {
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: colors.SecondaryBG
+        },
+        img: {
+            borderRadius: 100,
+            width: 50,
+            height: 50,
+            borderWidth: 2,
+        },
+    });
     return (
         <View style={styles.container}>
             {selectedAvatarData ? (
@@ -32,23 +48,12 @@ const AvatarDisplay = ({style}: AvatarProp) => {
                     source={selectedAvatarData.uri}
                 />
             ) : (
-                <Text>No avatar selected</Text> 
+                <Text>No avatar selected</Text>
             )}
         </View>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    img: {
-        borderRadius: 100,
-        width: 50,
-        height: 50,
-        borderWidth: 2,
-    },
-});
+
 
 export default AvatarDisplay;

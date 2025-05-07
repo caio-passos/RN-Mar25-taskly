@@ -16,7 +16,7 @@ function LongNoFillPressable({ textProps, onPress, style, Tap}: LongNoFillPressa
     const styles = StyleSheet.create({
         buttonFilled: {
             borderRadius: 8,
-            borderColor: colors.Primary,
+            borderColor: colors.SecondaryBG,
             borderWidth:2,
             width: '100%',
             height: 27,

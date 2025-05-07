@@ -101,7 +101,7 @@ const AddSubTask = (props: DarkAndLigthMode) => {
             width: '100%',
             height: 47,
             borderWidth: 2,
-            borderColor: '#5B3CC4',
+            borderColor: colors.Primary,
             borderRadius: 8,
             justifyContent: 'center',
         },

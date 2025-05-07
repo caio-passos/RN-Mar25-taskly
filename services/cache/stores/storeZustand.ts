@@ -212,7 +212,7 @@ interface AuthStore {
   setAuthData: (userData: UserDataTypes, idToken: string, refreshToken: string) => void;
   updateUserData: (updater: (draft: UserDataTypes) => void) => void;
   setAvatar: (avatar: AvatarData) => void;
-  setTheme: (theme : UserDataTypes) => void;
+  setTheme: (theme : {darkMode: boolean}) => void;
   updateTokens: (idToken: string, refreshToken: string) => void;
   clearAuthData: () => void;
 }
@@ -244,10 +244,13 @@ export const useAuthStore = create<AuthStore>()(
             state.userData.avatar = avatar;
           }
         })),
-        setTheme: (theme: UserDataTypes) =>
-            set(produce((state) => {
-                state.userData.theme = theme;
-            })),
+        setTheme: (theme: { darkMode: boolean }) => 
+          set(produce((state: AuthStore) => {
+            if (state.userData) {
+              console.log('Setting theme:', theme);
+              state.userData.theme = theme;
+            }
+          })),
       updateTokens: (idToken, refreshToken) =>
         set(state => ({
           tokens: { idToken, refreshToken }
@@ -262,6 +265,9 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: 'auth-storage',
       storage: createJSONStorage(() => mmkvStorage),
+      onRehydrateStorage: (state) => {
+        console.log('Auth store rehydrated:', state);
+      }
     }
   )
 );
