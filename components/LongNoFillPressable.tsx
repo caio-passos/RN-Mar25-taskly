@@ -1,23 +1,25 @@
 import React, { useContext } from "react";
 import { StyleSheet, Text, Pressable, ViewStyle} from "react-native";
 import { AppContext } from "../App";
+import type { TapGesture } from "react-native-gesture-handler";
 
 interface LongNoFillPressableProps {
     textProps: string;
-    onPress: () => void;
+    onPress?: () => void;
     style?: ViewStyle;
+    Tap?: TapGesture;
 }
 
-function LongNoFillPressable({ textProps, onPress, style}: LongNoFillPressableProps) {
+function LongNoFillPressable({ textProps, onPress, style, Tap}: LongNoFillPressableProps) {
 
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const styles = StyleSheet.create({
         buttonFilled: {
             borderRadius: 8,
-            borderColor: colors.Primary,
+            borderColor: colors.SecondaryBG,
             borderWidth:2,
-            width: 329,
-            height: 47,
+            width: '100%',
+            height: 27,
             justifyContent: 'center',
             alignSelf: 'center',
             marginTop: 25,

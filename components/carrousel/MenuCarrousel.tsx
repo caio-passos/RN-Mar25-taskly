@@ -6,6 +6,7 @@ import IconSair from '../../assets/icons/lightmode/carrousel/sairConta';
 import IconExcluir from '../../assets/icons/lightmode/carrousel/excluirConta';
 import { AppContext } from "../../App";
 import type { CarrouselTypes } from "../../types/carrouselTypes";
+import { cacheStores } from "../../metro.config";
 
 interface CarrouselIconsSize {
     height: number,
@@ -42,7 +43,7 @@ const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
         }
     ];
 
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
 
     const styles = StyleSheet.create({
         ShadowContainer: {
@@ -59,8 +60,11 @@ const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
             paddingLeft: 32,
             paddingRight: 32,
             elevation: 5,
+            backgroundColor: colors.Background
         },
-
+        boxStyle: {
+            backgroundColor: colors.Background,
+        },
     });
 
     return (
@@ -69,10 +73,14 @@ const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
             <FlatList
                 horizontal
                 data={items || iconComponents}
-                renderItem=
-                {({ item }) =>
+                renderItem={({ item }) =>
                     <View>
-                        <Pressable onPress={item.onPress}>
+                        <Pressable 
+                            onPress={() => {
+                                console.log(`Pressed item: ${item.id}`);
+                                item.onPress();
+                            }}
+                        >
                             {item.icon}
                         </Pressable>
                     </View>

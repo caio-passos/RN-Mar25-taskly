@@ -1,76 +1,89 @@
-import React, { useContext, useState } from "react";
-import { data } from "../services/db/mockData";
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import type { TaskTypes } from "../types/taskTypes";
-import { AppContext } from "../App";
-import IconCheckedSquare from "../assets/icons/lightmode/checksquare";
-import IconUncheckedSquare from "../assets/icons/lightmode/uncheckedsquare"
-import IconPencil from "../assets/icons/lightmode/pencil";
-
+import React, {useContext, useState, useMemo} from 'react';
+import {data} from '../services/db/mockData';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
+import type {TaskTypes} from '../types/taskTypes';
+import {AppContext} from '../App';
+import IconCheckedSquare from '../assets/icons/lightmode/checksquare';
+import IconUncheckedSquare from '../assets/icons/lightmode/uncheckedsquare';
+import IconPencil from '../assets/icons/lightmode/pencil';
+import {useTaskStore} from '../services/cache/stores/storeZustand';
 
 interface SubtaskProps {
-    data: TaskTypes;
-    onAddSubtask?: (item: TaskTypes) => void;
-    subtaskText: string;
+  data: TaskTypes;
+  onAddSubtask?: (subtask: {title: string; completed: boolean}) => void;
+  subtaskText: string;
+  onSubtaskTextChange?: (text: string) => void;
 }
 
-const Subtask = ({ data, onAddSubtask, subtaskText }: SubtaskProps) => {
-    const colors = useContext(AppContext);
-    const [subtaskCheck, setSubtaskCheck] = useState<Record<number, boolean>>({});
+const Subtask = ({
+  data,
+  onAddSubtask,
+  subtaskText,
+  onSubtaskTextChange,
+}: SubtaskProps) => {
+  const colors = useContext(AppContext)!.colors;
+  const {tasks} = useTaskStore();
+  const [subtaskCheck, setSubtaskCheck] = useState<Record<number, boolean>>({});
+  const currentTask = tasks.find(task => task.id === data.id);
 
-    const handleAdd = () => {
-        const newSubtask = subtaskText;
-        const updatedItem = {
-            ...data,
-            Subtask: [...(data.Subtask || []), newSubtask]
-        };
-        onAddSubtask?.(updatedItem);
-    };
-    const styles = StyleSheet.create({
-        SubtaskContainer: {
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            minWidth: '100%',
-            height: 56,
-            paddingHorizontal: 16,
-            marginBottom: 32,
-            borderRadius: 8,
-            elevation: 1,
-            backgroundColor: colors.SecondaryBG,
-        },
-        SubtaskAlignment: {
-            flexDirection: 'row',
-            alignItems: 'center',
-        },
+  const styles = StyleSheet.create({
+    SubtaskContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      minWidth: '100%',
+      height: 56,
+      paddingHorizontal: 16,
+      marginBottom: 32,
+      borderRadius: 8,
+      elevation: 1,
+      backgroundColor: colors.SecondaryBG,
+    },
+    SubtaskAlignment: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    subtaskText: {
+      marginLeft: 10,
+    },
+  });
 
-    })
-    const handleSubtaskCheck = (index: number) => {
-        setSubtaskCheck(prev => ({
-            ...prev,
-            [index]: !prev[index]
+    const processedSubtasks = useMemo(() => {
+      return (currentTask?.Subtask || data.Subtask || [])
+        .filter(subtask => subtask && subtask.title)
+        .map(subtask => ({
+          id: subtask.id || `subtask_${Date.now()}`,
+          title: subtask.title,
+          completed: subtask.completed || false
         }));
-    };
+    }, [currentTask, data]);
 
-    return (
-        <View>
-            {data.Subtask?.filter(subtask => subtask.trim() !== '') 
-                .map((subtask, index) => (
-                    <View key={index} style={styles.SubtaskContainer}>
-                        <Pressable onPress={() => handleSubtaskCheck(index)}>
-                            {subtaskCheck[index] ?(
-                                <IconCheckedSquare height={24} width={24} />
-                            ): (
-                                <IconUncheckedSquare height={24} width={24}/>
-                            )}
-                        </Pressable>
-                        <Text style={styles.subtaskText}>{subtask}</Text>
-                        <IconPencil height={24} width={24} />
-                    </View>
-                ))}
-        </View>
-    )
-}
+  const handleSubtaskCheck = (subtaskId: string) => {
+    setSubtaskCheck(prev => ({
+      ...prev,
+      [subtaskId]: !prev[subtaskId],
+    }));
+  };
 
-
+  return (
+    <View>
+        {processedSubtasks.map(subtask => (
+          <View key={subtask?.id} style={styles.SubtaskContainer}>
+            <Pressable
+              style={styles.SubtaskAlignment}
+              onPress={() => handleSubtaskCheck(subtask.id)}>
+              {subtaskCheck[subtask.id] ? (
+                <IconCheckedSquare height={24} width={24} />
+              ) : (
+                <IconUncheckedSquare height={24} width={24} />
+              )}
+              <Text style={styles.subtaskText}>{subtask.title}</Text>
+            </Pressable>
+            <IconPencil height={24} width={24} />
+          </View>
+        ))}
+      ;
+    </View>
+  );
+};
 export default Subtask;

@@ -1,17 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Image } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
 import LightModeBtn from '../../assets/improviso2.png';
 import DarkModeBtn from '../../assets/improviso1.png';
+import { useAuthStore } from '../../services/cache/stores/storeZustand';
+
 
 interface DarkAndLigthMode {
     setControl: Function;
 }
 
 const DarkAndLigthMode = (props: DarkAndLigthMode) => {
-    const colors = React.useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
+    const [controlThemeModal, setControlThemeModal] = useState(false);
+    const { userData } = useAuthStore();
+    const setTheme = useAuthStore(state => state.setTheme);
+
+    const getButtonStyle = (isSelected: boolean) => ({
+        padding: 8,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: isSelected ? colors.Primary : 'transparent',
+        backgroundColor: colors.Background,
+        width: '48%',
+        alignItems: 'center',
+        justifyContent: 'center'
+    });
+
+    useEffect(()=> {
+
+    }, [setTheme])
+
+    const handleThemeChange = () => {
+        console.log('Setting theme to:', controlThemeModal);
+        if (userData) {
+            setTheme({ darkMode: controlThemeModal });
+            props.setControl(false);
+        }
+    };
 
     const styles = StyleSheet.create({
         modalContainer: {
@@ -41,19 +69,27 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
             fontSize: 18,
             textDecorationLine: 'underline',
             alignSelf: 'flex-start',
+            color: colors.MainText,
         },
         containerSvg: {
             display: 'flex',
             flexDirection: 'row',
             gap: 15,
+            width: '100%',
+            justifyContent: 'space-between',
+            paddingHorizontal: 8
+
         },
         containerBtn: {
             display: 'flex',
             flexDirection: 'row',
             gap: 15,
+            width: '100%',
+            justifyContent: 'space-between',
+            paddingHorizontal: 8, 
         },
         btnNotAgain: {
-            width: 134.5,
+            width: '48%',
             height: 37,
             borderRadius: 8,
             fontWeight: 500,
@@ -66,7 +102,7 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
         },
         btnConfirm: {
             backgroundColor: colors.SecondaryAccent,
-            width: 134.5,
+            width: '48%',
             height: 37,
             borderRadius: 8,
             fontWeight: 500,
@@ -99,6 +135,9 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
             width: '100%',
             height: '100%',
         },
+        selectedButton:{
+            borderColor: colors.Primary
+        }
     });
 
     return (
@@ -108,23 +147,43 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
                 transparent={true}
                 style={styles.modalContainer}
             >
-                <View style={styles.containerAll}>
+                 <View style={styles.containerAll}>
                     <Text style={styles.textTitle}>Escolha o tema</Text>
 
                     <View style={styles.containerSvg}>
-                        <Image source={DarkModeBtn} />
-                        <Image source={LightModeBtn} />
+                        <Pressable 
+                            style={getButtonStyle(controlThemeModal)}
+                            onPress={() => setControlThemeModal(true)}
+                        >
+                            <Image source={DarkModeBtn} />
+                        </Pressable>
+                        <Pressable 
+                            style={getButtonStyle(!controlThemeModal)}
+                            onPress={() => setControlThemeModal(false)}
+                        >
+                            <Image source={LightModeBtn} />
+                        </Pressable>
                     </View>
-
-                    <View style={styles.containerBtn}>
-                        <Pressable onPress={() => props.setControl(false)} style={styles.btnNotAgain}><Text style={styles.textBtnNotAgain}>Agora não</Text></Pressable>
-                        <Pressable onPress={() => props.setControl(false)} style={styles.btnConfirm}><Text style={styles.textBtnConfirm}>Confirmar</Text></Pressable>
-                    </View>
+                <View style={styles.containerBtn}>
+                    <Pressable 
+                        onPress={() => props.setControl(false)} 
+                        style={styles.btnNotAgain}
+                    >
+                        <Text style={styles.textBtnNotAgain}>Agora não</Text>
+                    </Pressable>
+                    <Pressable 
+                        onPress={handleThemeChange}
+                        style={styles.btnConfirm}
+                    >
+                        <Text style={styles.textBtnConfirm}>Confirmar</Text>
+                    </Pressable>
                 </View>
-                <View style={styles.transparentContainer}><Pressable style={styles.pressableStyle} onPress={() => props.setControl(false)}></Pressable></View>
-                
-            </Modal>
-        </SafeAreaView>
+            </View>
+            <View style={styles.transparentContainer}>
+                <Pressable style={styles.pressableStyle} onPress={() => props.setControl(false)} />
+            </View>
+        </Modal>
+    </SafeAreaView>
     );
 };
 
