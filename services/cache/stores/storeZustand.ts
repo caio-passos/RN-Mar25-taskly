@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { mmkvStorage } from '../../db/storageMMKV';
 import { produce } from 'immer';
-import { UserDataTypes } from '../../../types/userTypes';
+import { AvatarData, UserDataTypes } from '../../../types/userTypes';
 import { TaskTypes } from '../../../types/taskTypes';
 
 interface UserStore {
@@ -47,18 +47,6 @@ export const useUserStore = create<UserStore>()(
     }
   )
 );
-
-export interface AvatarStore {
-  selectedAvatar: number | null;
-  setSelectedAvatar: (id: number | null) => void;
-  clearAvatarData: () => void;
-}
-
-export const useAvatarStore = create<AvatarStore>((set) => ({
-  selectedAvatar: null,
-  setSelectedAvatar: (id: number | null) => set({ selectedAvatar: id }),
-  clearAvatarData: () => set({ selectedAvatar: null })
-}));
 
 interface TaskStore {
   tasks: TaskTypes[];
@@ -222,6 +210,7 @@ interface AuthStore {
 
   setAuthData: (userData: UserDataTypes, idToken: string, refreshToken: string) => void;
   updateUserData: (updater: (draft: UserDataTypes) => void) => void;
+  setAvatar: (avatar: AvatarData) => void;
   updateTokens: (idToken: string, refreshToken: string) => void;
 
   clearAuthData: () => void;
@@ -246,6 +235,12 @@ export const useAuthStore = create<AuthStore>()(
         set(produce((state) => {
           if (state.userData) {
             updater(state.userData);
+          }
+        })),
+      setAvatar: (avatar) =>
+        set(produce((state) => {
+          if (state.userData) {
+            state.userData.avatar = avatar;
           }
         })),
 
