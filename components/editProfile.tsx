@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
     Pressable,
     StyleSheet,
@@ -14,72 +14,49 @@ import type { UserDataTypes } from '../types/userTypes';
 import Avatar from '../screens/(auth)/Avatar';
 import LongPressable from '../components/LongPressable';
 import ReturnLeft from '../assets/caretLeft.svg';
-
+import ProgressBar from './progressbar';
 
 interface editProfileProps {
     onCloseEdit: () => void;
 }
 const EditProfile = ({ onCloseEdit }: editProfileProps) => {
-
+    const { userData: initialUserData } = useUserStore();
     const colors = useContext(AppContext)!.colors;
-    const { userData } = useUserStore();
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [phone, setPhone] = useState('');
+    const [name, setName] = useState(initialUserData?.nome || '');
+    const [email, setEmail] = useState(initialUserData?.email || '');
+    const [phone, setPhone] = useState(initialUserData?.telefone || '');
     const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
     const [continuar, setContinuar] = useState<boolean>(false);
 
-
-    const [isDarkMode, setIsDarkMode] = useState(
-        useAuthStore.getState().userData?.theme?.darkMode ?? false
-    );
+    useEffect(() => {
+        console.log('userData: ', name, email, phone)
+    }, [name, email, phone])
 
     const handleCloseEdit = () => {
         onCloseEdit();
+        setName('')
+        setEmail('')
+        setPhone('')
     }
 
-    const handleContinuar = () => {
-        const typedName = name.trim() !== '';
-        const typedEmail = email.trim() !== '';
-        const typedPhone = phone.trim() !== '';
-        if (typedEmail && typedName && typedPhone) {
-            setContinuar(!continuar);
+    const userUpdater = () => {
+        const updates: Partial<UserDataTypes> = {};
+        if (name !== (initialUserData?.nome || '')) updates.nome = name;
+        if (email !== (initialUserData?.email || '')) updates.email = email;
+        if (phone !== (initialUserData?.telefone || '')) updates.telefone = phone;
+
+        if (Object.keys(updates).length > 0) {
+            useUserStore.getState().partialUpdate(updates);
         }
-    }
-
-    interface userDataEdit {
-        name: string,
-        email: string,
-        phone: string,
-    }
-    const handleUserUpdate = (userData: { name: string, email: string, phone: string }) => {
-        useAuthStore.getState().updateUserData((data: UserDataTypes) => {
-            data.nome = userData.name;
-            data.email = userData.email;
-            data.telefone = userData.phone;
-        })
-    }
-
-
-    const handlePress = (id: number) => {
-        setSelectedAvatar(selectedAvatar === id ? null : id);
+        useAuthStore.getState().updateUserData(draft => {
+            if (updates.nome !== undefined) draft.nome = updates.nome;
+            if (updates.email !== undefined) draft.email = updates.email;
+            if (updates.telefone !== undefined) draft.telefone = updates.telefone;
+        });
+        onCloseEdit();
+        setContinuar(false);
     };
-    const avatars = [
-        { id: 1, uri: require('../assets/icons/lightmode/useravatar.png'), borderColor: '#5B3CC4' },
-        { id: 2, uri: require('../assets/icons/lightmode/useravatar.png'), borderColor: '#E6E0F7' },
-        { id: 3, uri: require('../assets/icons/lightmode/useravatar.png'), borderColor: '#32C25B' },
-        { id: 4, uri: require('../assets/icons/lightmode/useravatar.png'), borderColor: '#FF0000' },
-        { id: 5, uri: require('../assets/icons/lightmode/useravatar.png'), borderColor: '#B58B46' },
-    ];
-    const handleConfirmAvatar = () => {
-        const avatar = avatars.find(a => a.id === selectedAvatar);
-        if (avatar) {
-            useUserStore.getState().partialUpdate({ loggedIn: true })
-            useAuthStore.getState().setAvatar(avatar)
-            // navigation.navigate('Inicio');
-        }
-    };
+
 
     const styles = StyleSheet.create({
         container: {
@@ -102,8 +79,8 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
             color: colors.MainText,
         },
         textInput: {
-            backgroundColor: colors.SecondaryBG,
-            marginHorizontal: 16
+            marginHorizontal: 16,
+            color: colors.MainText
         },
         loginForm: {
             width: '100%',
@@ -166,68 +143,83 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
     const colorPlace = styles.textTitleInput.color;
     return (
         <View style={styles.container}>
-            <Pressable style={styles.returnPressable} onPress={() => handleCloseEdit()}>
-                <ReturnLeft width={23} height={17.25} />
-                <View style={styles.boxTextVoltar}>
-                    <Text style={styles.textVoltar}>VOLTAR</Text>
-                </View>
-            </Pressable>
-            <View style={styles.editTitle}>
-                <Text style={styles.editTitleText}>EDIÇÃO DE PERFIL</Text>
-            </View>
-            <View style={styles.loginForm}>
-                <Text style={styles.textTitleInput}>Nome Completo</Text>
-                <View style={styles.boxInput}>
-                    <TextInput
-                        placeholder="Digite seu nome completo"
-                        placeholderTextColor={colors.MainText}
-                        keyboardType="default"
-                        value={name}
-                        onChangeText={setName}
-                        style={styles.textInput}
-                    />
-                </View>
-            </View>
-            <View style={styles.loginForm}>
-                <Text style={styles.textTitleInput}>E-mail</Text>
-                <View style={styles.boxInput}>
-                    <TextInput
-                        placeholder="Digite seu e-mail"
-                        placeholderTextColor={colors.MainText}
-                        keyboardType="email-address"
-                        value={email}
-                        onChangeText={setEmail}
-                        style={styles.textInput}
-                    />
-                </View>
-            </View>
-            <View style={styles.loginForm}>
-                <Text style={styles.textTitleInput}>Número</Text>
-                <View style={styles.boxInput}>
-                    <TextInput
-                        placeholder="Digite seu número de telefone"
-                        keyboardType="phone-pad"
-                        value={phone}
-                        onChangeText={(value) => {
-                            setPhone(value)
-                        }}
-                        placeholderTextColor={colorPlace}
-                        style={styles.textInput}
-                    />
-                </View>
-                <LongPressable
-                    textProps='Continuar'
-                    onPress={handleContinuar}
-                    style={{
-                        marginTop: 30,
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                />
-                {continuar && (
-                    <Avatar />
-                )}
-            </View>
+            {continuar ? (
+                <>
+                    <Pressable style={styles.returnPressable} onPress={() => handleCloseEdit()}>
+                        <ReturnLeft width={23} height={17.25} />
+                        <View style={styles.boxTextVoltar}>
+                            <Text style={styles.textVoltar}>VOLTAR</Text>
+                        </View>
+                    </Pressable>
+                    <ProgressBar progress={100}/>
+                    <Avatar onEditProfile={userUpdater} />
+                </>
+            ) : (
+                <>
+                    <Pressable style={styles.returnPressable} onPress={() => handleCloseEdit()}>
+                        <ReturnLeft width={23} height={17.25} />
+                        <View style={styles.boxTextVoltar}>
+                            <Text style={styles.textVoltar}>VOLTAR</Text>
+                        </View>
+                    </Pressable>
+                    <ProgressBar progress={30}/>
+                    <View style={styles.editTitle}>
+                        <Text style={styles.editTitleText}>EDIÇÃO DE PERFIL</Text>
+                    </View>
+                    <View style={styles.loginForm}>
+                        <Text style={styles.textTitleInput}>Nome Completo</Text>
+                        <View style={styles.boxInput}>
+                            <TextInput
+                                placeholder="Digite seu nome completo"
+                                placeholderTextColor={colors.MainText}
+                                keyboardType="ascii-capable"
+                                value={name}
+                                onChangeText={setName}
+                                cursorColor={colors.MainText}
+                                underlineColorAndroid='transparent'
+                                style={styles.textInput}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.loginForm}>
+                        <Text style={styles.textTitleInput}>E-mail</Text>
+                        <View style={styles.boxInput}>
+                            <TextInput
+                                placeholder="Digite seu e-mail"
+                                placeholderTextColor={colors.MainText}
+                                keyboardType="email-address"
+                                value={email}
+                                onChangeText={setEmail}
+                                style={styles.textInput}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.loginForm}>
+                        <Text style={styles.textTitleInput}>Número</Text>
+                        <View style={styles.boxInput}>
+                            <TextInput
+                                placeholder="Digite seu número de telefone"
+                                keyboardType="phone-pad"
+                                value={phone}
+                                onChangeText={(value) => {
+                                    setPhone(value)
+                                }}
+                                placeholderTextColor={colorPlace}
+                                style={styles.textInput}
+                            />
+                        </View>
+                        <LongPressable
+                            textProps='Continuar'
+                            onPress={() => setContinuar(true)}
+                            style={{
+                                marginTop: 30,
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}
+                        />
+                    </View>
+                </>
+            )}
         </View>
     );
 };
