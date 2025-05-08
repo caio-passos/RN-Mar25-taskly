@@ -115,13 +115,16 @@ const EmptyComponent = () => {
     </View>
   );
 };
+
 const CriarTarefa = ({onOpenModal}: {onOpenModal: () => void}) => {
+const colors = useContext(AppContext)!.colors;  
   return (
     <View style={{paddingTop: 40}}>
       <LongPressable
         textProps="Criar Tarefa"
         onPress={onOpenModal}
         style={{justifyContent: 'center'}}
+        textStyle={{color: colors.PrimaryLight}}
       />
     </View>
   );

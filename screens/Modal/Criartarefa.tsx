@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Alert,
   Modal,
@@ -8,11 +8,11 @@ import {
   Pressable,
   View,
 } from 'react-native';
-import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
-import {useNavigation} from '@react-navigation/native';
-import {AppContext} from '../../App';
-import {useTaskStore} from '../../services/cache/stores/storeZustand';
-import {TaskTypes} from '../../types/taskTypes';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { AppContext } from '../../App';
+import { useTaskStore } from '../../services/cache/stores/storeZustand';
+import { TaskTypes } from '../../types/taskTypes';
 import Tasks from '../../components/Tasks';
 
 interface ModalCriarTarefas {
@@ -22,10 +22,10 @@ interface ModalCriarTarefas {
 
 
 const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
-    const colors = React.useContext(AppContext)!.colors;
-    const [titulo, setTitulo] = useState('');
-    const [descrição, setDescricao] = useState('');
-    const [prazo, setPrazo] = useState('');
+  const colors = React.useContext(AppContext)!.colors;
+  const [titulo, setTitulo] = useState('');
+  const [descrição, setDescricao] = useState('');
+  const [prazo, setPrazo] = useState('');
 
   const CreateTask = useTaskStore().addTask;
 
@@ -117,6 +117,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
       marginBottom: 15,
       textAlign: 'center',
       fontWeight: 'bold',
+      color: colors.MainText
     },
   });
   return (
@@ -132,19 +133,21 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
           </Text>
 
           <View style={styles.inputForm}>
-            <Text>Título</Text>
+            <Text style={{color: colors.MainText}}>Título</Text>
             <View style={styles.boxInput}>
               <TextInput
                 placeholder="Ex: bater o ponto"
+                placeholderTextColor={colors.MainText}
                 keyboardType="ascii-capable"
                 onChangeText={value => setTitulo(String(value))}
               />
             </View>
             <View style={styles.inputForm}>
-              <Text>Descricao</Text>
+              <Text style={{color: colors.MainText}}>Descricao</Text>
               <View style={styles.boxInput}>
                 <TextInput
                   placeholder="bater o ponto pelo site do kairos e depois tenho que sair para tomar café"
+                  placeholderTextColor={colors.MainText}
                   keyboardType="ascii-capable"
                   multiline={true}
                   onChangeText={value => setDescricao(String(value))}
@@ -152,10 +155,11 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
               </View>
             </View>
             <View style={styles.inputForm}>
-              <Text>Prazo </Text>
+              <Text style={{color: colors.MainText}}>Prazo </Text>
               <View style={styles.boxInput}>
                 <TextInput
                   placeholder="28/04/2025"
+                  placeholderTextColor={colors.MainText}
                   keyboardType="numeric"
                   onChangeText={value => setPrazo(String(value))}
                 />
@@ -178,7 +182,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
               </Pressable>
               <Pressable style={styles.buttonFilled} onPress={onClose}>
                 <Pressable onPress={handleCreateTask}>
-                  <Text style={[styles.buttonText, {color: '#FFFFFF'}]}>
+                  <Text style={[styles.buttonText, { color: colors.MainText }]}>
                     CRIAR
                   </Text>
                 </Pressable>

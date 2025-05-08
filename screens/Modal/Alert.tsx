@@ -132,7 +132,6 @@ const ModalAlert = ({
                                 if (onRightButtonPress) {
                                     onRightButtonPress();
                                 }
-                                
                                 console.log('Calling onClose'); 
                                 onClose(); 
                             }}
