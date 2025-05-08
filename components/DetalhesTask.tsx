@@ -44,8 +44,8 @@ export const getThemedIcon = () => {
   const userData = useAuthStore.getState().userData;
   const isDarkMode = userData?.theme?.darkMode;
 
-  console.log('Themed icon - userData:', userData);
-  console.log('Themed icon - isDarkMode:', isDarkMode);
+  console.log('Themed icon  userData:', userData);
+  console.log('Themed icon   isDarkMode:', isDarkMode);
   return {
     IconTrash: isDarkMode ? DarkIconTrash : IconTrash,
     IconEdit: isDarkMode ? DarkIconEdit : IconEdit,

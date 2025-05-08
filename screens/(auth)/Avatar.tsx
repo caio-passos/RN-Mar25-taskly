@@ -15,14 +15,12 @@ import { AvatarData } from '../../types/userTypes';
 import { AppContext } from '../../App';
 
 interface AvatarProps {
-  navigation: NativeStackScreenProps<RootStackParamList, 'Avatar'>;
+  navigation?: NativeStackScreenProps<RootStackParamList, 'Avatar'>;
 }
 
 function Avatar({ navigation }: AvatarProps) {
   const colors = useContext(AppContext)!.colors;
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
-  const authStore = useAuthStore().userData;
-  const userStore = useUserStore().userData;
 
   const avatars = [
     { id: 1, uri: require('../../assets/icons/lightmode/useravatar.png'), borderColor: '#5B3CC4' },
@@ -41,7 +39,7 @@ function Avatar({ navigation }: AvatarProps) {
     if (avatar) {
       useUserStore.getState().partialUpdate({ loggedIn: true })
       useAuthStore.getState().setAvatar(avatar)
-      navigation.navigate('Inicio');
+      navigation?.navigate('Inicio');
     }
   };
 

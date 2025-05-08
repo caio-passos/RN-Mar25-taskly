@@ -19,7 +19,7 @@ function LongPressable({ textProps, onPress, style, textStyle}: LongPressablePro
             height: 42,
         },
         buttonTextCriarTarefa: {
-            color: '#FFFFFF',
+            color: colors.MainText,
             textAlign: 'center',
             fontWeight: '600',
         },
