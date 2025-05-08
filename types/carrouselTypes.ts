@@ -2,6 +2,6 @@ import { SvgProps } from "react-native-svg";
 
 export type CarrouselTypes = {
     id: string;
-    icon: React.FC<SvgProps>;
+    icon: React.ReactNode;
     onPress: () => void;
 }
