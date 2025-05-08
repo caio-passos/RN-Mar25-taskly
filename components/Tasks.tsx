@@ -124,7 +124,7 @@ const colors = useContext(AppContext)!.colors;
         textProps="Criar Tarefa"
         onPress={onOpenModal}
         style={{justifyContent: 'center'}}
-        textStyle={{color: colors.PrimaryLight}}
+        textStyle={{color: colors.MainText}}
       />
     </View>
   );

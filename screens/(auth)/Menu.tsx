@@ -260,9 +260,9 @@ const Menu = ({ navigation }: MenuProps) => {
             <ModalAlert
               visible={true}
               onClose={() => {
-                HandleDeleteAccount();
                 setActiveModal(null);
               }}
+              onRightButtonPress={() => HandleDeleteAccount()}
               title="Excluir conta"
               description="Tem certeza que deseja excluir sua conta? Essa ação é permanente e todos os seus dados serão perdidos."
               leftButtonText="Agora não"
