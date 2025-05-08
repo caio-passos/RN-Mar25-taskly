@@ -14,7 +14,9 @@ interface DarkAndLigthMode {
 
 const DarkAndLigthMode = (props: DarkAndLigthMode) => {
     const colors = useContext(AppContext)!.colors;
-    const [controlThemeModal, setControlThemeModal] = useState(false);
+    const [controlThemeModal, setControlThemeModal] = useState(
+        colors.Background === '#282828'
+    );
     const { userData } = useAuthStore();
     const setTheme = useAuthStore(state => state.setTheme);
 
@@ -29,7 +31,7 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
         justifyContent: 'center'
     });
 
-    useEffect(()=> {
+    useEffect(() => {
 
     }, [setTheme])
 
@@ -86,7 +88,7 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
             gap: 15,
             width: '100%',
             justifyContent: 'space-between',
-            paddingHorizontal: 8, 
+            paddingHorizontal: 8,
         },
         btnNotAgain: {
             width: '48%',
@@ -135,7 +137,7 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
             width: '100%',
             height: '100%',
         },
-        selectedButton:{
+        selectedButton: {
             borderColor: colors.Primary
         }
     });
@@ -147,43 +149,43 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
                 transparent={true}
                 style={styles.modalContainer}
             >
-                 <View style={styles.containerAll}>
+                <View style={styles.containerAll}>
                     <Text style={styles.textTitle}>Escolha o tema</Text>
 
                     <View style={styles.containerSvg}>
-                        <Pressable 
+                        <Pressable
                             style={getButtonStyle(controlThemeModal)}
                             onPress={() => setControlThemeModal(true)}
                         >
                             <Image source={DarkModeBtn} />
                         </Pressable>
-                        <Pressable 
+                        <Pressable
                             style={getButtonStyle(!controlThemeModal)}
                             onPress={() => setControlThemeModal(false)}
                         >
                             <Image source={LightModeBtn} />
                         </Pressable>
                     </View>
-                <View style={styles.containerBtn}>
-                    <Pressable 
-                        onPress={() => props.setControl(false)} 
-                        style={styles.btnNotAgain}
-                    >
-                        <Text style={styles.textBtnNotAgain}>Agora não</Text>
-                    </Pressable>
-                    <Pressable 
-                        onPress={handleThemeChange}
-                        style={styles.btnConfirm}
-                    >
-                        <Text style={styles.textBtnConfirm}>Confirmar</Text>
-                    </Pressable>
+                    <View style={styles.containerBtn}>
+                        <Pressable
+                            onPress={() => props.setControl(false)}
+                            style={styles.btnNotAgain}
+                        >
+                            <Text style={styles.textBtnNotAgain}>Agora não</Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={handleThemeChange}
+                            style={styles.btnConfirm}
+                        >
+                            <Text style={styles.textBtnConfirm}>Confirmar</Text>
+                        </Pressable>
+                    </View>
                 </View>
-            </View>
-            <View style={styles.transparentContainer}>
-                <Pressable style={styles.pressableStyle} onPress={() => props.setControl(false)} />
-            </View>
-        </Modal>
-    </SafeAreaView>
+                <View style={styles.transparentContainer}>
+                    <Pressable style={styles.pressableStyle} onPress={() => props.setControl(false)} />
+                </View>
+            </Modal>
+        </SafeAreaView>
     );
 };
 
