@@ -27,13 +27,14 @@ const AvatarDisplay = ({ style }: AvatarProp) => {
         container: {
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: colors.SecondaryBG
+            backgroundColor: colors.Background
         },
         img: {
             borderRadius: 100,
             width: 50,
             height: 50,
             borderWidth: 2,
+            backgroundColor: colors.Background
         },
     });
     return (
