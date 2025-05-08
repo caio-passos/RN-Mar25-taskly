@@ -74,15 +74,17 @@ const Menu = ({ navigation }: MenuProps) => {
   };
   const HandleDeleteAccount = () => {
     useUserStore.getState().clearUserData();
-    useAuthStore.getState().setAvatar()
+    useAuthStore.getState().setAvatar();
     navigation.navigate('Login');
   };
+
 
   const styles = StyleSheet.create({
     Container: {
       flex: 1,
       justifyContent: 'center',
       backgroundColor: colors.Background,
+      
     },
     Header: {
       flexDirection: 'column',
@@ -106,15 +108,19 @@ const Menu = ({ navigation }: MenuProps) => {
       fontWeight: 'bold',
       fontSize: 18,
       color: colors.MainText,
+
     },
     EmailAndPhone: {
       color: colors.MainText,
+      fontFamily: 'Roboto-Regular',
+
     },
     ContainerBottom: {
       flex: 3,
       gap: 16,
       justifyContent: 'flex-start',
       paddingHorizontal: 32,
+
     },
     ShadowContainer: {
       shadowColor: '#000',
@@ -223,6 +229,7 @@ const Menu = ({ navigation }: MenuProps) => {
                 leftButtonText="Agora não"
                 rightButtonText="HABILITAR"
                 rightButtonStyle={{ backgroundColor: colors.SecondaryAccent }}
+                styleFont={{fontFamily: 'Roboto-Regular'}}
               />
             ) : (
               <ModalAlert
@@ -236,6 +243,7 @@ const Menu = ({ navigation }: MenuProps) => {
                 leftButtonText="Agora não"
                 rightButtonText="DESABILITAR"
                 rightButtonStyle={{ backgroundColor: colors.Error }}
+                styleFont={{fontFamily: 'Roboto-Regular'}}
               />
             ))}
 
@@ -255,6 +263,8 @@ const Menu = ({ navigation }: MenuProps) => {
               handleLogout();
             }}
             rightButtonStyle={{ backgroundColor: colors.Error }}
+            styleFont={{fontFamily: 'Roboto-Medium'}}
+            colorFont={{color: colors.Primary}}
           />
           {activeModal === 'Excluir' && (
             <ModalAlert
@@ -268,7 +278,8 @@ const Menu = ({ navigation }: MenuProps) => {
               leftButtonText="Agora não"
               rightButtonText="EXCLUIR"
               rightButtonStyle={{ backgroundColor: colors.Error }}
-              style={{ backgroundColor: colors.Background }}
+              style={{ backgroundColor: colors.Background}}
+              styleFont={{fontFamily:'Roboto-Regular'}}
             />
           )}
 
