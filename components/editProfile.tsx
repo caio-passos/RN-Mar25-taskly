@@ -101,8 +101,9 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
         textTitleInput: {
             color: colors.MainText,
         },
-        textInput:{
-            backgroundColor: colors.SecondaryBG
+        textInput: {
+            backgroundColor: colors.SecondaryBG,
+            marginHorizontal: 16
         },
         loginForm: {
             width: '100%',
@@ -148,7 +149,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
             right: 20,
             padding: 10,
         },
-        editTitleText:{
+        editTitleText: {
             color: colors.MainText
         },
         boxTextVoltar: {
@@ -156,7 +157,6 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
             alignItems: 'center',
             justifyContent: 'center',
             marginLeft: 2,
-
         },
         textVoltar: {
             fontSize: 18,
@@ -166,16 +166,15 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
     const colorPlace = styles.textTitleInput.color;
     return (
         <View style={styles.container}>
-                <Pressable style={styles.returnPressable} onPress={() => handleCloseEdit()}>
-                    <ReturnLeft width={23} height={17.25} />
-                    <View style={styles.boxTextVoltar}>
-                        <Text style={styles.textVoltar}>VOLTAR</Text>
-                    </View>
-                </Pressable>
+            <Pressable style={styles.returnPressable} onPress={() => handleCloseEdit()}>
+                <ReturnLeft width={23} height={17.25} />
+                <View style={styles.boxTextVoltar}>
+                    <Text style={styles.textVoltar}>VOLTAR</Text>
+                </View>
+            </Pressable>
             <View style={styles.editTitle}>
                 <Text style={styles.editTitleText}>EDIÇÃO DE PERFIL</Text>
             </View>
-            <Text style={styles.title}>CADASTRO</Text>
             <View style={styles.loginForm}>
                 <Text style={styles.textTitleInput}>Nome Completo</Text>
                 <View style={styles.boxInput}>
@@ -214,7 +213,6 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                         }}
                         placeholderTextColor={colorPlace}
                         style={styles.textInput}
-
                     />
                 </View>
                 <LongPressable
@@ -222,6 +220,8 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                     onPress={handleContinuar}
                     style={{
                         marginTop: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center'
                     }}
                 />
                 {continuar && (
@@ -231,7 +231,5 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
         </View>
     );
 };
-
-
 
 export default EditProfile;
