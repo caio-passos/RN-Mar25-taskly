@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Image, View, StyleSheet, Text, ImageStyle } from 'react-native';
-import { useAuthStore } from '../services/cache/stores/storeZustand';
+import { useAuthStore, useUserStore } from '../services/cache/stores/storeZustand';
 import { AppContext } from '../App';
 
 interface AvatarProp {
@@ -17,7 +17,8 @@ const avatars = [
 const AvatarDisplay = ({ style }: AvatarProp) => {
 
     const colors = useContext(AppContext)!.colors;
-    const userData = useAuthStore(state => state.userData);
+    const {userData} = useUserStore();
+
     const selectedAvatarData = userData?.avatar
         ? avatars.find(avatar => avatar.id === userData.avatar?.id)
         : avatars[0];

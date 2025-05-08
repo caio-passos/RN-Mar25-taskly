@@ -136,7 +136,7 @@ const ModalAlert = ({
                         </Pressable>
                         <Pressable
                             style={[styles.buttonFilled, rightButtonStyle]}
-                            onPress={() => {
+                                onPress={() => {
                                 console.log('Right button pressed');
                                 
                                 if (onRightButtonPress) {

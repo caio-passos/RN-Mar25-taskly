@@ -28,7 +28,7 @@ function LongPressable({ textProps, onPress, style, textStyle}: LongPressablePro
 
     return (
         <Pressable onPress={onPress} style={[style, styles.buttonFilled]}>
-            <Text style={styles.buttonTextCriarTarefa}>
+            <Text style={[textStyle, styles.buttonTextCriarTarefa]}>
                 {textProps}
             </Text>
         </Pressable>
