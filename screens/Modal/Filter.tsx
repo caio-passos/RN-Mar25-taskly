@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput } from 'react-native';
-import DropIcon from '../../assets/icons/lightmode/dropmenu.svg'; 
+import DropIcon from '../../assets/icons/lightmode/dropmenu.svg';
+import { AppContext } from '../../App';
 interface FilterModalProps {
     visible: boolean;
     onClose: () => void;
@@ -14,6 +15,88 @@ interface DropdownItem {
 }
 
 const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, onClear }) => {
+    const colors = useContext(AppContext)!.colors;
+    const styles = StyleSheet.create({
+        modalBackground: {
+            flex: 1,
+            backgroundColor: colors.BackgroundModal,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        modalContent: {
+            width: '85%',
+            backgroundColor: colors.Background,
+            borderRadius: 10,
+            padding: 20,
+            elevation: 5,
+        },
+        header: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 15,
+        },
+        title: { fontSize: 24, fontWeight: '700' },
+        closeButton: { fontSize: 26, color: 'red' },
+        filterItem: {
+            marginBottom: 15,
+        },
+        filterHeader: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingVertical: 10,
+        },
+        label: {
+            fontSize: 18,
+            fontWeight: '500',
+        },
+        dropdownIcon: {
+            width: 20,
+            height: 20,
+        },
+        dropdownList: {
+            marginTop: 5,
+            borderColor: '#ccc',
+            borderWidth: 1,
+            borderRadius: 5,
+            backgroundColor: colors.Background,
+            maxHeight: 150,
+            overflow: 'auto',
+        },
+        dropdownListItem: {
+            padding: 10,
+            borderBottomWidth: 1,
+            borderColor: '#eee',
+        },
+        selectedItem: {
+            backgroundColor: colors.PrimaryLight,
+        },
+        selectedItemText: {
+            fontWeight: 'bold',
+        },
+
+        button: {
+            backgroundColor: colors.Primary,
+            padding: 12,
+            borderRadius: 6,
+            alignItems: 'center',
+            marginTop: 10,
+        },
+        clearButton: {
+            backgroundColor: colors.Primary,
+            padding: 12,
+            borderRadius: 6,
+            alignItems: 'center',
+            marginTop: 10,
+        },
+        buttonText: {
+            color: '#fff',
+            fontWeight: '500',
+            fontSize: 18,
+        },
+    });
+
     const [orderOpen, setOrderOpen] = useState<boolean>(false);
     const [order, setOrder] = useState<string | null>(null);
     const [orderItems] = useState<DropdownItem[]>([
@@ -30,7 +113,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
     ]);
 
     const [dateOpen, setDateOpen] = useState<boolean>(false);
-    const [dateInput, setDateInput] = useState<string | null>(null); 
+    const [dateInput, setDateInput] = useState<string | null>(null);
 
     const handleOpen = (target: 'order' | 'tags' | 'date') => {
         setOrderOpen(target === 'order');
@@ -39,7 +122,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
     };
 
     const handleApply = () => {
-        onApply({ order, tags, date: dateInput }); 
+        onApply({ order, tags, date: dateInput });
         onClose();
     };
 
@@ -47,7 +130,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
         setOrder(null);
         setTags([]);
         setDateInput(null);
-        setDateOpen(false); 
+        setDateOpen(false);
         onClear();
     };
 
@@ -152,85 +235,5 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
 };
 
 
-const styles = StyleSheet.create({
-    modalBackground: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContent: {
-        width: '85%',
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 20,
-        elevation: 5,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 15,
-    },
-    title: { fontSize: 24, fontWeight: '700' },
-    closeButton: { fontSize: 26, color: 'red' },
-    filterItem: {
-        marginBottom: 15,
-    },
-    filterHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 10, 
-    },
-    label: {
-        fontSize: 18,
-        fontWeight: '500',
-    },
-    dropdownIcon: {
-        width: 20,
-        height: 20,
-    },
-    dropdownList: {
-        marginTop: 5,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        backgroundColor: '#fff',
-        maxHeight: 150,
-        overflow: 'auto',
-    },
-    dropdownListItem: {
-        padding: 10,
-        borderBottomWidth: 1,
-        borderColor: '#eee',
-    },
-    selectedItem: {
-        backgroundColor: '#e0f7fa',
-    },
-    selectedItemText: {
-        fontWeight: 'bold',
-    },
-
-    button: {
-     backgroundColor: '#5B2EFF',
-     padding: 12,
-     borderRadius: 6,
-     alignItems: 'center',
-     marginTop: 10,
-  },
-  clearButton: {
-    backgroundColor: '#5B2EFF',
-    padding: 12,
-    borderRadius: 6,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '500',
-    fontSize: 18,
-  },
-});
 
 export default FilterModal;
