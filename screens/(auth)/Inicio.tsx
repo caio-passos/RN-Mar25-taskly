@@ -20,6 +20,7 @@ import {
   useUserStore,
 } from '../../services/cache/stores/storeZustand';
 import AvatarDisplay from '../../components/AvatarDisplay';
+import FilterModal from '../Modal/Filter';
 
 const InicioContent = () => {
   const colors = useContext(AppContext)!.colors;
@@ -29,6 +30,7 @@ const InicioContent = () => {
   const [ShowDetalhes, setShowDetalhes] = useState(false);
   const [control, setControl] = useState(false);
   const [controlTheme, setControlTheme] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
 
   const { userData } = useUserStore();
   const tasks = useTaskStore(state => state.tasks);
@@ -140,11 +142,15 @@ const InicioContent = () => {
             {!ShowDetalhes && (
               <View style={styles.IconFilterStyle}>
                 <Pressable
-                  onPress={() => {
-                    ('');
-                  }}>
+                  onPress={() => setFilterVisible(true)}>
                   <IconFilter width={24} height={24} />
                 </Pressable>
+              <FilterModal 
+              visible={filterVisible} 
+              onClose={()=> setFilterVisible(false)}
+              onApply={()=> {''}}
+              onClear={()=> {''}} 
+              />
               </View>
             )}
             {ShowDetalhes ? (
