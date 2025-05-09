@@ -19,15 +19,14 @@ function LongNoFillPressable({ textProps, onPress, style, Tap}: LongNoFillPressa
             borderColor: colors.SecondaryBG,
             borderWidth:2,
             width: '100%',
-            height: 27,
             justifyContent: 'center',
-            alignSelf: 'center',
-            marginTop: 25,
+            alignItems: 'center',
         },
         buttonTextCriarTarefa: {
             color: colors.Primary,
             textAlign: 'center',
             fontWeight: '600',
+            includeFontPadding:false
             
         }
     })

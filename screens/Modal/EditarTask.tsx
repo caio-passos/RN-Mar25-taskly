@@ -60,13 +60,14 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             alignItems: 'center',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
             paddingHorizontal: 32,
+            
         },
         modalView: {
             width: '90%',
             backgroundColor: colors.Background,
             borderRadius: 12,
             padding: 24,
-            maxHeight: '80%',
+            maxHeight: '100%',
         },
         title: {
             fontSize: 18,
@@ -135,15 +136,18 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             backgroundColor: colors.SecondaryAccent,
         },
         selectedPriorityMedia: {
-            backgroundColor: '#FFD700', // Yellow for medium
+            backgroundColor: '#FFD700',
         },
         selectedPriorityAlta: {
-            backgroundColor: colors.Error, // Red for high
+            backgroundColor: colors.Error, 
         },
         buttonsContainer: {
             flexDirection: 'row',
+            marginBottom: 10,
+            alignItems: 'center',
+            alignContent: 'center',
             justifyContent: 'space-between',
-            marginTop: 16,
+            gap: 8
         },
     });
 
@@ -157,7 +161,7 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
         >
             <View style={styles.container}>
                 <View style={styles.modalView}>
-                    <ScrollView>
+                    <View>
                         <Text style={styles.title}>Editar Tarefa</Text>
 
                         <View style={styles.inputContainer}>
@@ -252,15 +256,16 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                             <LongNoFillPressable
                                 textProps="CANCELAR"
                                 onPress={onCancel}
-                                style={{ flex: 1, marginRight: 8 }}
+                                style={{ flex: 1, height:50, borderColor: colors.Primary}}
                             />
                             <LongPressable
                                 textProps="SALVAR"
                                 onPress={handleSave}
-                                style={{ flex: 1 }}
+                                style={{ flex: 1, height:50 }}
+                                textStyle={{color: colors.PrimaryLight}}
                             />
                         </View>
-                    </ScrollView>
+                    </View>
                 </View>
             </View>
         </Modal>

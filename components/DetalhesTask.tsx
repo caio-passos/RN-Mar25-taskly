@@ -555,15 +555,16 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
             color: 'white'
           }}
         />
-        <View>
-          <EditarTask
-            visible={editMode}
-            task={item!}
-            onSave={() => setEditMode(false)}
-            onCancel={() => setEditMode(false)}
-          />
-        </View>
       </GestureHandlerRootView>
+      <View>
+        <EditarTask
+          visible={editMode}
+          task={item!}
+          onSave={() => setEditMode(false)}
+          onCancel={() => setEditMode(false)}
+        />
+      </View>
+
     </SafeAreaView>
 
   );
