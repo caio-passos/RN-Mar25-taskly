@@ -37,6 +37,8 @@ import DarkIconEdit from '../assets/icons/darkmode/pencildarkmode.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../services/cache/stores/storeZustand';
 import EditarTask from '../screens/Modal/EditarTask';
+import { useUserStore } from '../services/cache/stores/storeZustand';
+import IconGreenArrow from '../assets/icons/lightmode/ArrowCircleRight.svg';
 
 type DetalhesProps = {
   item: TaskTypes | null;
@@ -44,7 +46,8 @@ type DetalhesProps = {
 
 export const getThemedIcon = () => {
   const userData = useAuthStore.getState().userData;
-  const isDarkMode = userData?.theme ?? false;
+  const isDarkMode = useUserStore(state => state.userData?.theme);
+
 
   console.log('Themed icon  userData:', userData);
   console.log('Themed icon   isDarkMode:', isDarkMode);
@@ -140,6 +143,8 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   const sv = useSharedValue(50);
 
   const renderRightActionsSubtask = (
+    progress: Animated.SharedValue<number>,
+    dragX: Animated.SharedValue<number>,
     subtaskId: string
   ) => {
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
@@ -223,7 +228,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       case 'alta':
         return 'Red';
       default:
-        return null;
+        return undefined;
     }
   };
 
@@ -320,6 +325,9 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       marginTop: 16,
     },
     subtaskInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       backgroundColor: colors.SecondaryBG,
       borderRadius: 8,
     },
@@ -393,6 +401,9 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                 handleAddSubtask();
               }}
             />
+            <Pressable onPress={() => handleAddSubtask()}>
+              <IconGreenArrow height={25} width={25} />
+            </Pressable>
           </View>
         </View>
       </View>
@@ -467,7 +478,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                         paddingHorizontal: 32,
                         width: '100%',
                         height: 32,
-                        marginTop:16,
+                        marginTop: 16,
                         marginBottom: 16,
                         justifyContent: 'center',
                         borderWidth: 2,
@@ -537,8 +548,11 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
           </View>
 
         </ScrollView>
-        <View style={{ height: 20 }} />
         {renderSubtaskInput()}
+
+
+      </GestureHandlerRootView>
+      <View style={{}}>
         <LongPressable
           textProps="ADICIONAR SUBTASK"
           onPress={() => {
@@ -555,7 +569,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
             color: 'white'
           }}
         />
-      </GestureHandlerRootView>
+      </View>
       <View>
         <EditarTask
           visible={editMode}

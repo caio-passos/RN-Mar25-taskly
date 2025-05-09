@@ -1,12 +1,4 @@
 import React, { useEffect, useState, useMemo} from "react";
-// import IconEditar from '../../assets/icons/lightmode/carrousel/editarInfo.png'
-// import IconBiometria from '../../assets/icons/lightmode/carrousel/mudarBiometria.png'
-// import IconSair from '../../assets/icons/lightmode/carrousel/sairConta.png'
-// import IconExcluir from '../../assets/icons/lightmode/carrousel/excluirConta.png'
-// import IconEditarDark from '../../assets/icons/darkmode/carrousel/editarInfo.png'
-// import IconBiometriaDark from '../../assets/icons/darkmode/carrousel/mudarBiometria.png'
-// import IconSairDark from '../../assets/icons/darkmode/carrousel/sairConta.png'
-// import IconExcluirDark from '../../assets/icons/darkmode/carrousel/excluirConta.png'
 import {Image} from 'react-native';
 import IconEditar from '../../assets/icons/lightmode/carrousel/editarInfo.png'
 import IconBiometria from '../../assets/icons/lightmode/carrousel/mudarBiometria.png'
