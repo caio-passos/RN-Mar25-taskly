@@ -24,11 +24,11 @@ function Avatar({ navigation, onEditProfile }: AvatarProps) {
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
 
   const avatars = [
-    { id: 1, uri: require('../../assets/icons/lightmode/useravatar.png'), borderColor: '#5B3CC4' },
-    { id: 2, uri: require('../../assets/icons/lightmode/useravatar.png'), borderColor: '#E6E0F7' },
-    { id: 3, uri: require('../../assets/icons/lightmode/useravatar.png'), borderColor: '#32C25B' },
-    { id: 4, uri: require('../../assets/icons/lightmode/useravatar.png'), borderColor: '#FF0000' },
-    { id: 5, uri: require('../../assets/icons/lightmode/useravatar.png'), borderColor: '#B58B46' },
+    { id: 1, uri: require('../../assets/icons/lightmode/avatar1.png'), borderColor: '#5B3CC4' },
+    { id: 2, uri: require('../../assets/icons/lightmode/avatar2.png'), borderColor: '#E6E0F7' },
+    { id: 3, uri: require('../../assets/icons/lightmode/avatar3.png'), borderColor: '#32C25B' },
+    { id: 4, uri: require('../../assets/icons/lightmode/avatar4.png'), borderColor: '#FF0000' },
+    { id: 5, uri: require('../../assets/icons/lightmode/avatar5.png'), borderColor: '#B58B46' },
   ];
 
   const handlePress = (id: number) => {
