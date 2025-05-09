@@ -27,41 +27,25 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from 'react-native-reanimated';
-import IconTrash from '../assets/icons/lightmode/trash';
-import IconEdit from '../assets/icons/lightmode/pencil';
-import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle';
-import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle';
-import DarkIconTrash from '../assets/icons/darkmode/trashdarkmode';
-import DarkIconEdit from '../assets/icons/darkmode/pencildarkmode';
+import { useIcon } from '../hooks/useIcon';
+import IconEditYellow from '../assets/editYellow.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../services/cache/stores/storeZustand';
+import EditarTask from '../screens/Modal/EditarTask';
+import { useUserStore } from '../services/cache/stores/storeZustand';
+import IconGreenArrow from '../assets/icons/lightmode/ArrowCircleRight.svg';
 
 type DetalhesProps = {
   item: TaskTypes | null;
 };
 
-export const getThemedIcon = () => {
-  const userData = useAuthStore.getState().userData;
-  const isDarkMode = userData?.theme?.darkMode;
-
-  console.log('Themed icon  userData:', userData);
-  console.log('Themed icon   isDarkMode:', isDarkMode);
-  return {
-    IconTrash: isDarkMode ? DarkIconTrash : IconTrash,
-    IconEdit: isDarkMode ? DarkIconEdit : IconEdit,
-    IconCheckboxUnchecked: isDarkMode ? IconCheckboxUnchecked : IconCheckboxUnchecked,
-    IconCheckboxChecked: isDarkMode ? IconCheckboxChecked : IconCheckboxChecked,
-  };
-};
-
 const DetalhesTask = ({ item }: DetalhesProps) => {
-
-  const {
-    IconTrash,
-    IconEdit,
-    IconCheckboxUnchecked,
-    IconCheckboxChecked
-  } = getThemedIcon();
+  const { 
+    trash: IconTrash,
+    edit: IconEdit,
+    checkboxUnchecked: IconCheckboxUnchecked,
+    checkboxChecked: IconCheckboxChecked
+  } = useIcon(['trash', 'edit', 'checkboxUnchecked', 'checkboxChecked']);
 
   const showSubtasks = useTaskStore.getState()
   const handleToggleSubtaskStatus = (subtaskId: string) => {
@@ -70,21 +54,17 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   };
 
   const [finishTask, setFinishTask] = useState(true);
-  const [updatedSubtask, setUpdatedSubtask] = useState('');
-  const swipeActive = useSharedValue(false);
-  const addSubtaskToStore = useTaskStore(state => state.addSubtask);
   const { tasks } = useTaskStore();
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [newSubtaskText, setNewSubtaskText] = useState('');
-  const [subtaskChecked, setSubtaskChecked] = useState(false);
   const [currentTask, setCurrentTask] = useState<TaskTypes | null>(null);
   const deleteTask = useTaskStore().deleteTask;
-  const deleteSubtask = useTaskStore().deleteSubtask;
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
   const [subtaskRefs, setSubtaskRefs] = useState<React.RefObject<SwipeableMethods>[]>([]);
   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
   const [editedSubtaskTitle, setEditedSubtaskTitle] = useState('');
+  const [editMode, setEditMode] = useState(false);
 
 
   const triggerUpdate = () => setForceUpdate(prev => prev + 1);
@@ -138,18 +118,14 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   }, []);
 
 
-  const swipeSubtaskRef = useRef<SwipeableMethods>(null);
   const swipeRef = useRef<SwipeableMethods>(null);
-  const translateX = useSharedValue(0);
   const sv = useSharedValue(50);
 
   const renderRightActionsSubtask = (
-    progress: SharedValue<number>,
-    dragX: SharedValue<number>,
+    progress: Animated.SharedValue<number>,
+    dragX: Animated.SharedValue<number>,
     subtaskId: string
   ) => {
-    const { IconTrash } = getThemedIcon();
-
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
       extrapolateLeft: Extrapolation.CLAMP,
     });
@@ -177,10 +153,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   };
   const colors = useContext(AppContext)!.colors;
 
-  const renderRightActions = (
-    progress: SharedValue<number>,
-    dragX: SharedValue<number>,
-  ) => {
+  const renderRightActions = () => {
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
       extrapolateLeft: Extrapolation.CLAMP,
     });
@@ -234,7 +207,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       case 'alta':
         return 'Red';
       default:
-        return null;
+        return undefined;
     }
   };
 
@@ -270,6 +243,10 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       elevation: 2,
       backgroundColor: colors.SecondaryBG,
     },
+    topBar: {
+      flexDirection: 'row',
+      justifyContent: 'space-between'
+    },
     ContentContainerSubtasks: {
       marginBottom: 18,
       paddingHorizontal: 32,
@@ -298,13 +275,13 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       paddingBottom: 16,
     },
     TitleStyle: {
-      color: colors.MainText
+      fontSize: 20,
+      color: colors.SecondaryText,
     },
     ColorText: {
       color: colors.MainText,
     },
     DescriçãoStyle: {
-      color: colors.MainText,
       paddingBottom: 16,
     },
     TagsStyle: {
@@ -317,6 +294,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       textAlign: 'center',
       textAlignVertical: 'center',
       borderRadius: 8,
+      opacity: 0.8,
     },
     SubtaskContainer: {
     },
@@ -326,11 +304,14 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       marginTop: 16,
     },
     subtaskInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       backgroundColor: colors.SecondaryBG,
       borderRadius: 8,
     },
     subtaskInput: {
-      textAlign: 'left' ,
+      textAlign: 'left',
       textAlignVertical: 'bottom',
       paddingHorizontal: 26,
       borderRadius: 6,
@@ -399,159 +380,183 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                 handleAddSubtask();
               }}
             />
+            <Pressable onPress={() => handleAddSubtask()}>
+              <IconGreenArrow height={25} width={25} />
+            </Pressable>
           </View>
         </View>
       </View>
     );
   };
+  if (editMode) {
+    return (
+      <EditarTask
+        visible={editMode}
+        task={item!}
+        onSave={() => setEditMode(false)}
+        onCancel={() => setEditMode(false)}
+      />
+    )
+  } else {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <GestureHandlerRootView>
 
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <GestureHandlerRootView>
-        <ScrollView style={styles.RootContainer}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={true}
-          indicatorStyle='black'
-        >
-          <Swipeable
-            ref={swipeRef}
-            friction={2}
-            rightThreshold={40}
-            renderRightActions={renderRightActions}
-            onSwipeableOpen={direction => {
-              console.log('Swiped', direction);
-            }}>
+          <ScrollView style={styles.RootContainer}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={true}
+            indicatorStyle='black'
+          >
 
-            <View style={styles.ShadowContainer}>
-              <View style={styles.ContentContainer}>
-                <Text style={styles.TitleStyle}>Título</Text>
-                <Text style={styles.TaskStyle}>{item?.Task}</Text>
+            <Swipeable
+              ref={swipeRef}
+              friction={2}
+              rightThreshold={40}
+              renderRightActions={renderRightActions}
+              onSwipeableOpen={direction => {
+                console.log('Swiped', direction);
+              }}>
 
-                <View style={styles.DescriçãoStyle}>
-                  <Text style={styles.ColorText}>Descrição</Text>
-                  <Text style={styles.ColorText}>{item?.Descricao}</Text>
-                </View>
-
-                <View style={styles.TagsStyle}>
-                  <Text style={styles.ColorText}>Tags</Text>
-                  <View style={styles.tagsContainer}>
-                    {item?.Tags?.map((tag, index) => (
-                      <Text key={index} style={styles.tagStyle}>
-                        {tag}
-                      </Text>
-                    ))}
+              <View style={styles.ShadowContainer}>
+                <View style={styles.ContentContainer}>
+                  <View style={styles.topBar}>
+                    <Text style={styles.TitleStyle}>Título</Text>
+                    <Pressable onPress={() => setEditMode(true)}>
+                      <IconEditYellow height={25} width={25} />
+                    </Pressable>
                   </View>
-                </View>
+                  <Text style={styles.TaskStyle}>{item?.Task}</Text>
 
-                <View>
-                  <Text style={styles.ColorText}>Prioridade</Text>
-                  {item?.Prioridade && (
-                    <Text style={styles.PrioridadeTextColor}>
-                      {getCorPrioridade(item?.Prioridade)}
-                    </Text>
-                  )}
-                  {!item?.Prioridade && (
-                    <Text style={{ color: 'gray' }}>Não definida</Text>
-                  )}
-                  <View>
-                    <LongNoFillPressable
-                      textProps="RESOLVER TAREFA"
-                      onPress={handleResolveTask}
-                      style={{
-                        paddingHorizontal: 32,
-                        width: '100%',
-                        height: 32,
-                        marginBottom: 16,
-                        justifyContent: 'center',
-                        borderWidth: 2,
-                        borderColor: colors.Primary,
-                      }}
-                    />
+                  <View style={styles.DescriçãoStyle}>
+                    <Text style={styles.ColorText}>Descrição</Text>
+                    <Text style={styles.ColorText}>{item?.Descricao}</Text>
                   </View>
-                </View>
-              </View>
 
-            </View>
-          </Swipeable>
-          <View style={styles.SubtaskContainer}>
-            {currentTask?.Subtask && currentTask.Subtask.length > 0 && (
-              <View style={styles.SubtaskListContainer}>
-                {currentTask.Subtask.map((subtask, index) => (
-                  <Swipeable
-                    key={subtask.id || `subtask-${index}`}
-                    ref={subtaskRefs[index]} //referenciar o index certo
-                    friction={2}
-                    rightThreshold={40}
-                    renderRightActions={(progress, dragX) =>
-                      renderRightActionsSubtask(progress, dragX, subtask.id || `subtask-${index}`)
-                    }>
-
-                    <View style={styles.subtaskItem}>
-                      <View style={styles.SubtaskContentContainer}>
-                        <Pressable
-                          onPress={() => {
-                            handleToggleSubtaskStatus(subtask.id)
-                            //ambos funcionam
-                            if (!subtask.done) {
-                              subtaskRefs[index]?.current?.openRight();
-                            }
-                          }}>
-                          <View>
-                            {subtask.done ?
-                              <IconCheckboxChecked height={25} width={25} />
-                              :
-                              <IconCheckboxUnchecked height={25} width={25} />
-                            }
-                          </View>
-
-                        </Pressable>
-                        {editingSubtaskId === subtask.id ? (
-                          <TextInput
-                            value={editedSubtaskTitle}
-                            onChangeText={setEditedSubtaskTitle}
-                            onBlur={saveSubtaskEdit}
-                            onSubmitEditing={saveSubtaskEdit}
-                            autoFocus
-                            style={styles.inlineSubtaskEdit}
-                          />
-                        ) : (
-                          <Text style={styles.subtaskTitle}>{subtask.title}</Text>
-                        )}
-
-                        <Pressable onPress={() => handleEditSubtask(subtask)}>
-                          <IconEdit height={25} width={25} />
-                        </Pressable>
-                      </View>
+                  <View style={styles.TagsStyle}>
+                    <Text style={styles.ColorText}>Tags</Text>
+                    <View style={styles.tagsContainer}>
+                      {item?.Tags?.map((tag, index) => (
+                        <Text key={index} style={styles.tagStyle}>
+                          {tag}
+                        </Text>
+                      ))}
                     </View>
-                  </Swipeable>
-                ))}
+                  </View>
+
+                  <View>
+                    <Text style={styles.ColorText}>Prioridade</Text>
+                    {item?.Prioridade && (
+                      <Text style={styles.PrioridadeTextColor}>
+                        {getCorPrioridade(item?.Prioridade)}
+                      </Text>
+                    )}
+                    {!item?.Prioridade && (
+                      <Text style={{ color: 'gray' }}>Não definida</Text>
+                    )}
+                    <View>
+                      <LongNoFillPressable
+                        textProps="RESOLVER TAREFA"
+                        onPress={handleResolveTask}
+                        style={{
+                          paddingHorizontal: 32,
+                          width: '100%',
+                          height: 32,
+                          marginTop: 16,
+                          marginBottom: 16,
+                          justifyContent: 'center',
+                          borderWidth: 2,
+                          borderColor: colors.Primary,
+                        }}
+                      />
+                    </View>
+                  </View>
+                </View>
+
               </View>
-            )}
-          </View>
+            </Swipeable>
+            <View style={styles.SubtaskContainer}>
+              {currentTask?.Subtask && currentTask.Subtask.length > 0 && (
+                <View style={styles.SubtaskListContainer}>
+                  {currentTask.Subtask.map((subtask, index) => (
+                    <Swipeable
+                      key={subtask.id || `subtask-${index}`}
+                      ref={subtaskRefs[index]} //referenciar o index certo
+                      friction={2}
+                      rightThreshold={40}
+                      renderRightActions={(progress, dragX) =>
+                        renderRightActionsSubtask(progress, dragX, subtask.id || `subtask-${index}`)
+                      }>
 
-        </ScrollView>
-        <View style={{ height: 20 }} />
-        {renderSubtaskInput()}
-        <LongPressable
-          textProps="ADICIONAR SUBTASK"
-          onPress={() => {
-            setIsAddingSubtask(true);
-            setIsInputFocused(true);
-          }}
-          style={{
-            justifyContent: 'center',
-            alignSelf: 'center',
-            width: '100%',
-          }}
-          textStyle={{
-            color: 'white'
-          }}
-        />
+                      <View style={styles.subtaskItem}>
+                        <View style={styles.SubtaskContentContainer}>
+                          <Pressable
+                            onPress={() => {
+                              handleToggleSubtaskStatus(subtask.id)
+                              //ambos funcionam
+                              if (!subtask.done) {
+                                subtaskRefs[index]?.current?.openRight();
+                              }
+                            }}>
+                            <View>
+                              {subtask.done ?
+                                <IconCheckboxChecked height={25} width={25} />
+                                :
+                                <IconCheckboxUnchecked height={25} width={25} />
+                              }
+                            </View>
 
-      </GestureHandlerRootView>
-    </SafeAreaView>
+                          </Pressable>
+                          {editingSubtaskId === subtask.id ? (
+                            <TextInput
+                              value={editedSubtaskTitle}
+                              onChangeText={setEditedSubtaskTitle}
+                              onBlur={saveSubtaskEdit}
+                              onSubmitEditing={saveSubtaskEdit}
+                              autoFocus
+                              style={styles.inlineSubtaskEdit}
+                            />
+                          ) : (
+                            <Text style={styles.subtaskTitle}>{subtask.title}</Text>
+                          )}
 
-  );
+                          <Pressable onPress={() => handleEditSubtask(subtask)}>
+                            <IconEdit height={25} width={25} />
+                          </Pressable>
+                        </View>
+                      </View>
+                    </Swipeable>
+                  ))}
+                </View>
+              )}
+            </View>
+
+          </ScrollView>
+          {renderSubtaskInput()}
+
+
+        </GestureHandlerRootView>
+        <View style={{}}>
+          <LongPressable
+            textProps="ADICIONAR SUBTASK"
+            onPress={() => {
+              setIsAddingSubtask(true);
+              setIsInputFocused(true);
+            }}
+            style={{
+              justifyContent: 'center',
+              alignSelf: 'center',
+              width: '100%',
+              height: 27
+            }}
+            textStyle={{
+              color: 'white'
+            }}
+          />
+        </View>
+
+      </SafeAreaView>
+    );
+  };
 };
 
 export default DetalhesTask;

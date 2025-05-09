@@ -10,7 +10,7 @@ import {
   BackHandler,
 } from 'react-native';
 import MenuCarrousel from '../../components/carrousel/MenuCarrousel';
-import IconRightArrow from '../../assets/icons/lightmode/rightArrow';
+import IconRightArrow from '../../assets/icons/lightmode/rightArrow.svg';
 import ModalAlert from '../Modal/Alert';
 import { useUserStore, useAuthStore } from '../../services/cache/stores/storeZustand';
 import { AppContext } from '../../App';

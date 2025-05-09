@@ -15,3 +15,8 @@ export type TaskTypes = {
     Checked?: Boolean;
     toDelete?: Boolean;
 }
+export interface TaskFilters{
+    order?: 'baixaParaAlta' | 'altaParaBaixa';
+    tags?: string[];
+    date?: string;
+}
