@@ -4,7 +4,6 @@ import { mmkvStorage } from '../../db/storageMMKV';
 import { produce } from 'immer';
 import { AvatarData, UserDataTypes } from '../../../types/userTypes';
 import { TaskTypes } from '../../../types/taskTypes';
-import Theme from '../../../screens/(auth)/Theme';
 
 interface UserStore {
   userData: UserDataTypes | null;

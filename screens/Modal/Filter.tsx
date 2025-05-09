@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput } from 'react-native';
 import DropIcon from '../../assets/icons/lightmode/dropmenu.svg';
 import { AppContext } from '../../App';
+
 interface FilterModalProps {
     visible: boolean;
     onClose: () => void;
@@ -97,14 +98,13 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
         },
     });
 
-    const [orderOpen, setOrderOpen] = useState<boolean>(false);
+   
     const [order, setOrder] = useState<string | null>(null);
     const [orderItems] = useState<DropdownItem[]>([
         { label: 'Prioridade (de baixa para alta)', value: 'lowToHigh' },
         { label: 'Prioridade (de alta para baixa)', value: 'highToLow' },
     ]);
 
-    const [tagsOpen, setTagsOpen] = useState<boolean>(false);
     const [tags, setTags] = useState<string[]>([]);
     const [tagItems, setTagItems] = useState<DropdownItem[]>([
         { label: 'TRABALHO', value: 'trabalho' },
@@ -115,12 +115,17 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
     const [dateOpen, setDateOpen] = useState<boolean>(false);
     const [dateInput, setDateInput] = useState<string | null>(null);
 
-    const handleOpen = (target: 'order' | 'tags' | 'date') => {
-        setOrderOpen(target === 'order');
-        setTagsOpen(target === 'tags');
-        setDateOpen(target === 'date');
+    const [openStates, setOpenStates] = useState({
+        order: false,
+        tags: false,
+        date: false
+    });
+    const toggleDropdown = (target: keyof typeof openStates) => {
+        setOpenStates(prev => ({
+            ...prev,
+            [target]: !prev[target]
+        }));
     };
-
     const handleApply = () => {
         onApply({ order, tags, date: dateInput });
         onClose();
@@ -176,11 +181,11 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
                     </View>
 
                     <View style={styles.filterItem}>
-                        <TouchableOpacity style={styles.filterHeader} onPress={() => handleOpen('order')}>
+                        <TouchableOpacity style={styles.filterHeader} onPress={() => toggleDropdown('order')}>
                             <Text style={styles.label}>Ordenar por</Text>
                             <DropIcon width={20} height={20} style={styles.dropdownIcon} />
                         </TouchableOpacity>
-                        {orderOpen && (
+                        {openStates.order && (
                             <FlatList
                                 data={orderItems}
                                 keyExtractor={(item) => item.value}
@@ -191,11 +196,11 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
                     </View>
 
                     <View style={styles.filterItem}>
-                        <TouchableOpacity style={styles.filterHeader} onPress={() => handleOpen('tags')}>
+                        <TouchableOpacity style={styles.filterHeader} onPress={() => toggleDropdown('tags')}>
                             <Text style={styles.label}>Tags</Text>
                             <DropIcon width={20} height={20} style={styles.dropdownIcon} />
                         </TouchableOpacity>
-                        {tagsOpen && (
+                        {openStates.tags&& (
                             <FlatList
                                 data={tagItems}
                                 keyExtractor={(item) => item.value}
@@ -206,11 +211,11 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
                     </View>
 
                     <View style={styles.filterItem}>
-                        <TouchableOpacity style={styles.filterHeader} onPress={() => handleOpen('date')}>
+                        <TouchableOpacity style={styles.filterHeader} onPress={() => toggleDropdown('date')}>
                             <Text style={styles.label}>Data</Text>
                             <DropIcon width={20} height={20} style={styles.dropdownIcon} />
                         </TouchableOpacity>
-                        {dateOpen && (
+                        {openStates.date&& (
                             <TextInput
                                 style={styles.dateInput}
                                 value={dateInput || ''}
