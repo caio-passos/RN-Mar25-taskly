@@ -4,7 +4,6 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    useColorScheme,
     View,
 } from 'react-native';
 import { useAuthStore } from "../services/cache/stores/storeZustand";
@@ -17,8 +16,9 @@ import ReturnLeft from '../assets/caretLeft.svg';
 import ProgressBar from './progressbar';
 
 interface editProfileProps {
-    onCloseEdit: () => void;
+    onCloseEdit: () => void; // Callback to notify parent when EditProfile is closed
 }
+
 const EditProfile = ({ onCloseEdit }: editProfileProps) => {
     const { userData: initialUserData } = useUserStore();
     const colors = useContext(AppContext)!.colors;
@@ -29,15 +29,15 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
     const [continuar, setContinuar] = useState<boolean>(false);
 
     useEffect(() => {
-        console.log('userData: ', name, email, phone)
-    }, [name, email, phone])
+        console.log('userData: ', name, email, phone);
+    }, [name, email, phone]);
 
     const handleCloseEdit = () => {
-        onCloseEdit();
-        setName('')
-        setEmail('')
-        setPhone('')
-    }
+        onCloseEdit(); // Notify parent component (Menu.tsx) that EditProfile is closed
+        setName('');
+        setEmail('');
+        setPhone('');
+    };
 
     const userUpdater = () => {
         const updates: Partial<UserDataTypes> = {};
@@ -53,10 +53,9 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
             if (updates.email !== undefined) draft.email = updates.email;
             if (updates.telefone !== undefined) draft.telefone = updates.telefone;
         });
-        onCloseEdit();
+        onCloseEdit(); // Notify parent component (Menu.tsx) that EditProfile is closed
         setContinuar(false);
     };
-
 
     const styles = StyleSheet.create({
         container: {
@@ -67,7 +66,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
         },
         title: {
             fontSize: 24,
-            fontWeight: 700,
+            fontWeight: '700',
             paddingTop: 32,
             color: colors.MainText,
             flexDirection: 'row',
@@ -80,7 +79,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
         },
         textInput: {
             marginHorizontal: 16,
-            color: colors.MainText
+            color: colors.MainText,
         },
         loginForm: {
             width: '100%',
@@ -108,7 +107,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
         textEditar: {
             color: '#FFFFFF',
             textAlign: 'center',
-            fontWeight: 700,
+            fontWeight: '700',
         },
         returnPressable: {
             position: 'absolute',
@@ -127,7 +126,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
             padding: 10,
         },
         editTitleText: {
-            color: colors.MainText
+            color: colors.MainText,
         },
         boxTextVoltar: {
             flexDirection: 'row',
@@ -137,10 +136,12 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
         },
         textVoltar: {
             fontSize: 18,
-            color: colors.MainText
+            color: colors.MainText,
         },
     });
+
     const colorPlace = styles.textTitleInput.color;
+
     return (
         <View style={styles.container}>
             {continuar ? (
@@ -151,7 +152,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                             <Text style={styles.textVoltar}>VOLTAR</Text>
                         </View>
                     </Pressable>
-                    <ProgressBar progress={100}/>
+                    <ProgressBar progress={100} />
                     <Avatar onEditProfile={userUpdater} />
                 </>
             ) : (
@@ -162,7 +163,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                             <Text style={styles.textVoltar}>VOLTAR</Text>
                         </View>
                     </Pressable>
-                    <ProgressBar progress={30}/>
+                    <ProgressBar progress={30} />
                     <View style={styles.editTitle}>
                         <Text style={styles.editTitleText}>EDIÇÃO DE PERFIL</Text>
                     </View>
@@ -176,7 +177,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                                 value={name}
                                 onChangeText={setName}
                                 cursorColor={colors.MainText}
-                                underlineColorAndroid='transparent'
+                                underlineColorAndroid="transparent"
                                 style={styles.textInput}
                             />
                         </View>
@@ -202,19 +203,19 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                                 keyboardType="phone-pad"
                                 value={phone}
                                 onChangeText={(value) => {
-                                    setPhone(value)
+                                    setPhone(value);
                                 }}
                                 placeholderTextColor={colorPlace}
                                 style={styles.textInput}
                             />
                         </View>
                         <LongPressable
-                            textProps='Continuar'
+                            textProps="Continuar"
                             onPress={() => setContinuar(true)}
                             style={{
                                 marginTop: 30,
                                 justifyContent: 'center',
-                                alignItems: 'center'
+                                alignItems: 'center',
                             }}
                         />
                     </View>

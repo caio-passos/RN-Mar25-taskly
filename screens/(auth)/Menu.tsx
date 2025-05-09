@@ -1,16 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
-  Image,
   StyleSheet,
   Text,
-  StyleProp,
-  TextStyle,
   Pressable,
   BackHandler,
 } from 'react-native';
 import MenuCarrousel from '../../components/carrousel/MenuCarrousel';
-import IconRightArrow from '../../assets/icons/lightmode/rightArrow';
 import ModalAlert from '../Modal/Alert';
 import { useUserStore, useAuthStore } from '../../services/cache/stores/storeZustand';
 import { AppContext } from '../../App';
@@ -21,7 +17,6 @@ import Theme from '../../screens/(auth)/Theme';
 import { MMKV } from 'react-native-mmkv';
 import AvatarDisplay from '../../components/AvatarDisplay';
 import { useThemedIcons } from '../../components/carrousel/carrouselIcons';
-import Avatar from './Avatar';
 import EditProfile from '../../components/EditProfile';
 import ModalProfileUpdated from '../Modal/ProfileUpdated';
 
@@ -36,7 +31,6 @@ const Menu = ({ navigation }: MenuProps) => {
   const [control, setControl] = useState(false);
   const [controlTheme, setControlTheme] = useState(false);
   const [isProfileUpdatedModalVisible, setIsProfileUpdatedModalVisible] = useState(false);
-  const [isEditProfileClosed, setIsEditProfileClosed] = useState(true);
 
   const themedIcons = useThemedIcons();
 
@@ -68,6 +62,7 @@ const Menu = ({ navigation }: MenuProps) => {
   const handleDisableBiometria = () => {
     setBiometria(true);
   };
+
   const handleLogout = () => {
     useUserStore.getState().partialUpdate({
       loggedIn: false,
@@ -75,9 +70,10 @@ const Menu = ({ navigation }: MenuProps) => {
     navigation.navigate('Login');
     console.log('Navigation reset to Login');
   };
-  const HandleDeleteAccount = () => {
+
+  const handleDeleteAccount = () => {
     useUserStore.getState().clearUserData();
-    useAuthStore.getState().setAvatar()
+    useAuthStore.getState().setAvatar();
     navigation.navigate('Login');
   };
 
@@ -154,7 +150,12 @@ const Menu = ({ navigation }: MenuProps) => {
   return (
     <View style={styles.Container}>
       {activeModal === 'Edit' ? (
-        <EditProfile onCloseEdit={() => setActiveModal(null)} />
+        <EditProfile
+          onCloseEdit={() => {
+            setActiveModal(null); // Close the "Edit" modal
+            setIsProfileUpdatedModalVisible(true); // Open the "ProfileUpdatedModal"
+          }}
+        />
       ) : (
         <>
           {!control && !controlTheme && (
@@ -180,7 +181,7 @@ const Menu = ({ navigation }: MenuProps) => {
                       id: 'Edit',
                       icon: <themedIcons.IconEditar height={131} width={134} />,
                       onPress: () => {
-                        console.log('Edit pressed'); 
+                        console.log('Edit pressed');
                         handleOpenModal('Edit');
                       },
                     },
@@ -217,7 +218,7 @@ const Menu = ({ navigation }: MenuProps) => {
           {isProfileUpdatedModalVisible && (
             <ModalProfileUpdated
               visible={isProfileUpdatedModalVisible}
-              onClose={() => setIsProfileUpdatedModalVisible(false)}
+              onClose={() => setIsProfileUpdatedModalVisible(false)} // Fix: Set to false
               title="Perfil Atualizado"
               description="Suas informações foram atualizadas com sucesso!"
               ButtonText="FECHAR"
@@ -256,26 +257,20 @@ const Menu = ({ navigation }: MenuProps) => {
 
           <ModalAlert
             visible={activeModal === 'Sair'}
-            onClose={() => {
-              console.log('Close modal triggered');
-              console.log('Current activeModal:', activeModal);
-              setActiveModal(null);
-            }}
+            onClose={() => setActiveModal(null)}
             title="Deseja sair?"
             description="Tem certeza que deseja sair do aplicativo? Você poderá se conectar novamente a qualquer momento."
             leftButtonText="Agora não"
             rightButtonText="SAIR"
-            onRightButtonPress={() => {
-              console.log('Right button pressed in Sair modal');
-              handleLogout();
-            }}
+            onRightButtonPress={handleLogout}
             rightButtonStyle={{ backgroundColor: colors.Error }}
           />
+
           {activeModal === 'Excluir' && (
             <ModalAlert
               visible={true}
               onClose={() => {
-                HandleDeleteAccount();
+                handleDeleteAccount();
                 setActiveModal(null);
               }}
               title="Excluir conta"
@@ -293,9 +288,6 @@ const Menu = ({ navigation }: MenuProps) => {
                 <Pressable onPress={() => setControlTheme(true)}>
                   <View style={styles.ContainerPressables}>
                     <Text style={styles.PressablesText}>Preferências</Text>
-                    <View style={styles.RightArrow}>
-                      <IconRightArrow height={24} width={24} />
-                    </View>
                   </View>
                 </Pressable>
               </View>
@@ -303,23 +295,18 @@ const Menu = ({ navigation }: MenuProps) => {
                 <Pressable onPress={() => setControl(true)}>
                   <View style={styles.ContainerPressables}>
                     <Text style={styles.PressablesText}>Termos e regulamentos</Text>
-                    <View style={styles.RightArrow}>
-                      <IconRightArrow height={24} width={24} />
-                    </View>
                   </View>
                 </Pressable>
               </View>
             </View>
           )}
-          {control && (
-            <Terms setControl={setControl} />
-          )}
-          {controlTheme && (
-            <Theme setControlTheme={setControlTheme} />
-          )}
+
+          {control && <Terms setControl={setControl} />}
+          {controlTheme && <Theme setControlTheme={setControlTheme} />}
         </>
       )}
     </View>
   );
 };
+
 export default Menu;

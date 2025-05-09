@@ -17,7 +17,6 @@ const ModalProfileUpdated: React.FC<ModalProfileUpdatedProps> = ({
   title,
   description,
   ButtonText,
-  setIsProfileUpdatedModalVisible
 }) => {
   const colors = React.useContext(AppContext)!.colors;
 
@@ -33,42 +32,46 @@ const ModalProfileUpdated: React.FC<ModalProfileUpdatedProps> = ({
       width: '90%',
       paddingVertical: 30,
       paddingHorizontal: 20,
-      alignItems: 'center',
+      alignItems: 'left',
       elevation: 5,
       backgroundColor: colors.Background,
       borderRadius: 12,
     },
     titleText: {
       width: '100%',
-      fontSize: 17,
+      fontSize: 18,
       marginBottom: 15,
-      textAlign: 'center',
+      textAlign: 'left',
       fontWeight: 'bold',
       color: colors.MainText,
     },
     textModal: {
       color: colors.MainText,
-      textAlign: 'center',
+      textAlign: 'left',
+      fontSize: 16,
+      fontWeight: 400,
       marginBottom: 20,
     },
-    buttonFilled: {
+    buttonClose: {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: colors.Primary,
+      backgroundColor: colors.SecondaryAccent,
       borderRadius: 8,
+      width: '100%', 
       height: 37,
       paddingHorizontal: 20,
     },
     buttonText: {
       color: 'white',
+      fontSize: 18,
       fontWeight: 'bold',
       textAlign: 'center',
     },
   });
 
   return (
-    <Modal 
+    <Modal
       animationType="slide"
       transparent={true}
       visible={visible}
@@ -78,7 +81,7 @@ const ModalProfileUpdated: React.FC<ModalProfileUpdatedProps> = ({
         <View style={styles.modalView}>
           <Text style={styles.titleText}>{title}</Text>
           <Text style={styles.textModal}>{description}</Text>
-          <Pressable style={styles.buttonFilled} onPress={onClose}>
+          <Pressable style={styles.buttonClose} onPress={onClose}>
             <Text style={styles.buttonText}>{ButtonText}</Text>
           </Pressable>
         </View>
