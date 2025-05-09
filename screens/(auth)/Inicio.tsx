@@ -12,7 +12,6 @@ import { AppContext } from '../../App';
 import ModalCriarTarefas from '../Modal/Criartarefa';
 import Tasks from '../../components/Tasks';
 import IconFilter from '../../assets/icons/lightmode/filter';
-import { data } from '../../services/db/mockData';
 import DetalhesTask from '../../components/DetalhesTask';
 import type { TaskTypes } from '../../types/taskTypes';
 import {
@@ -54,6 +53,7 @@ const InicioContent = () => {
     setSelectedTask(item);
     setShowDetalhes(true);
   };
+
   useEffect(() => {
     function backAction() {
       if (modalCriarTarefa) {

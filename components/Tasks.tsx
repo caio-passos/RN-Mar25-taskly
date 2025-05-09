@@ -138,7 +138,6 @@ const Tasks = ({
   onOpenDetalhes: (item: TaskTypes) => void;
 }) => {
   const {tasks} = useTaskStore();
-  console.log('Tasks: ', tasks)
   const renderItem = ({item}: {item: TaskTypes}) => {
     return <TaskItem item={item} onOpenDetalhes={onOpenDetalhes} />;
   };

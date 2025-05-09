@@ -1,24 +1,25 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Image } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { Theme, useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
 import LightModeBtn from '../../assets/improviso2.png';
 import DarkModeBtn from '../../assets/improviso1.png';
-import { useAuthStore } from '../../services/cache/stores/storeZustand';
+import { useUserStore } from '../../services/cache/stores/storeZustand';
+import { ThemeState, UserDataTypes } from '../../types/userTypes';
 
 
-interface DarkAndLigthMode {
-    setControl: Function;
+interface DarkAndLightMode {
+    onClose: () => void;
+    buttonStyleControl: () => void;
 }
 
-const DarkAndLigthMode = (props: DarkAndLigthMode) => {
+const DarkAndLigthMode = ({ onClose, buttonStyleControl }: DarkAndLightMode) => {
     const colors = useContext(AppContext)!.colors;
-    const [controlThemeModal, setControlThemeModal] = useState(
-        colors.Background === '#282828'
+    const [darkTheme, setDarkTheme] = useState(
+        useUserStore.getState().userData?.theme ?? false
     );
-    const { userData } = useAuthStore();
-    const setTheme = useAuthStore(state => state.setTheme);
+    const setTheme = useUserStore().partialUpdate
 
     const getButtonStyle = (isSelected: boolean) => ({
         padding: 8,
@@ -31,18 +32,16 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
         justifyContent: 'center'
     });
 
-    useEffect(() => {
-
-    }, [setTheme])
 
     const handleThemeChange = () => {
-        console.log('Setting theme to:', controlThemeModal);
-        if (userData) {
-            setTheme({ darkMode: controlThemeModal });
-            props.setControl(false);
-        }
+        const newTheme = darkTheme;
+        setDarkTheme(newTheme);
+            useUserStore.getState().partialUpdate({theme: newTheme
+            });
+        console.log('Updating theme:', { darkMode: darkTheme });
     };
 
+    console.log('Current theme :', darkTheme)
     const styles = StyleSheet.create({
         modalContainer: {
             display: 'flex',
@@ -154,27 +153,31 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
 
                     <View style={styles.containerSvg}>
                         <Pressable
-                            style={getButtonStyle(controlThemeModal)}
-                            onPress={() => setControlThemeModal(true)}
+                            style={getButtonStyle(darkTheme)}
+                            onPress={() => setDarkTheme(!darkTheme)}
                         >
                             <Image source={DarkModeBtn} />
                         </Pressable>
                         <Pressable
-                            style={getButtonStyle(!controlThemeModal)}
-                            onPress={() => setControlThemeModal(false)}
+                            style={getButtonStyle(!darkTheme)}
+                            onPress={() => setDarkTheme(!darkTheme)}
+
                         >
                             <Image source={LightModeBtn} />
                         </Pressable>
                     </View>
                     <View style={styles.containerBtn}>
                         <Pressable
-                            onPress={() => props.setControl(false)}
+                            onPress={onClose}
                             style={styles.btnNotAgain}
                         >
                             <Text style={styles.textBtnNotAgain}>Agora não</Text>
                         </Pressable>
                         <Pressable
-                            onPress={handleThemeChange}
+                            onPress={() => {
+                                handleThemeChange();
+                                onClose();
+                            }}
                             style={styles.btnConfirm}
                         >
                             <Text style={styles.textBtnConfirm}>Confirmar</Text>
@@ -182,7 +185,7 @@ const DarkAndLigthMode = (props: DarkAndLigthMode) => {
                     </View>
                 </View>
                 <View style={styles.transparentContainer}>
-                    <Pressable style={styles.pressableStyle} onPress={() => props.setControl(false)} />
+                    <Pressable style={styles.pressableStyle} onPress={() => buttonStyleControl} />
                 </View>
             </Modal>
         </SafeAreaView>

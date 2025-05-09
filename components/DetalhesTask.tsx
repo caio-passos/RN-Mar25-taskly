@@ -53,6 +53,7 @@ export const getThemedIcon = () => {
     IconCheckboxChecked: isDarkMode ? IconCheckboxChecked : IconCheckboxChecked,
   };
 };
+
 const DetalhesTask = ({ item }: DetalhesProps) => {
 
   const {
