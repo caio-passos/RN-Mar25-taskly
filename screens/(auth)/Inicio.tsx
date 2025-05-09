@@ -10,19 +10,19 @@ import {
 import { AppContext } from '../../App';
 import ModalCriarTarefas from '../Modal/Criartarefa';
 import Tasks from '../../components/Tasks';
-import IconFilter from '../../assets/icons/lightmode/filter';
 import DetalhesTask from '../../components/DetalhesTask';
 import type { TaskTypes } from '../../types/taskTypes';
-import {
-  useTaskStore,
-} from '../../services/cache/stores/storeZustand';
+import { useTaskStore } from '../../services/cache/stores/storeZustand';
 import AvatarDisplay from '../../components/AvatarDisplay';
 import FilterModal from '../Modal/Filter';
 import { TaskFilters } from '../../types/taskTypes';
 import { filterTasks } from '../../services/filterTasks';
+import { useIcon } from '../../hooks/useIcon';
+import { getThemedIcon } from '../../services/IconService';
+import { useUserStore } from '../../services/cache/stores/storeZustand';
 
 const InicioContent = () => {
-  const colors = useContext(AppContext)!.colors;
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalCriarTarefa, setModalCriarTarefa] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskTypes | null>(null);
@@ -88,6 +88,8 @@ const InicioContent = () => {
     return () => backHandler.remove();
   }, [modalCriarTarefa, ShowDetalhes]);
 
+  const colors = useContext(AppContext)!.colors;
+  const isDarkMode = useUserStore(state => state.userData?.theme);
   const styles = StyleSheet.create({
     backgroundFixer:{
       backgroundColor: colors.Background,
@@ -145,6 +147,7 @@ const InicioContent = () => {
       <View style={styles.backgroundFixer}>
       <View style={styles.container}>
         <View style={styles.topBar}>
+          {ShowDetalhes && null}
           <Text style={styles.title}>Taskly</Text>
           <AvatarDisplay />
         </View>
@@ -154,7 +157,7 @@ const InicioContent = () => {
               <View style={styles.IconFilterStyle}>
                 <Pressable
                   onPress={() => setFilterVisible(true)}>
-                  <IconFilter width={24} height={24} />
+                  {React.createElement(getThemedIcon('filter', isDarkMode), {width: 24, height: 24})}
                 </Pressable>
               <FilterModal 
               visible={filterVisible} 

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,12 +6,16 @@ import {
     Pressable,
     StyleSheet,
     Modal,
-    ScrollView
+    ScrollView,
+    SafeAreaView
 } from 'react-native';
 import { AppContext } from '../../App';
 import { TaskTypes, PrioridadeType } from '../../types/taskTypes';
 import LongPressable from '../../components/LongPressable';
 import LongNoFillPressable from '../../components/LongNoFillPressable';
+import IconGreenArrow from '../../assets/icons/lightmode/ArrowCircleRight.svg';
+import { getThemedIcon } from '../../components/DetalhesTask';
+
 
 interface EditarTaskProps {
     visible: boolean;
@@ -19,7 +23,6 @@ interface EditarTaskProps {
     onSave: (editedTask: TaskTypes) => void;
     onCancel: () => void;
 }
-
 const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel }) => {
     const colors = useContext(AppContext)!.colors;
     const [editedTask, setEditedTask] = useState<TaskTypes>({ ...task });
@@ -55,29 +58,32 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
 
     const styles = StyleSheet.create({
         container: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            paddingHorizontal: 32,
-            
-        },
-        modalView: {
-            width: '90%',
+            width: '100%',
+            height: '80%',
             backgroundColor: colors.Background,
             borderRadius: 12,
-            padding: 24,
-            maxHeight: '100%',
+        },
+        ContentContainer: {
+            paddingHorizontal: 32,
+            paddingBottom: 15,
+            paddingTop: 24,
+            marginBottom: 32,
+            borderRadius: 8,
+            elevation: 2,
+            backgroundColor: colors.SecondaryBG,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.46,
+            shadowRadius: 11.14,
         },
         title: {
             fontSize: 18,
             fontWeight: 'bold',
             color: colors.MainText,
-            marginBottom: 24,
             textAlign: 'center',
         },
         inputContainer: {
-            marginBottom: 24,
+            marginBottom: 16,
         },
         label: {
             color: colors.SecondaryText,
@@ -85,12 +91,14 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             fontSize: 16,
         },
         input: {
-            backgroundColor: colors.SecondaryBG,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             borderWidth: 2,
             borderColor: colors.Primary,
+            color: colors.MainText,
             borderRadius: 8,
             padding: 12,
-            color: colors.MainText,
+            height: 48,
         },
         textArea: {
             height: 100,
@@ -109,15 +117,14 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             borderRadius: 8,
             flexDirection: 'row',
             alignItems: 'center',
+            alignContent: 'center',
         },
         tagText: {
-            color: colors.MainText,
-            marginRight: 8,
+            color: '#000',
         },
         priorityContainer: {
             flexDirection: 'row',
             justifyContent: 'space-between',
-            marginBottom: 24,
         },
         priorityButton: {
             flex: 1,
@@ -139,11 +146,11 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             backgroundColor: '#FFD700',
         },
         selectedPriorityAlta: {
-            backgroundColor: colors.Error, 
+            backgroundColor: colors.Error,
         },
         buttonsContainer: {
             flexDirection: 'row',
-            marginBottom: 10,
+            marginBottom: 80,
             alignItems: 'center',
             alignContent: 'center',
             justifyContent: 'space-between',
@@ -152,18 +159,9 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
     });
 
     return (
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={visible}
-            statusBarTranslucent={true}
-            onRequestClose={onCancel}
-        >
+        <View>
             <View style={styles.container}>
-                <View style={styles.modalView}>
-                    <View>
-                        <Text style={styles.title}>Editar Tarefa</Text>
-
+                <View style={styles.ContentContainer}>
                         <View style={styles.inputContainer}>
                             <Text style={styles.label}>Título</Text>
                             <TextInput
@@ -191,8 +189,8 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                             <Text style={styles.label}>Tags</Text>
                             <View style={styles.tagsContainer}>
                                 {editedTask.Tags?.map((tag, index) => (
-                                    <Pressable 
-                                        key={index} 
+                                    <Pressable
+                                        key={index}
                                         style={styles.tag}
                                         onPress={() => handleRemoveTag(tag)}
                                     >
@@ -200,20 +198,22 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                     </Pressable>
                                 ))}
                             </View>
-                            <View style={{ flexDirection: 'row' }}>
+                            <View style={styles.input}>
                                 <TextInput
-                                    style={[styles.input, { flex: 1, marginRight: 8 }]}
+                                    style={{ flex: 1, color: colors.MainText, padding: 0 }}
                                     value={newTag}
                                     onChangeText={setNewTag}
                                     placeholder="Nova tag"
+                                    numberOfLines={1}
                                     placeholderTextColor={colors.SecondaryText}
                                     onSubmitEditing={handleAddTag}
                                 />
-                                <LongPressable
-                                    textProps="+"
-                                    onPress={handleAddTag}
-                                    style={{ width: 50 }}
-                                />
+                                <Pressable onPress={handleAddTag}>
+                                    <IconGreenArrow
+                                        height={26}
+                                        width={26}
+                                    />
+                                </Pressable>
                             </View>
                         </View>
 
@@ -225,10 +225,10 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                         key={priority}
                                         style={[
                                             styles.priorityButton,
-                                            editedTask.Prioridade === priority && 
-                                                (priority === 'baixa' ? styles.selectedPriorityBaixa :
-                                                 priority === 'média' ? styles.selectedPriorityMedia :
-                                                 styles.selectedPriorityAlta)
+                                            editedTask.Prioridade === priority &&
+                                            (priority === 'baixa' ? styles.selectedPriorityBaixa :
+                                                priority === 'média' ? styles.selectedPriorityMedia :
+                                                    styles.selectedPriorityAlta)
                                         ]}
                                         onPress={() => handlePriorityChange(priority)}
                                     >
@@ -251,24 +251,22 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                 keyboardType="numeric"
                             />
                         </View>
-
-                        <View style={styles.buttonsContainer}>
-                            <LongNoFillPressable
-                                textProps="CANCELAR"
-                                onPress={onCancel}
-                                style={{ flex: 1, height:50, borderColor: colors.Primary}}
-                            />
-                            <LongPressable
-                                textProps="SALVAR"
-                                onPress={handleSave}
-                                style={{ flex: 1, height:50 }}
-                                textStyle={{color: colors.PrimaryLight}}
-                            />
-                        </View>
-                    </View>
+                </View>
+                <View style={styles.buttonsContainer}>
+                    <LongNoFillPressable
+                        textProps="CANCELAR"
+                        onPress={onCancel}
+                        style={{ flex: 1, height: 50, borderColor: colors.Primary }}
+                    />
+                    <LongPressable
+                        textProps="SALVAR"
+                        onPress={handleSave}
+                        style={{ flex: 1, height: 50 }}
+                        textStyle={{ color: colors.PrimaryLight }}
+                    />
                 </View>
             </View>
-        </Modal>
+        </View>
     );
 };
 
