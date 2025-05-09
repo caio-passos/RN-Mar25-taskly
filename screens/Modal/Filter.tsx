@@ -2,18 +2,22 @@ import React, { useContext, useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput } from 'react-native';
 import DropIcon from '../../assets/icons/lightmode/dropmenu.svg';
 import { AppContext } from '../../App';
+import IconCheckboxUnchecked from '../../assets/icons/lightmode/uncheckedcircle.svg';
+import IconCheckboxChecked from '../../assets/icons/lightmode/checkedcircle.svg';
+import { TaskFilters } from '../../types/taskTypes';
 
 interface FilterModalProps {
     visible: boolean;
     onClose: () => void;
-    onApply: (filters: { order: string | null; tags: string[]; date: string | null }) => void;
+    onApply: (filters: TaskFilters) => void;
     onClear: () => void;
 }
 
-interface DropdownItem {
+interface DropdownItem{
     label: string;
     value: string;
 }
+
 
 const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, onClear }) => {
     const colors = useContext(AppContext)!.colors;
@@ -98,8 +102,8 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
         },
     });
 
-   
-    const [order, setOrder] = useState<string | null>(null);
+
+    const [order, setOrder] = useState<'baixaParaAlta'| 'altaParaBaixa'| null>(null);
     const [orderItems] = useState<DropdownItem[]>([
         { label: 'Prioridade (de baixa para alta)', value: 'lowToHigh' },
         { label: 'Prioridade (de alta para baixa)', value: 'highToLow' },
@@ -113,7 +117,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
     ]);
 
     const [dateOpen, setDateOpen] = useState<boolean>(false);
-    const [dateInput, setDateInput] = useState<string | null>(null);
+    const [dateInput, setDateInput] = useState<string | null>('');
 
     const [openStates, setOpenStates] = useState({
         order: false,
@@ -127,7 +131,11 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
         }));
     };
     const handleApply = () => {
-        onApply({ order, tags, date: dateInput });
+        onApply({ 
+            order: order || undefined,
+            tags: tags.length ? tags : undefined,
+            date: dateInput || undefined
+          });
         onClose();
     };
 
@@ -152,7 +160,6 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
                     switch (filterType) {
                         case 'order':
                             setOrder(item.value);
-                            setOrderOpen(false);
                             break;
                         case 'tags':
                             if (tags.includes(item.value)) {
@@ -164,7 +171,16 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
                     }
                 }}
             >
-                <Text style={isSelected && styles.selectedItemText}>{item.label}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {isSelected ? (
+                        <IconCheckboxChecked width={20} height={20} style={{ marginRight: 10 }} />
+                    ) : (
+                        <IconCheckboxUnchecked width={20} height={20} style={{ marginRight: 10 }} />
+                    )
+                    }
+
+                    <Text style={isSelected && styles.selectedItemText}>{item.label}</Text>
+                </View>
             </TouchableOpacity>
         );
     };
@@ -200,7 +216,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
                             <Text style={styles.label}>Tags</Text>
                             <DropIcon width={20} height={20} style={styles.dropdownIcon} />
                         </TouchableOpacity>
-                        {openStates.tags&& (
+                        {openStates.tags && (
                             <FlatList
                                 data={tagItems}
                                 keyExtractor={(item) => item.value}
@@ -215,7 +231,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
                             <Text style={styles.label}>Data</Text>
                             <DropIcon width={20} height={20} style={styles.dropdownIcon} />
                         </TouchableOpacity>
-                        {openStates.date&& (
+                        {openStates.date && (
                             <TextInput
                                 style={styles.dateInput}
                                 value={dateInput || ''}

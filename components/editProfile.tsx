@@ -214,7 +214,8 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                             style={{
                                 marginTop: 30,
                                 justifyContent: 'center',
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                height:47
                             }}
                         />
                     </View>

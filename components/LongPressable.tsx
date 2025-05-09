@@ -16,12 +16,14 @@ function LongPressable({ textProps, onPress, style, textStyle}: LongPressablePro
         buttonFilled: {
             backgroundColor: colors.Primary,
             borderRadius: 8,
-            height: 42,
+            justifyContent: 'center',
+            alignItems: 'center'
         },
         buttonTextCriarTarefa: {
             textAlign: 'center',
             fontWeight: '600',
-            color: colors.MainText
+            includeFontPadding:false,
+            lineHeight: 20
         },
     });
 

@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Pressable,
-  Image,
   BackHandler,
   SafeAreaView,
 } from 'react-native';
@@ -16,10 +15,11 @@ import DetalhesTask from '../../components/DetalhesTask';
 import type { TaskTypes } from '../../types/taskTypes';
 import {
   useTaskStore,
-  useUserStore,
 } from '../../services/cache/stores/storeZustand';
 import AvatarDisplay from '../../components/AvatarDisplay';
 import FilterModal from '../Modal/Filter';
+import { TaskFilters } from '../../types/taskTypes';
+import { filterTasks } from '../../services/filterTasks';
 
 const InicioContent = () => {
   const colors = useContext(AppContext)!.colors;
@@ -30,9 +30,22 @@ const InicioContent = () => {
   const [control, setControl] = useState(false);
   const [controlTheme, setControlTheme] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
-
-  const { userData } = useUserStore();
+  const [filters, setFilters] = useState<TaskFilters>({});
   const tasks = useTaskStore(state => state.tasks);
+
+  const filteredTasks = useMemo(() => {
+    return filterTasks(tasks, filters);
+  }, [tasks, filters]);
+
+  const handleApplyFilters = (newFilters: TaskFilters) => {
+    setFilters(newFilters);
+    setFilterVisible(false);
+  };
+  const handleClearFilters = () => {
+    setFilters({});
+  };
+
+
 
   useEffect(() => {
     console.log('Tasks update: ', tasks.length);
@@ -44,8 +57,6 @@ const InicioContent = () => {
       }
     }
   }, [tasks, selectedTask, ShowDetalhes]);
-  console.log('User data:', userData);
-
   const handleModalOpen = () => {
     setModalVisible(true);
   };
@@ -148,8 +159,8 @@ const InicioContent = () => {
               <FilterModal 
               visible={filterVisible} 
               onClose={()=> setFilterVisible(false)}
-              onApply={()=> {''}}
-              onClear={()=> {''}} 
+              onApply={handleApplyFilters}
+              onClear={handleClearFilters} 
               />
               </View>
             )}
@@ -157,6 +168,7 @@ const InicioContent = () => {
               <DetalhesTask item={selectedTask} />
             ) : (
               <Tasks
+                tasks={filteredTasks}
                 onOpenModal={() => setModalCriarTarefa(true)}
                 onOpenDetalhes={handleShowDetalhes}
               />

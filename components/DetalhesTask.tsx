@@ -27,14 +27,18 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from 'react-native-reanimated';
-import IconTrash from '../assets/icons/lightmode/trash';
-import IconEdit from '../assets/icons/lightmode/pencil';
-import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle';
-import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle';
-import DarkIconTrash from '../assets/icons/darkmode/trashdarkmode';
-import DarkIconEdit from '../assets/icons/darkmode/pencildarkmode';
+import IconTrash from '../assets/icons/lightmode/trash.svg';
+import IconEdit from '../assets/icons/lightmode/pencil.svg';
+import IconEditYellow from '../assets/editYellow.svg';
+import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle.svg';
+import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle.svg';
+import DarkIconTrash from '../assets/icons/darkmode/trashdarkmode.svg';
+import DarkIconEdit from '../assets/icons/darkmode/pencildarkmode.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../services/cache/stores/storeZustand';
+import EditarTask from '../screens/Modal/EditarTask';
+import { useUserStore } from '../services/cache/stores/storeZustand';
+import IconGreenArrow from '../assets/icons/lightmode/ArrowCircleRight.svg';
 
 type DetalhesProps = {
   item: TaskTypes | null;
@@ -42,7 +46,8 @@ type DetalhesProps = {
 
 export const getThemedIcon = () => {
   const userData = useAuthStore.getState().userData;
-  const isDarkMode = userData?.theme?.darkMode;
+  const isDarkMode = useUserStore(state => state.userData?.theme);
+
 
   console.log('Themed icon  userData:', userData);
   console.log('Themed icon   isDarkMode:', isDarkMode);
@@ -70,21 +75,17 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   };
 
   const [finishTask, setFinishTask] = useState(true);
-  const [updatedSubtask, setUpdatedSubtask] = useState('');
-  const swipeActive = useSharedValue(false);
-  const addSubtaskToStore = useTaskStore(state => state.addSubtask);
   const { tasks } = useTaskStore();
   const [isAddingSubtask, setIsAddingSubtask] = useState(false);
   const [newSubtaskText, setNewSubtaskText] = useState('');
-  const [subtaskChecked, setSubtaskChecked] = useState(false);
   const [currentTask, setCurrentTask] = useState<TaskTypes | null>(null);
   const deleteTask = useTaskStore().deleteTask;
-  const deleteSubtask = useTaskStore().deleteSubtask;
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
   const [subtaskRefs, setSubtaskRefs] = useState<React.RefObject<SwipeableMethods>[]>([]);
   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
   const [editedSubtaskTitle, setEditedSubtaskTitle] = useState('');
+  const [editMode, setEditMode] = useState(false);
 
 
   const triggerUpdate = () => setForceUpdate(prev => prev + 1);
@@ -138,18 +139,14 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   }, []);
 
 
-  const swipeSubtaskRef = useRef<SwipeableMethods>(null);
   const swipeRef = useRef<SwipeableMethods>(null);
-  const translateX = useSharedValue(0);
   const sv = useSharedValue(50);
 
   const renderRightActionsSubtask = (
-    progress: SharedValue<number>,
-    dragX: SharedValue<number>,
+    progress: Animated.SharedValue<number>,
+    dragX: Animated.SharedValue<number>,
     subtaskId: string
   ) => {
-    const { IconTrash } = getThemedIcon();
-
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
       extrapolateLeft: Extrapolation.CLAMP,
     });
@@ -177,10 +174,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   };
   const colors = useContext(AppContext)!.colors;
 
-  const renderRightActions = (
-    progress: SharedValue<number>,
-    dragX: SharedValue<number>,
-  ) => {
+  const renderRightActions = () => {
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
       extrapolateLeft: Extrapolation.CLAMP,
     });
@@ -234,7 +228,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       case 'alta':
         return 'Red';
       default:
-        return null;
+        return undefined;
     }
   };
 
@@ -270,6 +264,10 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       elevation: 2,
       backgroundColor: colors.SecondaryBG,
     },
+    topBar: {
+      flexDirection: 'row',
+      justifyContent: 'space-between'
+    },
     ContentContainerSubtasks: {
       marginBottom: 18,
       paddingHorizontal: 32,
@@ -298,13 +296,13 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       paddingBottom: 16,
     },
     TitleStyle: {
-      color: colors.MainText
+      fontSize: 20,
+      color: colors.SecondaryText,
     },
     ColorText: {
       color: colors.MainText,
     },
     DescriçãoStyle: {
-      color: colors.MainText,
       paddingBottom: 16,
     },
     TagsStyle: {
@@ -317,6 +315,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       textAlign: 'center',
       textAlignVertical: 'center',
       borderRadius: 8,
+      opacity: 0.8,
     },
     SubtaskContainer: {
     },
@@ -326,11 +325,14 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       marginTop: 16,
     },
     subtaskInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       backgroundColor: colors.SecondaryBG,
       borderRadius: 8,
     },
     subtaskInput: {
-      textAlign: 'left' ,
+      textAlign: 'left',
       textAlignVertical: 'bottom',
       paddingHorizontal: 26,
       borderRadius: 6,
@@ -399,6 +401,9 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                 handleAddSubtask();
               }}
             />
+            <Pressable onPress={() => handleAddSubtask()}>
+              <IconGreenArrow height={25} width={25} />
+            </Pressable>
           </View>
         </View>
       </View>
@@ -406,13 +411,20 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   };
 
   return (
+
+
+
+
+
     <SafeAreaView style={{ flex: 1 }}>
       <GestureHandlerRootView>
+
         <ScrollView style={styles.RootContainer}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={true}
           indicatorStyle='black'
         >
+
           <Swipeable
             ref={swipeRef}
             friction={2}
@@ -424,7 +436,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
             <View style={styles.ShadowContainer}>
               <View style={styles.ContentContainer}>
-                <Text style={styles.TitleStyle}>Título</Text>
+                <View style={styles.topBar}>
+                  <Text style={styles.TitleStyle}>Título</Text>
+                  <Pressable onPress={() => setEditMode(true)}>
+                    <IconEditYellow height={25} width={25} />
+                  </Pressable>
+                </View>
                 <Text style={styles.TaskStyle}>{item?.Task}</Text>
 
                 <View style={styles.DescriçãoStyle}>
@@ -461,6 +478,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                         paddingHorizontal: 32,
                         width: '100%',
                         height: 32,
+                        marginTop: 16,
                         marginBottom: 16,
                         justifyContent: 'center',
                         borderWidth: 2,
@@ -530,8 +548,11 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
           </View>
 
         </ScrollView>
-        <View style={{ height: 20 }} />
         {renderSubtaskInput()}
+
+
+      </GestureHandlerRootView>
+      <View style={{}}>
         <LongPressable
           textProps="ADICIONAR SUBTASK"
           onPress={() => {
@@ -542,13 +563,22 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
             justifyContent: 'center',
             alignSelf: 'center',
             width: '100%',
+            height: 27
           }}
           textStyle={{
             color: 'white'
           }}
         />
+      </View>
+      <View>
+        <EditarTask
+          visible={editMode}
+          task={item!}
+          onSave={() => setEditMode(false)}
+          onCancel={() => setEditMode(false)}
+        />
+      </View>
 
-      </GestureHandlerRootView>
     </SafeAreaView>
 
   );
