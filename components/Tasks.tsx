@@ -124,8 +124,8 @@ const colors = useContext(AppContext)!.colors;
       <LongPressable
         textProps="Criar Tarefa"
         onPress={onOpenModal}
-        style={{justifyContent: 'center'}}
-        textStyle={{color: colors.SecondaryBG}}
+        style={{justifyContent: 'center', height:47 }}
+        textStyle={{color: colors.SecondaryBG, fontSize:20}}
       />
     </View>
   );

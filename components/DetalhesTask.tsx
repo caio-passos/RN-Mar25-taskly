@@ -44,7 +44,7 @@ type DetalhesProps = {
 
 export const getThemedIcon = () => {
   const userData = useAuthStore.getState().userData;
-  const isDarkMode = userData?.theme?.darkMode;
+  const isDarkMode = userData?.theme ?? false;
 
   console.log('Themed icon  userData:', userData);
   console.log('Themed icon   isDarkMode:', isDarkMode);
@@ -142,8 +142,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   const renderRightActionsSubtask = (
     subtaskId: string
   ) => {
-    const { IconTrash } = getThemedIcon();
-
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
       extrapolateLeft: Extrapolation.CLAMP,
     });
@@ -469,6 +467,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                         paddingHorizontal: 32,
                         width: '100%',
                         height: 32,
+                        marginTop:16,
                         marginBottom: 16,
                         justifyContent: 'center',
                         borderWidth: 2,
@@ -550,6 +549,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
             justifyContent: 'center',
             alignSelf: 'center',
             width: '100%',
+            height: 27
           }}
           textStyle={{
             color: 'white'
