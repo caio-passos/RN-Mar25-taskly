@@ -1,13 +1,14 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo,useState} from 'react';
 import {FlatList, View, Text, StyleSheet, Pressable, Task} from 'react-native';
 import {AppContext} from '../App';
 import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle';
 import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle';
 import ShortPressable from './Shortpressable';
 import LongPressable from './LongPressable';
-import type {TaskTypes} from '../types/taskTypes';
+import type {TaskFilters, TaskTypes} from '../types/taskTypes';
 import {useTaskStore} from '../services/cache/stores/storeZustand';
 import NoTasks from '../assets/icons/darkmode/nocontent';
+import { filterTasks } from '../services/filterTasks';
 
 type ItemProps = {
   item: TaskTypes;
@@ -124,21 +125,22 @@ const colors = useContext(AppContext)!.colors;
         textProps="Criar Tarefa"
         onPress={onOpenModal}
         style={{justifyContent: 'center'}}
-        textStyle={{color: colors.MainText}}
+        textStyle={{color: colors.SecondaryBG}}
       />
     </View>
   );
 };
 
 const Tasks = ({
+  tasks,
   onOpenModal,
   onOpenDetalhes,
 }: {
   onOpenModal: () => void;
   onOpenDetalhes: (item: TaskTypes) => void;
+  tasks: TaskTypes[];
 }) => {
-  const {tasks} = useTaskStore();
-  const renderItem = ({item}: {item: TaskTypes}) => {
+    const renderItem = ({item}: {item: TaskTypes}) => {
     return <TaskItem item={item} onOpenDetalhes={onOpenDetalhes} />;
   };
   return (

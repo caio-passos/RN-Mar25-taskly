@@ -21,7 +21,6 @@ function LongPressable({ textProps, onPress, style, textStyle}: LongPressablePro
         buttonTextCriarTarefa: {
             textAlign: 'center',
             fontWeight: '600',
-            color: colors.MainText
         },
     });
 
