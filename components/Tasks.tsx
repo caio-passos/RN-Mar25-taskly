@@ -10,7 +10,6 @@ import {useTaskStore} from '../services/cache/stores/storeZustand';
 import NoTasks from '../assets/icons/darkmode/nocontent';
 
 type ItemProps = {
-<<<<<<< HEAD
   item: TaskTypes;
   onOpenDetalhes?: (item: TaskTypes) => void;
 };
@@ -20,9 +19,11 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
   const handleSelection = () => {
     setIsSelected(!isSelected);
   };
-  const colors = useContext(AppContext);
+  const colors = useContext(AppContext)!.colors;  
   const styles = StyleSheet.create({
-    RootContainer: {},
+    RootContainer: {
+      backgroundColor: colors.Background,
+    },
     ShadowContainer: {
       shadowColor: '#000',
       shadowOffset: {
@@ -47,10 +48,12 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
     TitleStyle: {
       fontSize: 18,
       fontWeight: 600,
+      color: colors.MainText,
     },
     DescricaoStyle: {
       fontSize: 14,
       fontWeight: 500,
+      color: colors.MainText,
     },
     tagsContainer: {
       flexDirection: 'row',
@@ -99,108 +102,6 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
               onPress={() => onOpenDetalhes?.(item)}
             />
           </View>
-=======
-    item: TaskTypes;
-    setInicioStackOne: Function;
-    setInicioStackTwo: Function;
-    onOpenDetalhes?: (item: TaskTypes) => void;
-};
-
-const TaskItem = ({ item, onOpenDetalhes, setInicioStackOne, setInicioStackTwo }: ItemProps) => {
-    const [isSelected, setIsSelected] = useState(false);
-    const handleSelection = () => {
-        setIsSelected(!isSelected);
-    }
-    const colors = useContext(AppContext);
-    const styles = StyleSheet.create({
-        RootContainer: {
-        },
-        ShadowContainer: {
-            shadowColor: "#000",
-            shadowOffset: {
-                width: 0,
-                height: 8,
-            },
-            shadowOpacity: 0.46,
-            shadowRadius: 11.14,
-        },
-        ContentContainer: {
-            paddingHorizontal: 12,
-            paddingBottom: 20,
-            borderRadius: 8,
-            elevation: 2,
-            backgroundColor: colors.SecondaryBG,
-        },
-        ContainerTitle: {
-            marginTop: 24,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-        },
-        TitleStyle: {
-            fontSize: 18,
-            fontWeight: 600
-        },
-        DescricaoStyle: {
-            fontSize: 14,
-            fontWeight: 500,
-            paddingTop: 13,
-            paddingBottom: 12,
-        },
-        tagsContainer: {
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            gap: 8,
-        },
-        tagStyle: {
-            backgroundColor: colors.PrimaryLight,
-            paddingHorizontal: 12,
-            paddingVertical: 4,
-            borderRadius: 8,
-        },
-        ContainerShortPressable: {
-            paddingTop: 14,
-            paddingBottom: 2,
-        },
-        svgNoTasks: {
-            alignItems: 'center',
-        },
-
-    })
-    return (
-        <View style={styles.RootContainer}>
-            <View style={styles.ShadowContainer}>
-                <View style={styles.ContentContainer}>
-                    <View style={styles.ContainerTitle}>
-                        <Text style={styles.TitleStyle}>{item.Task}</Text>
-                        <Pressable onPress={handleSelection}>
-                            {isSelected ? (
-                                <IconCheckboxUnchecked width={24} height={24} />
-                            ) : (
-                                <IconCheckboxChecked width={24} height={24} />
-                            )}
-                        </Pressable>
-                    </View>
-                    <Text style={styles.DescricaoStyle}>{item.Descricao}</Text>
-                    <View style={styles.tagsContainer}>
-                        {item.Tags.map((tag, index) => (
-                            <Text key={index} style={styles.tagStyle}>
-                                {tag}
-                            </Text>
-                        ))}
-                    </View>
-                    <View style={styles.ContainerShortPressable}>
-                        <ShortPressable
-                            textProps="VER DETALHES"
-                            onPress={() => {
-                                onOpenDetalhes?.(item);
-                                setInicioStackOne(false);
-                                setInicioStackTwo(true);
-                            }} />
-                    </View>
-                </View>
-            </View>
-
->>>>>>> develop
         </View>
       </View>
     </View>
@@ -214,19 +115,21 @@ const EmptyComponent = () => {
     </View>
   );
 };
+
 const CriarTarefa = ({onOpenModal}: {onOpenModal: () => void}) => {
+const colors = useContext(AppContext)!.colors;  
   return (
     <View style={{paddingTop: 40}}>
       <LongPressable
         textProps="Criar Tarefa"
         onPress={onOpenModal}
         style={{justifyContent: 'center'}}
+        textStyle={{color: colors.PrimaryLight}}
       />
     </View>
   );
 };
 
-<<<<<<< HEAD
 const Tasks = ({
   onOpenModal,
   onOpenDetalhes,
@@ -249,30 +152,5 @@ const Tasks = ({
     />
   );
 };
-=======
-const Tasks = ({ onOpenModal, onOpenDetalhes, setInicioStackOne, setInicioStackTwo }: {
-    onOpenModal: () => void; 
-    setInicioStackOne: Function;
-    setInicioStackTwo: Function;
-    onOpenDetalhes: (item: TaskTypes) => void }) => {
-    const renderItem = ({ item }: { item: TaskTypes }) => {
-        return (
-            <TaskItem
-                item={item}
-                onOpenDetalhes={onOpenDetalhes}
-                setInicioStackOne={setInicioStackOne}
-                setInicioStackTwo={setInicioStackTwo}
-            />
-        )
-    }
-    return (
-        <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-            ListFooterComponent={() => <CriarTarefa onOpenModal={onOpenModal} />}
-            ListEmptyComponent={EmptyComponent}
->>>>>>> develop
 
 export default Tasks;

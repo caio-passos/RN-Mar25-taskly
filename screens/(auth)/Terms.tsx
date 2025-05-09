@@ -7,7 +7,7 @@ import IconSair from '../../assets/icons/lightmode/carrousel/sairConta';
 import IconExcluir from '../../assets/icons/lightmode/carrousel/excluirConta';
 import IconRightArrow from '../../assets/icons/lightmode/rightArrow'
 import ModalAlert from "../Modal/Alert";
-import DarkAndLigthMode from '../Modal/DarkAndLigthMode';
+import DarkAndLigthMode from '../Modal/DarkAndLightMode';
 import ReturnLeft from '../../assets/caretLeft.svg';
 import { WebView } from 'react-native-webview';
 
@@ -20,7 +20,7 @@ interface TermsProps {
 }
 
 const Terms = (props: TermsProps) => {
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
 
     const styles = StyleSheet.create({
         Container: {
@@ -62,6 +62,7 @@ const Terms = (props: TermsProps) => {
         textTerms: {
             fontWeight: 400,
             fontSize: 16,
+            color: colors.MainText,
         },
         containerWeb: {
             zIndex: 2,

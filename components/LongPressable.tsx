@@ -11,17 +11,17 @@ interface LongPressableProps {
 
 function LongPressable({ textProps, onPress, style, textStyle}: LongPressableProps) {
 
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const styles = StyleSheet.create({
         buttonFilled: {
             backgroundColor: colors.Primary,
             borderRadius: 8,
-            height: 27,
+            height: 42,
         },
         buttonTextCriarTarefa: {
-            color: '#FFFFFF',
             textAlign: 'center',
             fontWeight: '600',
+            color: colors.MainText
         },
     });
 

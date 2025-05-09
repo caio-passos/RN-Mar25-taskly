@@ -28,7 +28,7 @@ function Login({ navigation }: LoginProps) {
     const [errorsEmailShow, setErrorsEmailShow] = useState(error);
     const [errorsPasswordShow, setErrorsPasswordShow] = useState(error);
 
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -96,6 +96,9 @@ function Login({ navigation }: LoginProps) {
             left: 0,
             bottom: -35,
         },
+        textTitleInput: {
+            color: colors.MainText,
+        },
     });
 
     function login(data: loginData) {
@@ -108,21 +111,21 @@ function Login({ navigation }: LoginProps) {
 
         hideErrors();
         const storedUserData = useUserStore.getState().userData;
-        
+
         if (
-            storedUserData && 
-            storedUserData.email === data.email && 
+            storedUserData &&
+            storedUserData.email === data.email &&
             storedUserData.senha === data.password
         ) {
-            useUserStore.getState().partialUpdate({ 
-                loggedIn: true 
+            useUserStore.getState().partialUpdate({
+                loggedIn: true
             });
 
             navigation.navigate('Inicio');
-            
+
         } else {
             Alert.alert(
-                'Erro de Login', 
+                'Erro de Login',
                 'Credenciais inválidas. Verifique seu e-mail e senha.'
             );
         }
@@ -163,31 +166,37 @@ function Login({ navigation }: LoginProps) {
         setErrorsPasswordShow(error);
     }
 
+    const colorPlace = styles.textTitleInput.color;
+
     return (
         <View style={styles.container}>
             <View style={styles.boxLogo}>
                 <Logo width={329} height={56} />
             </View>
             <View style={styles.loginForm}>
-                <Text>E-mail</Text>
+                <Text style={styles.textTitleInput}>E-mail</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu e-mail"
                         keyboardType="email-address"
                         onChangeText={(value) => setEmail(String(value))}
+                        placeholderTextColor={colorPlace}
+                        style={{ color: colorPlace }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsEmailShow.map((value) => `${value.error}\n`)}</Text>}
             </View>
 
             <View style={styles.loginForm}>
-                <Text>Senha</Text>
+                <Text style={styles.textTitleInput}>Senha</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         secureTextEntry={true}
                         placeholder="Digite sua senha"
                         keyboardType='ascii-capable'
                         onChangeText={(value) => setPassword(String(value))}
+                        placeholderTextColor={colorPlace}
+                        style={{ color: colorPlace }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsPasswordShow.map((value) => `${value.error}\n`)}</Text>}
@@ -195,7 +204,7 @@ function Login({ navigation }: LoginProps) {
             <View style={styles.boxLembrar}>
                 <Icon name="checkbox-outline" size={20} color="#32C25B" />
                 <View style={styles.textLembrar}>
-                    <Text>Lembrar de mim</Text>
+                    <Text style={styles.textTitleInput}>Lembrar de mim</Text>
                 </View>
             </View>
             <Pressable style={styles.buttonFilled} onPress={() => login({ email: email, password: password })}>

@@ -12,7 +12,7 @@ import { AppContext } from '../App';
 import { useUserStore } from '../services/cache/stores/storeZustand';
 import type { UserDataTypes } from '../types/userTypes';
 import Avatar from '../screens/(auth)/Avatar';
-import LongPressable from '../components/LongPressable';
+import LongPressable from './LongPressable';
 import ReturnLeft from '../assets/caretLeft.svg';
 import ProgressBar from './progressbar';
 

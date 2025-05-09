@@ -12,7 +12,7 @@ import Menu from '../screens/(auth)/Menu';
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
 export default function HomeTabBar() {
-  const colors = useContext(AppContext)
+    const colors = useContext(AppContext)!.colors;
   return (
     <Tab.Navigator
       screenOptions={{
@@ -21,7 +21,7 @@ export default function HomeTabBar() {
         tabBarStyle: {
           borderTopWidth: 0,
           height: 80,
-          backgroundColor: colors.Background,
+          backgroundColor: colors.SecondaryBG,
         },
       }}
     >
@@ -50,7 +50,8 @@ export default function HomeTabBar() {
         component={View}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <View
+            <Pressable
+            disabled={true}
               style={{
                 backgroundColor: focused ? colors.Primary : 'transparent',
                 borderRadius: 25,
@@ -61,7 +62,7 @@ export default function HomeTabBar() {
             >
               <IconNotification width={24} height={24} stroke={focused ? colors.SecondaryBG : colors.Primary} />
 
-            </View>
+            </Pressable>
           ),
         }}
       />

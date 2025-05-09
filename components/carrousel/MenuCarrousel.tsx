@@ -1,11 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useMemo} from "react";
 import { StyleSheet, View, FlatList, Pressable } from "react-native";
-import IconEditar from '../../assets/icons/lightmode/carrousel/editarInfo';
-import IconBiometria from '../../assets/icons/lightmode/carrousel/mudarBiometria';
-import IconSair from '../../assets/icons/lightmode/carrousel/sairConta';
-import IconExcluir from '../../assets/icons/lightmode/carrousel/excluirConta';
 import { AppContext } from "../../App";
 import type { CarrouselTypes } from "../../types/carrouselTypes";
+import { useThemedIcons } from "./carrouselIcons";
 
 interface CarrouselIconsSize {
     height: number,
@@ -14,35 +11,33 @@ interface CarrouselIconsSize {
 };
 
 const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
-    const [isSelected, setIsSelected] = useState(false);
-    const handleSelection = () => {
-        setIsSelected(true);
-    };
+    const themedIcons = useThemedIcons();
 
-    const iconComponents = [
+    const iconComponents = useMemo(() => [
         {
             id: "edit",
-            icon: <IconEditar height={height} width={width} />,
+            icon: <themedIcons.IconEditar height={height} width={width} />,
             onPress: () => { }
         },
         {
             id: "Biometria",
-            icon: <IconBiometria height={height} width={width} />,
+            icon: <themedIcons.IconBiometria height={height} width={width} />,
             onPress: () => { }
         },
         {
             id: "Sair",
-            icon: <IconSair height={height} width={width} />,
+            icon: <themedIcons.IconSair height={height} width={width} />,
             onPress: () => { }
         },
         {
             id: "Excluir",
-            icon: <IconExcluir height={height} width={width} />,
+            icon: <themedIcons.IconExcluir height={height} width={width} />,
             onPress: () => { }
         }
-    ];
+    
+    ],[height, width, themedIcons]);
 
-    const colors = useContext(AppContext);
+    const colors = useContext(AppContext)!.colors;
 
     const styles = StyleSheet.create({
         ShadowContainer: {
@@ -59,8 +54,11 @@ const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
             paddingLeft: 32,
             paddingRight: 32,
             elevation: 5,
+            backgroundColor: colors.Background
         },
-
+        boxStyle: {
+            backgroundColor: colors.Background,
+        },
     });
 
     return (
@@ -71,7 +69,7 @@ const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
                 data={items || iconComponents}
                 renderItem={({ item }) =>
                     <View>
-                        <Pressable 
+                        <Pressable
                             onPress={() => {
                                 console.log(`Pressed item: ${item.id}`);
                                 item.onPress();

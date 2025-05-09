@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal, SafeAreaView } from 'react-native';
 import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
@@ -15,10 +15,10 @@ interface CadastroProps {
     navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
 }
 
-type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, senha: string, checkSenha: string }
+type dataUser = { uid: V4Options, nome: string, email: string, telefone: string, senha: string, checkSenha: string }
 
-    function Cadastro({ navigation }: CadastroProps) {
-    const colors = useContext(AppContext);
+function Cadastro({ navigation }: CadastroProps) {
+    const colors = useContext(AppContext)!.colors;
     const error: Array<{ tag: string, error: string }> = [];
 
     const [uid, setUid] = useState('');
@@ -111,25 +111,32 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
             paddingHorizontal: 32,
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: '#F5FCFF',
+            backgroundColor: colors.Background,
         },
         title: {
-            top: 40,
             fontSize: 24,
-            fontWeight: 'bold',
+            fontWeight: 700,
+            paddingTop: 32,
             color: colors.MainText,
-            marginBottom: 20,
-        },
-        returnPressable: {
-            position: 'absolute',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            top: 50,
-            left: 20,
+            marginLeft: 2,
+        },
+        headerContainer: {
+            width: '100%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignSelf: 'flex-start',
+        },
+        returnPressable: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
             backgroundColor: colors.SecondaryText,
             padding: 10,
             borderRadius: 5,
+            alignSelf: 'flex-start',
         },
         boxTextVoltar: {
             flexDirection: 'row',
@@ -177,7 +184,7 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
             marginTop: 25,
         },
         textCriarConta: {
-            color: '#FFFFFF',
+            color: colors.Background,
             textAlign: 'center',
             fontWeight: 700,
         },
@@ -198,6 +205,9 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
             left: 0,
             bottom: -35,
         },
+        textTitleInput: {
+            color: colors.MainText,
+        },
     });
 
     async function createAccount(data: dataUser) {
@@ -206,14 +216,14 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
         if (!isValid) {
             showErrors(isValid, errors);
         } else {
-            hideErrors(); 
-            setItemUserData({...data, loggedIn: true});
+            hideErrors();
+            setItemUserData({ ...data, loggedIn: true });
         }
     }
 
     function verifyData(data: dataUser) {
         console.log("DEBUG: Skipping validation, assuming valid.");
-        return { isValid: true, errors: [] }; 
+        return { isValid: true, errors: [] };
     }
 
     function showErrors(isValid: boolean, errors: Array<{ tag: string, error: string }>) {
@@ -259,43 +269,52 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
         return String(ddd);
     }
 
+    const colorPlace = styles.textTitleInput.color;
+
     return (
         <View style={styles.container}>
-            <Pressable
-                style={styles.returnPressable}
-                onPress={() => navigation.goBack()}>
-                <ReturnLeft width={23} height={17.25} />
-                <View style={styles.boxTextVoltar}>
-                    <Text style={styles.textVoltar}>VOLTAR</Text>
-                </View>
-            </Pressable>
+            <View style={styles.headerContainer}>
+                <Pressable
+                    style={styles.returnPressable}
+                    onPress={() => navigation.goBack()}
+                >
+                    <ReturnLeft width={23} height={17.25} />
+                    <View style={styles.boxTextVoltar}>
+                        <Text style={styles.textVoltar}>VOLTAR</Text>
+                    </View>
+                </Pressable>
+            </View>
             <Text style={styles.title}>CADASTRO</Text>
             <View style={styles.loginForm}>
-                <Text>Nome Completo</Text>
+                <Text style={styles.textTitleInput}>Nome Completo</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu nome completo"
+                        placeholderTextColor={colors.MainText}
                         keyboardType="default"
                         value={nome}
                         onChangeText={setNome}
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsNome.map((value) => `${value.error}\n`)}</Text>}
             </View>
             <View style={styles.loginForm}>
-                <Text>E-mail</Text>
+                <Text style={styles.textTitleInput}>E-mail</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu e-mail"
+                        placeholderTextColor={colors.MainText}
                         keyboardType="email-address"
                         value={email}
                         onChangeText={setEmail}
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsEmail.map((value) => `${value.error}\n`)}</Text>}
             </View>
             <View style={styles.loginForm}>
-                <Text>Número</Text>
+                <Text style={styles.textTitleInput}>Número</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu número de telefone"
@@ -305,31 +324,37 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
                             formatPhone(String(value));
                             setTelefone(value)
                         }}
+                        placeholderTextColor={colorPlace}
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsTelefone.map((value) => `${value.error}\n`)}</Text>}
             </View>
 
             <View style={styles.loginForm}>
-                <Text>Senha</Text>
+                <Text style={styles.textTitleInput}>Senha</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         secureTextEntry={true}
                         placeholder="Digite sua senha"
+                        placeholderTextColor={colors.MainText}
                         value={senha}
                         onChangeText={setSenha}
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsSenha.map((value) => `${value.error}\n`)}</Text>}
             </View>
             <View style={styles.loginForm}>
-                <Text>Confirmar senha</Text>
+                <Text style={styles.textTitleInput}>Confirmar senha</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         secureTextEntry={true}
                         placeholder="Confirme sua senha"
                         value={checkSenha}
                         onChangeText={setCheckSenha}
+                        placeholderTextColor={colorPlace}
+                        style={{ color: colors.MainText }}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsCheckSenha.map((value) => `${value.error}\n`)}</Text>}
@@ -339,8 +364,8 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
                 style={styles.buttonFilled}
                 onPress={() => {
                     if (isFilled && !senhaError) {
-                        createAccount(formData); 
-                        handleOpenModal(); 
+                        createAccount(formData);
+                        handleOpenModal();
                         // add api post to create account
                     } else {
                         console.log("Submit blocked: isFilled=", isFilled, "senhaError=", senhaError);
@@ -362,6 +387,7 @@ type dataUser = { uid:V4Options, nome: string, email: string, telefone: string, 
                 leftButtonText='Agora não'
                 rightButtonText='ATIVAR'
             />
+
         </View>
 
     );
