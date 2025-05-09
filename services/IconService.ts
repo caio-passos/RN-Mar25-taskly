@@ -1,5 +1,6 @@
 import { useUserStore } from '../services/cache/stores/storeZustand';
 
+import IconEditYellow from '../assets/icons/darkmode/pencilyellowdarkmode.svg'
 // Light mode icons
 import IconTrashLight from '../assets/icons/lightmode/trash.svg';
 import IconEditLight from '../assets/icons/lightmode/pencil.svg';
@@ -18,6 +19,7 @@ import IconFilterDark from '../assets/icons/lightmode/filter.svg';
 type IconRegistry = {
   trash: React.ComponentType<{width?: number, height?: number}>;
   edit: React.ComponentType<{width?: number, height?: number}>;
+  editYellow: React.ComponentType<{width?: number, height?: number}>;
   checkboxUnchecked: React.ComponentType<{width?: number, height?: number}>;
   checkboxChecked: React.ComponentType<{width?: number, height?: number}>;
   noTasks: React.ComponentType<{width?: number, height?: number}>;
@@ -32,6 +34,10 @@ const iconRegistry = {
   edit: {
     light: IconEditLight,
     dark: IconEditDark
+  },
+  editYellow: {
+    light: IconEditYellow,
+    dark: IconEditYellow
   },
   checkboxUnchecked: {
     light: IconCheckboxUncheckedLight,
@@ -52,6 +58,7 @@ const iconRegistry = {
 } satisfies Record<string, {light: React.ComponentType, dark: React.ComponentType}>;
 
 export const getThemedIcon = (iconName: keyof typeof iconRegistry, isDarkMode?: boolean) => {
+
   return iconRegistry[iconName][isDarkMode ? 'dark' : 'light'];
 };
 

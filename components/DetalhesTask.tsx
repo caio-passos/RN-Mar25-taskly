@@ -28,24 +28,24 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated';
 import { useIcon } from '../hooks/useIcon';
-import IconEditYellow from '../assets/editYellow.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../services/cache/stores/storeZustand';
 import EditarTask from '../screens/Modal/EditarTask';
 import { useUserStore } from '../services/cache/stores/storeZustand';
-import IconGreenArrow from '../assets/icons/lightmode/ArrowCircleRight.svg';
 
 type DetalhesProps = {
   item: TaskTypes | null;
 };
 
 const DetalhesTask = ({ item }: DetalhesProps) => {
+  const { colors, darkMode } = useContext(AppContext)!;
   const { 
     trash: IconTrash,
     edit: IconEdit,
+    editYellow: IconEditYellow, 
     checkboxUnchecked: IconCheckboxUnchecked,
     checkboxChecked: IconCheckboxChecked
-  } = useIcon(['trash', 'edit', 'checkboxUnchecked', 'checkboxChecked']);
+  } = useIcon(['trash', 'edit', 'editYellow','checkboxUnchecked', 'checkboxChecked'], darkMode);
 
   const showSubtasks = useTaskStore.getState()
   const handleToggleSubtaskStatus = (subtaskId: string) => {
@@ -61,7 +61,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   const deleteTask = useTaskStore().deleteTask;
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
-  const [subtaskRefs, setSubtaskRefs] = useState<React.RefObject<SwipeableMethods>[]>([]);
+  const [subtaskRefs, setSubtaskRefs] = useState<RefObject<SwipeableMethods>[]>([]);
   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
   const [editedSubtaskTitle, setEditedSubtaskTitle] = useState('');
   const [editMode, setEditMode] = useState(false);
@@ -151,8 +151,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       </Animated.View>
     );
   };
-  const colors = useContext(AppContext)!.colors;
-
   const renderRightActions = () => {
     const scale = interpolate(sv.value, [0, 100], [0, 1], {
       extrapolateLeft: Extrapolation.CLAMP,
@@ -381,7 +379,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
               }}
             />
             <Pressable onPress={() => handleAddSubtask()}>
-              <IconGreenArrow height={25} width={25} />
+              {/* <IconGreenArrow height={25} width={25} /> */}
             </Pressable>
           </View>
         </View>
