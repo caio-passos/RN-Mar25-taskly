@@ -1,30 +1,25 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { createContext } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import Colorscheme from './hooks/Colorscheme';
 import RootNavigator from './router/RootRouter';
 import type { colorsTypes } from './types/colorsType';
 import { useAuthStore } from './services/cache/stores/storeZustand';
+import { useUserStore } from './services/cache/stores/storeZustand';
 
 export const AppContext = createContext<colorsTypes | undefined>(undefined);
 
 
 
 export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(useAuthStore.getState().userData?.theme?.darkMode);
+  const darkMode = useUserStore(state => state.userData?.theme);
+  console.log('Theme at start: ', darkMode)
+  const colors = useMemo(() => 
+    darkMode ? Colorscheme().darkMode : Colorscheme().lightMode,
+    [darkMode]
+  );
+    console.log('App re-render with theme:', darkMode);
 
-
-  useEffect(() => {
-    const unsubscribe = useAuthStore.subscribe((state) => {
-      const darkMode = state.userData?.theme?.darkMode;
-      setIsDarkMode(darkMode);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  const themeProvider = useAuthStore.getState().userData?.theme;
-  const colors = themeProvider?.darkMode ? Colorscheme().darkMode : Colorscheme().lightMode;
 
   return (
     <AppContext.Provider value={{ colors }}>

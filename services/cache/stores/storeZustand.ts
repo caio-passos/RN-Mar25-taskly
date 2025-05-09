@@ -4,7 +4,6 @@ import { mmkvStorage } from '../../db/storageMMKV';
 import { produce } from 'immer';
 import { AvatarData, UserDataTypes } from '../../../types/userTypes';
 import { TaskTypes } from '../../../types/taskTypes';
-import Theme from '../../../screens/(auth)/Theme';
 
 interface UserStore {
   userData: UserDataTypes | null;
@@ -169,8 +168,8 @@ export const useTaskStore = create<TaskStore>()(
 
           if (taskIndex !== -1) {
             const task = state.tasks[taskIndex];
-            
-            task.Subtask = task.Subtask 
+
+            task.Subtask = task.Subtask
               ? task.Subtask.filter(subtask => subtask.id !== subtaskId)
               : [];
           }
@@ -212,7 +211,6 @@ interface AuthStore {
   setAuthData: (userData: UserDataTypes, idToken: string, refreshToken: string) => void;
   updateUserData: (updater: (draft: UserDataTypes) => void) => void;
   setAvatar: (avatar: AvatarData) => void;
-  setTheme: (theme : {darkMode: boolean}) => void;
   updateTokens: (idToken: string, refreshToken: string) => void;
   clearAuthData: () => void;
 }
@@ -244,13 +242,7 @@ export const useAuthStore = create<AuthStore>()(
             state.userData.avatar = avatar;
           }
         })),
-        setTheme: (theme: { darkMode: boolean }) => 
-          set(produce((state: AuthStore) => {
-            if (state.userData) {
-              console.log('Setting theme:', theme);
-              state.userData.theme = theme;
-            }
-          })),
+
       updateTokens: (idToken, refreshToken) =>
         set(state => ({
           tokens: { idToken, refreshToken }

@@ -7,12 +7,10 @@ import IconSair from '../../assets/icons/lightmode/carrousel/sairConta';
 import IconExcluir from '../../assets/icons/lightmode/carrousel/excluirConta';
 import IconRightArrow from '../../assets/icons/lightmode/rightArrow'
 import ModalAlert from "../Modal/Alert";
-import DarkAndLigthMode from '../Modal/DarkAndLightMode';
+import DarkAndLightMode from '../Modal/DarkAndLightMode';
 import ReturnLeft from '../../assets/caretLeft.svg';
 
 import { AppContext } from "../../App";
-import { RootStackParamList } from "../../types/routingTypes";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 interface ThemeProps {
     setControlTheme: Function
@@ -127,7 +125,7 @@ const Theme = (props: ThemeProps) => {
                         <Text style={styles.textVoltar}>VOLTAR</Text>
                     </View>
                 </Pressable>
-                <Text style={styles.textTerms}>Prefer�ncias</Text>
+                <Text style={styles.textTerms}>Preferências</Text>
             </View>
 
             <View style={styles.ContainerBottom}>
@@ -142,7 +140,12 @@ const Theme = (props: ThemeProps) => {
                             </View>
                         </View>
                     </Pressable>
-                    {control && <DarkAndLigthMode setControl={setControl} />}
+                    {control && (
+                        <DarkAndLightMode 
+                        onClose={() => setControl(false)}
+                        buttonStyleControl={() => setControl(false)}    
+                        />
+                        )}
                 </View>
             </View>
         </View>

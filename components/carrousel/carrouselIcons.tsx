@@ -16,18 +16,18 @@ import IconEditarDark from '../../assets/icons/darkmode/carrousel/editarInfo.png
 import IconBiometriaDark from '../../assets/icons/darkmode/carrousel/mudarBiometria.png'
 import IconSairDark from '../../assets/icons/darkmode/carrousel/sairConta.png'
 import IconExcluirDark from '../../assets/icons/darkmode/carrousel/excluirConta.png'
-import { useAuthStore } from "../../services/cache/stores/storeZustand";
+import { useAuthStore, useUserStore } from "../../services/cache/stores/storeZustand";
 
 
 const ThemedIconsProvider = () => {
     const [isDarkMode, setIsDarkMode] = useState(
-        useAuthStore.getState().userData?.theme?.darkMode ?? false
+        useUserStore.getState().userData?.theme
     );
 
     useEffect(() => {
         console.log(' theme mode:', isDarkMode);
-        const unsubscribe = useAuthStore.subscribe((state) => {
-            const newDarkMode = state.userData?.theme?.darkMode ?? false;
+        const unsubscribe = useUserStore.subscribe((state) => {
+            const newDarkMode = state.userData?.theme
             console.log('changed to:', newDarkMode);
             setIsDarkMode(newDarkMode);
         });

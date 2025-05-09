@@ -12,6 +12,8 @@ interface ModalAlertProps {
     leftButtonText?: string;
     rightButtonText?: string;
     style?: StyleProp<ViewStyle>;
+    styleFont?: TextStyle;
+    colorFont?: TextStyle;
     rightButtonStyle?: StyleProp<ViewStyle>; 
     rightButtonTextStyle?: StyleProp<TextStyle>;
     onRightButtonPress?: () => void;
@@ -27,6 +29,8 @@ const ModalAlert = ({
     style,
     rightButtonStyle,
     rightButtonTextStyle,
+    styleFont,
+    colorFont,
     onRightButtonPress
 }: ModalAlertProps) => {
     const colors = React.useContext(AppContext)!.colors;
@@ -80,13 +84,18 @@ const ModalAlert = ({
             textAlign: 'justify',
             justifyContent: 'center',
             color: colors.MainText,
+            fontSize: 16,
+            fontWeight: 400
+            
         },
         buttonText: {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
-            color: colors.MainText,
+            color: colors.Primary,
+            fontSize: 18,
+            fontWeight: 500,
         },
         buttonRightText: {
             width: '100%',
@@ -94,13 +103,14 @@ const ModalAlert = ({
             justifyContent: 'center',
             textAlign: 'center',
             color: colors.SecondaryBG,
+            fontSize: 18,
+            fontWeight: 500,
         },
         titleText: {
             width: '100%',
-            fontSize: 17,
+            fontSize: 18,
             marginBottom: 15,
-            textAlign: 'center',
-            fontWeight: 'bold',
+            fontWeight: 500,
             color: colors.MainText,
         },
         textModal: {
@@ -117,12 +127,12 @@ const ModalAlert = ({
             <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text style={styles.titleText} numberOfLines={1}>{title}</Text>
-                    <Text style={styles.textStyle}>
+                    <Text style={[styleFont, styles.textStyle]}>
                         {description}
                     </Text>
                     <View style={styles.boxButtons}>
                         <Pressable style={styles.buttonEmptyFill} onPress={onClose}>
-                            <Text style={[styles.buttonText]}>{leftButtonText}</Text>
+                            <Text style={[colorFont, styles.buttonText]}>{leftButtonText}</Text>
                         </Pressable>
                         <Pressable
                             style={[styles.buttonFilled, rightButtonStyle]}

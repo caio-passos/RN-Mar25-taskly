@@ -24,7 +24,7 @@ interface ModalCriarTarefas {
 const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
   const colors = React.useContext(AppContext)!.colors;
   const [titulo, setTitulo] = useState('');
-  const [descrição, setDescricao] = useState('');
+  const [descricao, setDescricao] = useState('');
   const [prazo, setPrazo] = useState('');
 
   const CreateTask = useTaskStore().addTask;
@@ -133,7 +133,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
           </Text>
 
           <View style={styles.inputForm}>
-            <Text style={{color: colors.MainText}}>Título</Text>
+            <Text style={{ color: colors.MainText }}>Título</Text>
             <View style={styles.boxInput}>
               <TextInput
                 placeholder="Ex: bater o ponto"
@@ -143,7 +143,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
               />
             </View>
             <View style={styles.inputForm}>
-              <Text style={{color: colors.MainText}}>Descricao</Text>
+              <Text style={{ color: colors.MainText }}>Descricao</Text>
               <View style={styles.boxInput}>
                 <TextInput
                   placeholder="bater o ponto pelo site do kairos e depois tenho que sair para tomar café"
@@ -155,7 +155,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
               </View>
             </View>
             <View style={styles.inputForm}>
-              <Text style={{color: colors.MainText}}>Prazo </Text>
+              <Text style={{ color: colors.MainText }}>Prazo </Text>
               <View style={styles.boxInput}>
                 <TextInput
                   placeholder="28/04/2025"
@@ -180,12 +180,10 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
                   <Text style={styles.buttonText}>CANCELAR</Text>
                 </Pressable>
               </Pressable>
-              <Pressable style={styles.buttonFilled} onPress={onClose}>
-                <Pressable onPress={handleCreateTask}>
+              <Pressable style={styles.buttonFilled} onPress={handleCreateTask}>
                   <Text style={[styles.buttonText, { color: colors.MainText }]}>
                     CRIAR
                   </Text>
-                </Pressable>
               </Pressable>
             </View>
           </View>

@@ -1,5 +1,3 @@
-import { Background } from "@react-navigation/elements";
-
 const Colorscheme = () => ({
     lightMode: {
         Primary: '#5B3CC4',
@@ -15,6 +13,7 @@ const Colorscheme = () => ({
     darkMode: {
         Primary: '#552DDC',
         Background: '#282828',
+        BackgroundModal: 'rgba(0,0,0,0.7)',
         SecondaryBG: '#1E1E1E',
         PrimaryLight: '#A393D1',
         SecondaryAccent: '#32C25B',
