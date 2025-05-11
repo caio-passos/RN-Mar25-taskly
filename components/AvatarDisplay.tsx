@@ -16,7 +16,7 @@ const avatars = [
 ];
 const AvatarDisplay = ({ style }: AvatarProp) => {
 
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const {userData} = useUserStore();
 
     const selectedAvatarData = userData?.avatar

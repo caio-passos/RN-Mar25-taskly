@@ -146,7 +146,7 @@ export const useTaskStore = create<TaskStore>()(
         }
         ))
       },
-      updateSubtask: (taskId: string, subtaskId: string, updates: Partial<Subtask>) => {
+      updateSubtask: (taskId: string, subtaskId: string, updates: Partial<TaskTypes['Subtask'][number]>) => {
         set(produce((state) => {
           const taskIndex = state.tasks.findIndex(task => task.id === taskId);
           if (taskIndex !== -1) {

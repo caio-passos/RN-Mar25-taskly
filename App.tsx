@@ -7,7 +7,7 @@ import type { colorsTypes } from './types/colorsType';
 import { useAuthStore } from './services/cache/stores/storeZustand';
 import { useUserStore } from './services/cache/stores/storeZustand';
 
-export const AppContext = createContext<colorsTypes | undefined>(undefined);
+export const AppContext = createContext<{ colors: colorsTypes; darkMode?: boolean } | undefined>(undefined);
 
 
 
@@ -22,7 +22,7 @@ export default function App() {
 
 
   return (
-    <AppContext.Provider value={{ colors }}>
+    <AppContext.Provider value={{ colors: colors, darkMode }}>
       <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>

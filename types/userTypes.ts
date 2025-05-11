@@ -6,7 +6,7 @@ export interface AvatarData {
   borderColor: string;
 }
 export interface UserDataTypes {
-  uid: typeof uuidv4;
+  uid: string;
   nome: string;
   email: string;
   telefone: string;

@@ -15,7 +15,7 @@ interface DarkAndLightMode {
 }
 
 const DarkAndLigthMode = ({ onClose, buttonStyleControl }: DarkAndLightMode) => {
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const [darkTheme, setDarkTheme] = useState(
         useUserStore.getState().userData?.theme ?? false
     );

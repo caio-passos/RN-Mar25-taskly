@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal, SafeAreaView, KeyboardAvoidingView } from 'react-native';
+import MaskTextInput from 'react-native-mask-input';
 import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
@@ -9,16 +10,13 @@ import ModalAlert from './Modal/Alert';
 import { useUserStore } from '../services/cache/stores/storeZustand';
 import { UserDataTypes } from '../types/userTypes';
 import { mmkvStorage } from '../services/db/storageMMKV';
-import { v4, V4Options } from 'uuid';
 
-interface CadastroProps {
-    navigation: NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
-}
+interface CadastroProps extends NativeStackScreenProps<RootStackParamList, 'Cadastro'> {}
 
-type dataUser = { uid: V4Options, nome: string, email: string, telefone: string, senha: string, checkSenha: string }
+type dataUser = { uid: string, nome: string, email: string, telefone: string, senha: string, checkSenha?: string }
 
 function Cadastro({ navigation }: CadastroProps) {
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const error: Array<{ tag: string, error: string }> = [];
 
     const [uid, setUid] = useState('');
@@ -41,22 +39,23 @@ function Cadastro({ navigation }: CadastroProps) {
 
     useEffect(() => {
         setFormData({
-            uid: v4,
+            uid: uid,
             nome: nome,
             email: email,
             telefone: telefone,
-            senha: senha
+            senha: senha,
+            checkSenha: checkSenha
         });
-    }, [nome, email, telefone, senha]);
-
+    }, [nome, email, telefone, senha, checkSenha]);
 
     const [formData, setFormData] = useState<UserDataTypes>({
-        uid: v4,
+        uid: '',
         nome: '',
         email: '',
         telefone: '',
         senha: '',
-    })
+        checkSenha: ''
+    });
 
     const { setItemUserData } = useUserStore();
     console.log('user data')
@@ -272,7 +271,7 @@ function Cadastro({ navigation }: CadastroProps) {
     const colorPlace = styles.textTitleInput.color;
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
                 <Pressable
                     style={styles.returnPressable}
@@ -302,13 +301,21 @@ function Cadastro({ navigation }: CadastroProps) {
             <View style={styles.loginForm}>
                 <Text style={styles.textTitleInput}>E-mail</Text>
                 <View style={styles.boxInput}>
-                    <TextInput
+                    <MaskTextInput
                         placeholder="Digite seu e-mail"
                         placeholderTextColor={colors.MainText}
                         keyboardType="email-address"
                         value={email}
                         onChangeText={setEmail}
                         style={{ color: colors.MainText }}
+                        mask={[
+                            /\S/, /\S/, /\S/, /\S/, /\S/,
+                            /\S/, /\S/, /\S/, /\S/, /\S/,
+                            /\S/, /\S/, /\S/, /\S/, /\S/,
+                            /\S/, /\S/, /\S/, /\S/, /\S/,
+                            /\S/, /\S/, /\S/, /\S/, /\S/,
+                            '@'
+                        ]}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsEmail.map((value) => `${value.error}\n`)}</Text>}
@@ -316,16 +323,18 @@ function Cadastro({ navigation }: CadastroProps) {
             <View style={styles.loginForm}>
                 <Text style={styles.textTitleInput}>Número</Text>
                 <View style={styles.boxInput}>
-                    <TextInput
+                    <MaskTextInput
                         placeholder="Digite seu número de telefone"
                         keyboardType="phone-pad"
                         value={telefone}
-                        onChangeText={(value) => {
-                            formatPhone(String(value));
-                            setTelefone(value)
+                        onChangeText={(masked, unmasked) => {
+                            setTelefone(masked);
                         }}
                         placeholderTextColor={colorPlace}
                         style={{ color: colors.MainText }}
+                        mask={[
+                            '(', /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/
+                        ]}
                     />
                 </View>
                 {<Text style={styles.textError}>{errorsTelefone.map((value) => `${value.error}\n`)}</Text>}
@@ -366,7 +375,7 @@ function Cadastro({ navigation }: CadastroProps) {
                     if (isFilled && !senhaError) {
                         createAccount(formData);
                         handleOpenModal();
-                        // add api post to create account
+                        //add api post to-do
                     } else {
                         console.log("Submit blocked: isFilled=", isFilled, "senhaError=", senhaError);
                     }
@@ -388,7 +397,7 @@ function Cadastro({ navigation }: CadastroProps) {
                 rightButtonText='ATIVAR'
             />
 
-        </View>
+        </SafeAreaView>
 
     );
 }

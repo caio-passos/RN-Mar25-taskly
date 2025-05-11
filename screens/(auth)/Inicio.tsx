@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useMemo} from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Pressable,
   BackHandler,
   SafeAreaView,
+  KeyboardAvoidingView
 } from 'react-native';
 import { AppContext } from '../../App';
 import ModalCriarTarefas from '../Modal/Criartarefa';
@@ -45,18 +46,19 @@ const InicioContent = () => {
     setFilters({});
   };
 
-
-
   useEffect(() => {
     console.log('Tasks update: ', tasks.length);
     if (ShowDetalhes && selectedTask) {
-      const taskExists = tasks.some(task => task.id === selectedTask.id);
-      if (!taskExists) {
+      const updatedTask = tasks.find(task => task.id === selectedTask.id);
+      if (!updatedTask) {
         setShowDetalhes(false);
         setSelectedTask(null);
+      } else if (updatedTask !== selectedTask) {
+        setSelectedTask(updatedTask);
       }
     }
   }, [tasks, selectedTask, ShowDetalhes]);
+
   const handleModalOpen = () => {
     setModalVisible(true);
   };
@@ -88,10 +90,10 @@ const InicioContent = () => {
     return () => backHandler.remove();
   }, [modalCriarTarefa, ShowDetalhes]);
 
-  const colors = useContext(AppContext)!.colors;
+  const { colors, darkMode } = useContext(AppContext)!;
   const isDarkMode = useUserStore(state => state.userData?.theme);
   const styles = StyleSheet.create({
-    backgroundFixer:{
+    backgroundFixer: {
       backgroundColor: colors.Background,
       zIndex: -1000,
       height: '100%',
@@ -143,49 +145,52 @@ const InicioContent = () => {
   });
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      behavior="padding"
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={0}
+    >
       <View style={styles.backgroundFixer}>
-      <View style={styles.container}>
-        <View style={styles.topBar}>
-          {ShowDetalhes && null}
-          <Text style={styles.title}>Taskly</Text>
-          <AvatarDisplay />
-        </View>
-        <View style={styles.middleSection}>
-          <View style={styles.TasksStyle}>
-            {!ShowDetalhes && (
-              <View style={styles.IconFilterStyle}>
-                <Pressable
-                  onPress={() => setFilterVisible(true)}>
-                  {React.createElement(getThemedIcon('filter', isDarkMode), {width: 24, height: 24})}
-                </Pressable>
-              <FilterModal 
-              visible={filterVisible} 
-              onClose={()=> setFilterVisible(false)}
-              onApply={handleApplyFilters}
-              onClear={handleClearFilters} 
-              />
-              </View>
-            )}
-            {ShowDetalhes ? (
-              <DetalhesTask item={selectedTask} />
-            ) : (
-              <Tasks
-                tasks={filteredTasks}
-                onOpenModal={() => setModalCriarTarefa(true)}
-                onOpenDetalhes={handleShowDetalhes}
-              />
-            )}
-            <ModalCriarTarefas
-              visible={modalCriarTarefa}
-              onClose={() => setModalCriarTarefa(false)}
-            />
+        <View style={styles.container}>
+          <View style={styles.topBar}>
+            {ShowDetalhes && null}
+            <Text style={styles.title}>Taskly</Text>
+            <AvatarDisplay />
           </View>
-          <View></View>
+          <View style={styles.middleSection}>
+            <View style={styles.TasksStyle}>
+              {!ShowDetalhes && (
+                <View style={styles.IconFilterStyle}>
+                  <Pressable
+                    onPress={() => setFilterVisible(true)}>
+                    {React.createElement(getThemedIcon('filter', isDarkMode), { width: 24, height: 24 })}
+                  </Pressable>
+                  <FilterModal
+                    visible={filterVisible}
+                    onClose={() => setFilterVisible(false)}
+                    onApply={handleApplyFilters}
+                    onClear={handleClearFilters}
+                  />
+                </View>
+              )}
+              {ShowDetalhes ? (
+                <DetalhesTask item={selectedTask} />
+              ) : (
+                <Tasks
+                  tasks={filteredTasks}
+                  onOpenModal={() => setModalCriarTarefa(true)}
+                  onOpenDetalhes={handleShowDetalhes}
+                />
+              )}
+              <ModalCriarTarefas
+                visible={modalCriarTarefa}
+                onClose={() => setModalCriarTarefa(false)}
+              />
+            </View>
+          </View>
         </View>
       </View>
-      </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 

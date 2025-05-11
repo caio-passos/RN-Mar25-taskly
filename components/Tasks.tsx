@@ -1,13 +1,13 @@
 import React, {useContext, useEffect, useMemo,useState} from 'react';
 import {FlatList, View, Text, StyleSheet, Pressable, Task} from 'react-native';
 import {AppContext} from '../App';
-import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle';
-import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle';
+import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle.svg';
+import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle.svg';
 import ShortPressable from './Shortpressable';
 import LongPressable from './LongPressable';
 import type {TaskFilters, TaskTypes} from '../types/taskTypes';
 import {useTaskStore} from '../services/cache/stores/storeZustand';
-import NoTasks from '../assets/icons/darkmode/nocontent';
+import NoTasks from '../assets/icons/darkmode/nocontent.svg';
 import { filterTasks } from '../services/filterTasks';
 
 type ItemProps = {
@@ -20,7 +20,7 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
   const handleSelection = () => {
     setIsSelected(!isSelected);
   };
-  const colors = useContext(AppContext)!.colors;  
+  const { colors, darkMode } = useContext(AppContext)!;  
   const styles = StyleSheet.create({
     RootContainer: {
       backgroundColor: colors.Background,
@@ -118,7 +118,7 @@ const EmptyComponent = () => {
 };
 
 const CriarTarefa = ({onOpenModal}: {onOpenModal: () => void}) => {
-const colors = useContext(AppContext)!.colors;  
+const { colors, darkMode } = useContext(AppContext)!;  
   return (
     <View style={{paddingTop: 40}}>
       <LongPressable

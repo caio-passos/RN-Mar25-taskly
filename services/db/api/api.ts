@@ -63,7 +63,7 @@ const handleApiResponse = async (response: Response) => {
 // --- API p/ Auth ---
 interface RegisterRequestBody { email: string; password: string; name: string; phone_number: string; }
 interface RegisterResponse { uid: string; idToken: string; refreshToken?: string; }
-export const registerUser = async (userData: RegisterRequestBody): Promise<RegisterResponse | null> => { return null; };;
+export const registerUser = async (userData: RegisterRequestBody): Promise<RegisterResponse | null> => { return null; };
 
 interface LoginRequestBody {
     email: string;

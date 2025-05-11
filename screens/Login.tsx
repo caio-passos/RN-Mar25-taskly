@@ -28,7 +28,7 @@ function Login({ navigation }: LoginProps) {
     const [errorsEmailShow, setErrorsEmailShow] = useState(error);
     const [errorsPasswordShow, setErrorsPasswordShow] = useState(error);
 
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const styles = StyleSheet.create({
         container: {
             flex: 1,

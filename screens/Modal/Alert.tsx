@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext} from 'react';
 import { Alert, Modal, StyleSheet, Text, TextStyle, Pressable, View, StyleProp, ViewStyle } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -33,7 +33,7 @@ const ModalAlert = ({
     colorFont,
     onRightButtonPress
 }: ModalAlertProps) => {
-    const colors = React.useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
 
     const styles = StyleSheet.create({
         centeredView: {
