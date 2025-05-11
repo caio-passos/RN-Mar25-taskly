@@ -1,6 +1,7 @@
 import { useUserStore } from '../services/cache/stores/storeZustand';
 
 import IconEditYellow from '../assets/icons/darkmode/pencilyellowdarkmode.svg'
+import IconGreenArrow from '../assets/icons/lightmode/ArrowCircleRight.svg';
 // Light mode icons
 import IconTrashLight from '../assets/icons/lightmode/trash.svg';
 import IconEditLight from '../assets/icons/lightmode/pencil.svg';
@@ -8,6 +9,7 @@ import IconCheckboxUncheckedLight from '../assets/icons/lightmode/uncheckedcircl
 import IconCheckboxCheckedLight from '../assets/icons/lightmode/checkedcircle.svg';
 import IconNoTasks from '../assets/icons/darkmode/nocontent.svg';
 import IconFilterLight from '../assets/icons/lightmode/filter.svg';
+
 
 // Dark mode icons
 import IconTrashDark from '../assets/icons/darkmode/trashdarkmode.svg';
@@ -24,6 +26,8 @@ type IconRegistry = {
   checkboxChecked: React.ComponentType<{width?: number, height?: number}>;
   noTasks: React.ComponentType<{width?: number, height?: number}>;
   filter: React.ComponentType<{width?: number, height?: number}>;
+  greenArrow: React.ComponentType<{width?: number, height?: number}>;
+
 };
 
 const iconRegistry = {
@@ -54,6 +58,10 @@ const iconRegistry = {
   filter: {
     light: IconFilterLight,
     dark: IconFilterDark
+  },
+  greenArrow:{
+    light: IconGreenArrow,
+    dark: IconGreenArrow
   }
 } satisfies Record<string, {light: React.ComponentType, dark: React.ComponentType}>;
 

@@ -45,18 +45,19 @@ const InicioContent = () => {
     setFilters({});
   };
 
-
-
   useEffect(() => {
     console.log('Tasks update: ', tasks.length);
     if (ShowDetalhes && selectedTask) {
-      const taskExists = tasks.some(task => task.id === selectedTask.id);
-      if (!taskExists) {
+      const updatedTask = tasks.find(task => task.id === selectedTask.id);
+      if (!updatedTask) {
         setShowDetalhes(false);
         setSelectedTask(null);
+      } else if (updatedTask !== selectedTask){
+        setSelectedTask(updatedTask);
       }
     }
   }, [tasks, selectedTask, ShowDetalhes]);
+
   const handleModalOpen = () => {
     setModalVisible(true);
   };

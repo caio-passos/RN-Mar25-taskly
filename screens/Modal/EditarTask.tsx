@@ -14,13 +14,13 @@ import { TaskTypes, PrioridadeType } from '../../types/taskTypes';
 import LongPressable from '../../components/LongPressable';
 import LongNoFillPressable from '../../components/LongNoFillPressable';
 import IconGreenArrow from '../../assets/icons/lightmode/ArrowCircleRight.svg';
-import { getThemedIcon } from '../../components/DetalhesTask';
+
 
 
 interface EditarTaskProps {
     visible: boolean;
     task: TaskTypes;
-    onSave: (editedTask: TaskTypes) => void;
+    onSave: (id: string, editedTask: TaskTypes) => void;
     onCancel: () => void;
 }
 const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel }) => {
@@ -29,7 +29,7 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
     const [newTag, setNewTag] = useState('');
 
     const handleSave = () => {
-        onSave(editedTask);
+        onSave(task.id, editedTask);
     };
 
     const handleAddTag = () => {
@@ -262,7 +262,7 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                         textProps="SALVAR"
                         onPress={handleSave}
                         style={{ flex: 1, height: 50 }}
-                        textStyle={{ color: colors.PrimaryLight }}
+                        textStyle={{ color: colors.MainText}}
                     />
                 </View>
             </View>

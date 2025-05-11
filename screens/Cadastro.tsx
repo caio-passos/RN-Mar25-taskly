@@ -45,9 +45,11 @@ function Cadastro({ navigation }: CadastroProps) {
             nome: nome,
             email: email,
             telefone: telefone,
-            senha: senha
+            senha: senha,
+            checkSenha: checkSenha
+
         });
-    }, [nome, email, telefone, senha]);
+    }, [nome, email, telefone, senha, checkSenha]);
 
 
     const [formData, setFormData] = useState<UserDataTypes>({
@@ -56,6 +58,7 @@ function Cadastro({ navigation }: CadastroProps) {
         email: '',
         telefone: '',
         senha: '',
+        checkSenha: ''
     })
 
     const { setItemUserData } = useUserStore();

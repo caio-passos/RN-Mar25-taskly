@@ -3,8 +3,6 @@ import { Alert, Modal, StyleSheet, Text, Pressable, View, Image, TextInput } fro
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
-import LightModeBtn from '../../assets/improviso2.png';
-import DarkModeBtn from '../../assets/improviso1.png';
 
 interface DarkAndLigthMode {
     setAddSubtask: Function;
