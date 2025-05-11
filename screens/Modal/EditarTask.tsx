@@ -1,21 +1,22 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     View,
     Text,
     TextInput,
     Pressable,
     StyleSheet,
+    KeyboardAvoidingView,
     Modal,
+    SafeAreaView,
     ScrollView,
-    SafeAreaView
+    Platform
 } from 'react-native';
 import { AppContext } from '../../App';
 import { TaskTypes, PrioridadeType } from '../../types/taskTypes';
 import LongPressable from '../../components/LongPressable';
 import LongNoFillPressable from '../../components/LongNoFillPressable';
 import IconGreenArrow from '../../assets/icons/lightmode/ArrowCircleRight.svg';
-
-
+import AvatarDisplay from '../../components/AvatarDisplay';
 
 interface EditarTaskProps {
     visible: boolean;
@@ -23,6 +24,7 @@ interface EditarTaskProps {
     onSave: (id: string, editedTask: TaskTypes) => void;
     onCancel: () => void;
 }
+
 const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel }) => {
     const { colors, darkMode } = useContext(AppContext)!;
     const [editedTask, setEditedTask] = useState<TaskTypes>({ ...task });
@@ -57,17 +59,34 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
     };
 
     const styles = StyleSheet.create({
-        container: {
-            width: '100%',
-            height: '80%',
+        backgroundFixer: {
             backgroundColor: colors.Background,
-            borderRadius: 12,
+            zIndex: -1000,
+        },
+        container: {
+            bottom: 50,
+            paddingTop: 80,
+            paddingHorizontal: 32,
+            backgroundColor: colors.Background,
+        },
+        topBar: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        title: {
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+            fontSize: 32,
+            fontWeight: '700',
+            color: colors.MainText,
         },
         ContentContainer: {
+            width: '100%',
+            marginTop: 40,
             paddingHorizontal: 32,
             paddingBottom: 15,
             paddingTop: 24,
-            marginBottom: 32,
             borderRadius: 8,
             elevation: 2,
             backgroundColor: colors.SecondaryBG,
@@ -75,12 +94,6 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             shadowOffset: { width: 0, height: 8 },
             shadowOpacity: 0.46,
             shadowRadius: 11.14,
-        },
-        title: {
-            fontSize: 18,
-            fontWeight: 'bold',
-            color: colors.MainText,
-            textAlign: 'center',
         },
         inputContainer: {
             marginBottom: 16,
@@ -117,7 +130,6 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             borderRadius: 8,
             flexDirection: 'row',
             alignItems: 'center',
-            alignContent: 'center',
         },
         tagText: {
             color: '#000',
@@ -150,122 +162,140 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
         },
         buttonsContainer: {
             flexDirection: 'row',
-            bottom: 20,
-            marginBottom: 80,
-            alignItems: 'center',
-            alignContent: 'center',
-            justifyContent: 'space-between',
+            paddingHorizontal: 32,
+            marginTop: 20,
             gap: 8
         },
     });
 
     return (
-            <View style={styles.container}>
-                <View style={styles.ContentContainer}>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Título</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={editedTask.Task}
-                            onChangeText={text => setEditedTask(prev => ({ ...prev, Task: text }))}
-                            placeholder="Título da tarefa"
-                            placeholderTextColor={colors.SecondaryText}
-                        />
-                    </View>
+        <Modal visible={visible}>
+            <KeyboardAvoidingView 
+                behavior="padding"
+                style={{ flex: 1 }}
+                keyboardVerticalOffset={Platform.select({ ios: 100, android: 0 })}
+            >
+                <SafeAreaView style={{ flex: 1 }}>
+                    <ScrollView
+                        contentContainerStyle={{
+                            flexGrow: 1,
+                            paddingBottom: 50
+                        }}
+                        keyboardShouldPersistTaps="handled"
+                    >
+                        <View style={styles.backgroundFixer}>
+                            <View style={styles.container}>
+                                <View style={styles.topBar}>
+                                    <Text style={styles.title}>Taskly</Text>
+                                    <AvatarDisplay />
+                                </View>
+                                <View style={styles.ContentContainer}>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Título</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            value={editedTask.Task}
+                                            onChangeText={text => setEditedTask(prev => ({ ...prev, Task: text }))}
+                                            placeholder="Título da tarefa"
+                                            placeholderTextColor={colors.SecondaryText}
+                                        />
+                                    </View>
 
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Descrição</Text>
-                        <TextInput
-                            style={[styles.input, styles.textArea]}
-                            value={editedTask.Descricao}
-                            onChangeText={text => setEditedTask(prev => ({ ...prev, Descricao: text }))}
-                            placeholder="Descrição da tarefa"
-                            placeholderTextColor={colors.SecondaryText}
-                            multiline
-                        />
-                    </View>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Descrição</Text>
+                                        <TextInput
+                                            style={[styles.input, styles.textArea]}
+                                            value={editedTask.Descricao}
+                                            onChangeText={text => setEditedTask(prev => ({ ...prev, Descricao: text }))}
+                                            placeholder="Descrição da tarefa"
+                                            placeholderTextColor={colors.SecondaryText}
+                                            multiline
+                                        />
+                                    </View>
 
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Tags</Text>
-                        <View style={styles.tagsContainer}>
-                            {editedTask.Tags?.map((tag, index) => (
-                                <Pressable
-                                    key={index}
-                                    style={styles.tag}
-                                    onPress={() => handleRemoveTag(tag)}
-                                >
-                                    <Text style={styles.tagText}>{tag}</Text>
-                                </Pressable>
-                            ))}
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Tags</Text>
+                                        <View style={styles.tagsContainer}>
+                                            {editedTask.Tags?.map((tag, index) => (
+                                                <Pressable
+                                                    key={index}
+                                                    style={styles.tag}
+                                                    onPress={() => handleRemoveTag(tag)}
+                                                >
+                                                    <Text style={styles.tagText}>{tag}</Text>
+                                                </Pressable>
+                                            ))}
+                                        </View>
+                                        <View style={styles.input}>
+                                            <TextInput
+                                                style={{ flex: 1, color: colors.MainText, padding: 0 }}
+                                                value={newTag}
+                                                onChangeText={setNewTag}
+                                                placeholder="Nova tag"
+                                                placeholderTextColor={colors.SecondaryText}
+                                                onSubmitEditing={handleAddTag}
+                                            />
+                                            <Pressable onPress={handleAddTag}>
+                                                <IconGreenArrow height={26} width={26} />
+                                            </Pressable>
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Prioridade</Text>
+                                        <View style={styles.priorityContainer}>
+                                            {(['baixa', 'média', 'alta'] as PrioridadeType[]).map(priority => (
+                                                <Pressable
+                                                    key={priority}
+                                                    style={[
+                                                        styles.priorityButton,
+                                                        editedTask.Prioridade === priority &&
+                                                        (priority === 'baixa' ? styles.selectedPriorityBaixa :
+                                                            priority === 'média' ? styles.selectedPriorityMedia :
+                                                                styles.selectedPriorityAlta)
+                                                    ]}
+                                                    onPress={() => handlePriorityChange(priority)}
+                                                >
+                                                    <Text style={styles.priorityButtonText}>
+                                                        {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                                                    </Text>
+                                                </Pressable>
+                                            ))}
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Prazo</Text>
+                                        <TextInput
+                                            style={styles.input}
+                                            value={editedTask.Prazo}
+                                            onChangeText={text => setEditedTask(prev => ({ ...prev, Prazo: text }))}
+                                            placeholder="DD/MM/AAAA"
+                                            placeholderTextColor={colors.SecondaryText}
+                                        />
+                                    <View style={styles.buttonsContainer}>
+                                        <LongNoFillPressable
+                                            textProps="CANCELAR"
+                                            onPress={onCancel}
+                                            style={{ flex: 1, height: 50, borderColor: colors.Primary }}
+                                        />
+                                        <LongPressable
+                                            textProps="SALVAR"
+                                            onPress={handleSave}
+                                            style={{ flex: 1, height: 50 }}
+                                            textStyle={{ color: colors.MainText }}
+                                        />
+                                    </View>
+
+                                    </View>
+
+                                </View>
+                            </View>
                         </View>
-                        <View style={styles.input}>
-                            <TextInput
-                                style={{ flex: 1, color: colors.MainText, padding: 0 }}
-                                value={newTag}
-                                onChangeText={setNewTag}
-                                placeholder="Nova tag"
-                                numberOfLines={1}
-                                placeholderTextColor={colors.SecondaryText}
-                                onSubmitEditing={handleAddTag}
-                            />
-                            <Pressable onPress={handleAddTag}>
-                                <IconGreenArrow
-                                    height={26}
-                                    width={26}
-                                />
-                            </Pressable>
-                        </View>
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Prioridade</Text>
-                        <View style={styles.priorityContainer}>
-                            {(['baixa', 'média', 'alta'] as PrioridadeType[]).map(priority => (
-                                <Pressable
-                                    key={priority}
-                                    style={[
-                                        styles.priorityButton,
-                                        editedTask.Prioridade === priority &&
-                                        (priority === 'baixa' ? styles.selectedPriorityBaixa :
-                                            priority === 'média' ? styles.selectedPriorityMedia :
-                                                styles.selectedPriorityAlta)
-                                    ]}
-                                    onPress={() => handlePriorityChange(priority)}
-                                >
-                                    <Text style={styles.priorityButtonText}>
-                                        {priority.charAt(0).toUpperCase() + priority.slice(1)}
-                                    </Text>
-                                </Pressable>
-                            ))}
-                        </View>
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Prazo</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={editedTask.Prazo}
-                            onChangeText={text => setEditedTask(prev => ({ ...prev, Prazo: text }))}
-                            placeholder="DD/MM/AAAA"
-                            placeholderTextColor={colors.SecondaryText}
-                            keyboardType="numeric"
-                        />
-                    </View>
-                </View>
-                    <View style={styles.buttonsContainer}>
-                        <LongNoFillPressable
-                            textProps="CANCELAR"
-                            onPress={onCancel}
-                            style={{ flex: 1, height: 50, borderColor: colors.Primary }}
-                        />
-                        <LongPressable
-                            textProps="SALVAR"
-                            onPress={handleSave}
-                            style={{ flex: 1, height: 50 }}
-                            textStyle={{ color: colors.MainText }}
-                        />
-                </View>
-            </View>
+                    </ScrollView>
+                </SafeAreaView>
+            </KeyboardAvoidingView>
+        </Modal>
     );
 };
 

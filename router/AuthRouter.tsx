@@ -1,3 +1,4 @@
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Inicio from '../screens/(auth)/Inicio';
 import { Pressable, Image, View } from 'react-native';

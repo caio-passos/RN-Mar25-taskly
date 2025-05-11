@@ -5,7 +5,7 @@ import React, {
   useRef,
   useCallback,
   createRef,
-  RefObject
+  RefObject,
 } from 'react';
 import { AppContext } from '../App';
 import LongNoFillPressable from './LongNoFillPressable';
@@ -315,8 +315,10 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       color: colors.MainText
     },
     SubtaskContainer: {
+      marginTop: 24,
     },
     SubtaskListContainer: {
+
       paddingTop: 16,
       borderRadius: 8,
       marginTop: 16,
@@ -324,6 +326,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     subtaskInputContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      alignItems: 'center',
       backgroundColor: colors.SecondaryBG,
       borderRadius: 8,
     },
@@ -418,26 +421,26 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     );
   };
 
-  if (editMode) {
-    return (
-      <EditarTask
-        visible={editMode}
-        task={item!}
-        onSave={(id, editedTask) => {
-          saveEditTask(id, editedTask);
-          triggerUpdate()
-        }}
-        onCancel={() => setEditMode(false)}
-      />
-    )
-  } else {
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <KeyboardAvoidingView
-          behavior="padding"
-          style={{ flex: 1 }}
-        >
-          <GestureHandlerRootView style={{ flex: 1 }}>
+  return (
+    <>
+
+      {editMode && (
+          <EditarTask
+            visible={editMode}
+            task={item!}
+            onSave={(id, editedTask) => {
+              saveEditTask(id, editedTask);
+              triggerUpdate()
+            }}
+            onCancel={() => setEditMode(false)}
+          />
+
+      )}
+
+      {!editMode && (
+
+        <View style={{ flex: 1 }}>
+          <GestureHandlerRootView>
             <ScrollView
               style={styles.RootContainer}
               contentContainerStyle={{ paddingBottom: 100 }}
@@ -491,25 +494,22 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                       {!item?.Prioridade && (
                         <Text style={{ color: 'gray' }}>Não definida</Text>
                       )}
-                      <View>
-                        <LongNoFillPressable
-                          textProps="RESOLVER TAREFA"
-                          onPress={handleResolveTask}
-                          style={{
-                            paddingHorizontal: 32,
-                            width: '100%',
-                            height: 32,
-                            marginTop: 16,
-                            marginBottom: 16,
-                            justifyContent: 'center',
-                            borderWidth: 2,
-                            borderColor: colors.Primary,
-                          }}
-                        />
-                      </View>
+                      <LongNoFillPressable
+                        textProps="RESOLVER TAREFA"
+                        onPress={handleResolveTask}
+                        style={{
+                          paddingHorizontal: 32,
+                          width: '100%',
+                          height: 32,
+                          marginTop: 16,
+                          marginBottom: 16,
+                          justifyContent: 'center',
+                          borderWidth: 2,
+                          borderColor: colors.Primary,
+                        }}
+                      />
                     </View>
                   </View>
-
                 </View>
               </Swipeable>
               <View style={styles.SubtaskContainer}>
@@ -581,12 +581,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                 />
               </View>
             </ScrollView>
-
           </GestureHandlerRootView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    );
-  };
+        </View>
+
+      )}
+    </>
+  );
 };
 
 export default DetalhesTask;

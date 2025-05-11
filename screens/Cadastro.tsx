@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal, SafeAreaView, KeyboardAvoidingView } from 'react-native';
 import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
@@ -275,7 +275,7 @@ function Cadastro({ navigation }: CadastroProps) {
     const colorPlace = styles.textTitleInput.color;
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
                 <Pressable
                     style={styles.returnPressable}
@@ -391,7 +391,7 @@ function Cadastro({ navigation }: CadastroProps) {
                 rightButtonText='ATIVAR'
             />
 
-        </View>
+        </SafeAreaView>
 
     );
 }
