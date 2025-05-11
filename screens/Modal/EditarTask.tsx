@@ -11,6 +11,7 @@ import {
     ScrollView,
     Platform
 } from 'react-native';
+import MaskedTextInput from 'react-native-mask-input';
 import { AppContext } from '../../App';
 import { TaskTypes, PrioridadeType } from '../../types/taskTypes';
 import LongPressable from '../../components/LongPressable';
@@ -29,8 +30,32 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
     const { colors, darkMode } = useContext(AppContext)!;
     const [editedTask, setEditedTask] = useState<TaskTypes>({ ...task });
     const [newTag, setNewTag] = useState('');
+    const [dateError, setDateError] = useState<string | null>(null);
+
+    const parseDate = (dateStr: string | null): Date | null => {
+        if (!dateStr) return null;
+        
+        const parts = dateStr.split('/');
+        if (parts.length !== 3 || parts.some(part => !part)) return null;
+        
+        const day = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1;
+        const year = parseInt(parts[2]);
+        return new Date(year, month, day);
+    };
 
     const handleSave = () => {
+        if (editedTask.Prazo) {
+            const inputDate = parseDate(editedTask.Prazo);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (!inputDate || inputDate <= today) {
+                setDateError('Por favor insira uma data futura válida (DD/MM/AAAA)');
+                return;
+            }
+        }
+
         onSave(task.id, editedTask);
     };
 
@@ -166,6 +191,13 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             marginTop: 20,
             gap: 8
         },
+        errorInput: {
+            borderColor: colors.Error
+        },
+        errorText: {
+            color: colors.Error,
+            marginTop: 5
+        },
     });
 
     return (
@@ -266,13 +298,21 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
 
                                     <View style={styles.inputContainer}>
                                         <Text style={styles.label}>Prazo</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            value={editedTask.Prazo}
-                                            onChangeText={text => setEditedTask(prev => ({ ...prev, Prazo: text }))}
+                                        <MaskedTextInput
+                                            style={[styles.input, dateError && styles.errorInput]}
+                                            value={editedTask.Prazo || ''}
+                                            onChangeText={(text: string, rawText: string) => {
+                                                setEditedTask(prev => ({ ...prev, Prazo: text }));
+                                                setDateError(null);
+                                            }}
+                                            mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
                                             placeholder="DD/MM/AAAA"
                                             placeholderTextColor={colors.SecondaryText}
+                                            keyboardType="numeric"
                                         />
+                                        {dateError && (
+                                            <Text style={styles.errorText}>{dateError}</Text>
+                                        )}
                                     <View style={styles.buttonsContainer}>
                                         <LongNoFillPressable
                                             textProps="CANCELAR"
