@@ -20,7 +20,7 @@ interface TermsProps {
 }
 
 const Terms = (props: TermsProps) => {
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
 
     const styles = StyleSheet.create({
         Container: {

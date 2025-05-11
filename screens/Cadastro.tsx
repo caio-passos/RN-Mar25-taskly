@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal, SafeAreaView, KeyboardAvoidingView } from 'react-native';
 import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
@@ -18,7 +18,7 @@ interface CadastroProps {
 type dataUser = { uid: V4Options, nome: string, email: string, telefone: string, senha: string, checkSenha: string }
 
 function Cadastro({ navigation }: CadastroProps) {
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const error: Array<{ tag: string, error: string }> = [];
 
     const [uid, setUid] = useState('');
@@ -45,9 +45,11 @@ function Cadastro({ navigation }: CadastroProps) {
             nome: nome,
             email: email,
             telefone: telefone,
-            senha: senha
+            senha: senha,
+            checkSenha: checkSenha
+
         });
-    }, [nome, email, telefone, senha]);
+    }, [nome, email, telefone, senha, checkSenha]);
 
 
     const [formData, setFormData] = useState<UserDataTypes>({
@@ -56,6 +58,7 @@ function Cadastro({ navigation }: CadastroProps) {
         email: '',
         telefone: '',
         senha: '',
+        checkSenha: ''
     })
 
     const { setItemUserData } = useUserStore();
@@ -272,7 +275,7 @@ function Cadastro({ navigation }: CadastroProps) {
     const colorPlace = styles.textTitleInput.color;
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.headerContainer}>
                 <Pressable
                     style={styles.returnPressable}
@@ -388,7 +391,7 @@ function Cadastro({ navigation }: CadastroProps) {
                 rightButtonText='ATIVAR'
             />
 
-        </View>
+        </SafeAreaView>
 
     );
 }

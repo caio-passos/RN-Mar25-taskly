@@ -20,9 +20,8 @@ interface ModalCriarTarefas {
   onClose: () => void;
 }
 
-
 const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
-  const colors = React.useContext(AppContext)!.colors;
+  const { colors, darkMode } = useContext(AppContext)!;
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [prazo, setPrazo] = useState('');
@@ -138,8 +137,13 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
               <TextInput
                 placeholder="Ex: bater o ponto"
                 placeholderTextColor={colors.MainText}
-                keyboardType="ascii-capable"
                 onChangeText={value => setTitulo(String(value))}
+                underlineColorAndroid="transparent"
+                style={{
+                  color: colors.MainText,
+                  padding: 10,
+                  borderWidth: 0
+                }}
               />
             </View>
             <View style={styles.inputForm}>
@@ -148,8 +152,8 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
                 <TextInput
                   placeholder="bater o ponto pelo site do kairos e depois tenho que sair para tomar café"
                   placeholderTextColor={colors.MainText}
-                  keyboardType="ascii-capable"
                   multiline={true}
+                  style={{ color: colors.MainText, textDecorationLine: 'none' }}
                   onChangeText={value => setDescricao(String(value))}
                 />
               </View>
@@ -161,6 +165,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
                   placeholder="28/04/2025"
                   placeholderTextColor={colors.MainText}
                   keyboardType="numeric"
+                  style={{ color: colors.MainText, textDecorationLine: 'none' }}
                   onChangeText={value => setPrazo(String(value))}
                 />
               </View>
@@ -181,9 +186,9 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
                 </Pressable>
               </Pressable>
               <Pressable style={styles.buttonFilled} onPress={handleCreateTask}>
-                  <Text style={[styles.buttonText, { color: colors.MainText }]}>
-                    CRIAR
-                  </Text>
+                <Text style={[styles.buttonText, { color: colors.MainText }]}>
+                  CRIAR
+                </Text>
               </Pressable>
             </View>
           </View>

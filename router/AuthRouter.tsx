@@ -1,3 +1,4 @@
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Inicio from '../screens/(auth)/Inicio';
 import { Pressable, Image, View } from 'react-native';
@@ -12,7 +13,7 @@ import Menu from '../screens/(auth)/Menu';
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
 export default function HomeTabBar() {
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
   return (
     <Tab.Navigator
       screenOptions={{

@@ -3,10 +3,8 @@ import {data} from '../services/db/mockData';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import type {TaskTypes} from '../types/taskTypes';
 import {AppContext} from '../App';
-import IconCheckedSquare from '../assets/icons/lightmode/checksquare';
-import IconUncheckedSquare from '../assets/icons/lightmode/uncheckedsquare';
-import IconPencil from '../assets/icons/lightmode/pencil';
 import {useTaskStore} from '../services/cache/stores/storeZustand';
+import {useIcon} from '../hooks/useIcon';
 
 interface SubtaskProps {
   data: TaskTypes;
@@ -21,7 +19,10 @@ const Subtask = ({
   subtaskText,
   onSubtaskTextChange,
 }: SubtaskProps) => {
-  const colors = useContext(AppContext)!.colors;
+
+  const { colors, darkMode } = useContext(AppContext)!;
+
+
   const {tasks} = useTaskStore();
   const [subtaskCheck, setSubtaskCheck] = useState<Record<number, boolean>>({});
   const currentTask = tasks.find(task => task.id === data.id);
@@ -54,7 +55,7 @@ const Subtask = ({
         .map(subtask => ({
           id: subtask.id || `subtask_${Date.now()}`,
           title: subtask.title,
-          completed: subtask.completed || false
+          completed: subtask.done || false
         }));
     }, [currentTask, data]);
 
@@ -64,6 +65,15 @@ const Subtask = ({
       [subtaskId]: !prev[subtaskId],
     }));
   };
+  const {
+    trash: IconTrash,
+    edit: IconEdit,
+    editYellow: IconEditYellow,
+    checkboxUnchecked: IconCheckboxUnchecked,
+    checkboxChecked: IconCheckboxChecked,
+    greenArrow: IconGreenArrow
+
+  } = useIcon(['trash', 'edit', 'editYellow', 'checkboxUnchecked', 'checkboxChecked', 'greenArrow'], darkMode);
 
   return (
     <View>
@@ -73,13 +83,13 @@ const Subtask = ({
               style={styles.SubtaskAlignment}
               onPress={() => handleSubtaskCheck(subtask.id)}>
               {subtaskCheck[subtask.id] ? (
-                <IconCheckedSquare height={24} width={24} />
+                <IconCheckboxChecked height={24} width={24} />
               ) : (
-                <IconUncheckedSquare height={24} width={24} />
+                <IconCheckboxUnchecked height={24} width={24} />
               )}
               <Text style={styles.subtaskText}>{subtask.title}</Text>
             </Pressable>
-            <IconPencil height={24} width={24} />
+            <IconEdit height={24} width={24} />
           </View>
         ))}
       ;

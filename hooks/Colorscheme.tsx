@@ -9,6 +9,7 @@ const Colorscheme = () => ({
         MainText: '#1E1E1E',
         SecondaryText: '#AAAAAA',
         Error: '#E63946',
+        Warning: 'yellow',
     },
     darkMode: {
         Primary: '#552DDC',
@@ -20,6 +21,8 @@ const Colorscheme = () => ({
         MainText: '#F0F0F0',
         SecondaryText: '#D9D9D9',
         Error: '#E63946',
+        Warning: 'yellow',
+
     },
 });
 

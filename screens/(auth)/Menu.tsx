@@ -29,7 +29,7 @@ interface MenuProps {
 }
 
 const Menu = ({ navigation }: MenuProps) => {
-  const colors = useContext(AppContext)!.colors;
+  const { colors, darkMode } = useContext(AppContext)!;
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [biometria, setBiometria] = useState(false);
   const [control, setControl] = useState(false);

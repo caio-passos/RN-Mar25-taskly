@@ -12,7 +12,7 @@ interface LongNoFillPressableProps {
 
 function LongNoFillPressable({ textProps, onPress, style, Tap}: LongNoFillPressableProps) {
 
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const styles = StyleSheet.create({
         buttonFilled: {
             borderRadius: 8,

@@ -21,7 +21,7 @@ interface editProfileProps {
 }
 const EditProfile = ({ onCloseEdit }: editProfileProps) => {
     const { userData: initialUserData } = useUserStore();
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const [name, setName] = useState(initialUserData?.nome || '');
     const [email, setEmail] = useState(initialUserData?.email || '');
     const [phone, setPhone] = useState(initialUserData?.telefone || '');
