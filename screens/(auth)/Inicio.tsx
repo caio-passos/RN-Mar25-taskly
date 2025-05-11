@@ -89,7 +89,7 @@ const InicioContent = () => {
     return () => backHandler.remove();
   }, [modalCriarTarefa, ShowDetalhes]);
 
-  const colors = useContext(AppContext)!.colors;
+  const { colors, darkMode } = useContext(AppContext)!;
   const isDarkMode = useUserStore(state => state.userData?.theme);
   const styles = StyleSheet.create({
     backgroundFixer:{

@@ -20,7 +20,7 @@ interface AvatarProps {
 }
 
 function Avatar({ navigation, onEditProfile }: AvatarProps) {
-  const colors = useContext(AppContext)!.colors;
+  const { colors, darkMode } = useContext(AppContext)!;
   const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
 
   const avatars = [

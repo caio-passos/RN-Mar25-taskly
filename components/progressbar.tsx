@@ -15,7 +15,7 @@ const ProgressBar = ({ progress }: ProgressBarProps) => {
         };
     });
 
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const styles = StyleSheet.create({
         container: {
             width: '100%',

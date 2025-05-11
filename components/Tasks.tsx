@@ -20,7 +20,7 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
   const handleSelection = () => {
     setIsSelected(!isSelected);
   };
-  const colors = useContext(AppContext)!.colors;  
+  const { colors, darkMode } = useContext(AppContext)!;  
   const styles = StyleSheet.create({
     RootContainer: {
       backgroundColor: colors.Background,
@@ -118,7 +118,7 @@ const EmptyComponent = () => {
 };
 
 const CriarTarefa = ({onOpenModal}: {onOpenModal: () => void}) => {
-const colors = useContext(AppContext)!.colors;  
+const { colors, darkMode } = useContext(AppContext)!;  
   return (
     <View style={{paddingTop: 40}}>
       <LongPressable

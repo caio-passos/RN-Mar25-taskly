@@ -18,7 +18,7 @@ interface CadastroProps {
 type dataUser = { uid: V4Options, nome: string, email: string, telefone: string, senha: string, checkSenha: string }
 
 function Cadastro({ navigation }: CadastroProps) {
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const error: Array<{ tag: string, error: string }> = [];
 
     const [uid, setUid] = useState('');

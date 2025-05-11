@@ -37,7 +37,7 @@ const MenuCarrousel = ({ height, width, items }: CarrouselIconsSize) => {
     
     ],[height, width, themedIcons]);
 
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
 
     const styles = StyleSheet.create({
         ShadowContainer: {

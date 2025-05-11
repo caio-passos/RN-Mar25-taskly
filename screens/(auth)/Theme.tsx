@@ -17,7 +17,7 @@ interface ThemeProps {
 }
 
 const Theme = (props: ThemeProps) => {
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const [activeModal, setActiveModal] = useState<string | null>(null);
     const [control, setControl] = useState(false);
 

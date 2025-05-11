@@ -13,14 +13,14 @@ interface FilterModalProps {
     onClear: () => void;
 }
 
-interface DropdownItem{
+interface DropdownItem {
     label: string;
     value: string;
 }
 
 
 const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, onClear }) => {
-    const colors = useContext(AppContext)!.colors;
+    const { colors, darkMode } = useContext(AppContext)!;
     const styles = StyleSheet.create({
         modalBackground: {
             flex: 1,
@@ -41,8 +41,15 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
             alignItems: 'center',
             marginBottom: 15,
         },
-        title: { fontSize: 24, fontWeight: '700' },
-        closeButton: { fontSize: 26, color: 'red' },
+        title: {
+            color: colors.MainText,
+            fontSize: 24,
+            fontWeight: '700'
+        },
+        closeButton: {
+            fontSize: 26,
+            color: 'red'
+        },
         filterItem: {
             marginBottom: 15,
         },
@@ -55,6 +62,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
         label: {
             fontSize: 18,
             fontWeight: '500',
+            color: colors.MainText
         },
         dropdownIcon: {
             width: 20,
@@ -66,21 +74,22 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
             borderWidth: 1,
             borderRadius: 5,
             backgroundColor: colors.Background,
+            color: colors.MainText,
             maxHeight: 150,
             overflow: 'auto',
         },
         dropdownListItem: {
             padding: 10,
-            borderBottomWidth: 1,
-            borderColor: '#eee',
+            backgroundColor: colors.PrimaryLight + '30'
         },
         selectedItem: {
+            
             backgroundColor: colors.PrimaryLight,
         },
         selectedItemText: {
+            color: colors.MainText,
             fontWeight: 'bold',
         },
-
         button: {
             backgroundColor: colors.Primary,
             padding: 12,
@@ -96,14 +105,21 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
             marginTop: 10,
         },
         buttonText: {
-            color: '#fff',
+            color: colors.MainText,
             fontWeight: '500',
             fontSize: 18,
         },
+        dateInput: {
+            color: colors.MainText,
+            borderColor: colors.Primary,
+            backgroundColor: colors.Background,
+            borderWidth: 2,
+            borderRadius: 8
+        }
     });
 
 
-    const [order, setOrder] = useState<'baixaParaAlta'| 'altaParaBaixa'| null>(null);
+    const [order, setOrder] = useState<'baixaParaAlta' | 'altaParaBaixa' | null>(null);
     const [orderItems] = useState<DropdownItem[]>([
         { label: 'Prioridade (de baixa para alta)', value: 'lowToHigh' },
         { label: 'Prioridade (de alta para baixa)', value: 'highToLow' },
@@ -131,11 +147,11 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
         }));
     };
     const handleApply = () => {
-        onApply({ 
+        onApply({
             order: order || undefined,
             tags: tags.length ? tags : undefined,
             date: dateInput || undefined
-          });
+        });
         onClose();
     };
 
@@ -207,6 +223,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
                                 keyExtractor={(item) => item.value}
                                 renderItem={({ item }) => renderDropdownItem(item, 'order')}
                                 style={styles.dropdownList}
+                                
                             />
                         )}
                     </View>
@@ -237,6 +254,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, onApply, on
                                 value={dateInput || ''}
                                 onChangeText={setDateInput}
                                 placeholder="Digite a data"
+                                placeholderTextColor={colors.MainText}
                             />
                         )}
                     </View>
