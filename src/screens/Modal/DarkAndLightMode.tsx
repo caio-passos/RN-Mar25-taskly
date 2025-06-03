@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, Image } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { Theme, useNavigation } from '@react-navigation/native';
-import { AppContext } from '../../App';
+import { AppContext } from '../../../App';
 import LightModeBtn from '../../assets/improviso2.png';
 import DarkModeBtn from '../../assets/improviso1.png';
 import { useUserStore } from '../../services/cache/stores/storeZustand';

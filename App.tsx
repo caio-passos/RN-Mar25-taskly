@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createContext } from 'react';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
-import Colorscheme from './hooks/Colorscheme';
-import RootNavigator from './router/RootRouter';
-import type { colorsTypes } from './types/colorsType';
-import { useAuthStore } from './services/cache/stores/storeZustand';
-import { useUserStore } from './services/cache/stores/storeZustand';
+import Colorscheme from './src/hooks/Colorscheme';
+import RootNavigator from './src/router/RootRouter';
+import type { colorsTypes } from './src/types/colorsType';
+import { useAuthStore } from './src/services/cache/stores/storeZustand';
+import { useUserStore } from './src/services/cache/stores/storeZustand';
 
 export const AppContext = createContext<{ colors: colorsTypes; darkMode?: boolean } | undefined>(undefined);
 

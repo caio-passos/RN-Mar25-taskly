@@ -4,7 +4,7 @@ import MaskTextInput from 'react-native-mask-input';
 import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
-import { AppContext } from '../App';
+import { AppContext } from '../../App';
 import ReturnLeft from '../assets/caretLeft.svg';
 import ModalAlert from './Modal/Alert';
 import { useUserStore } from '../services/cache/stores/storeZustand';

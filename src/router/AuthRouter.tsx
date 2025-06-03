@@ -5,7 +5,7 @@ import { Pressable, Image, View } from 'react-native';
 import IconInicio from '../assets/icons/lightmode/ClipboardText';
 import IconNotification from '../assets/icons/lightmode/notification';
 import IconMenu from '../assets/icons/lightmode/menu';
-import { AppContext } from '../App';
+import { AppContext } from '../../App';
 import { useContext } from 'react';
 import type { RootStackParamList } from '../types/routingTypes';
 import Menu from '../screens/(auth)/Menu';

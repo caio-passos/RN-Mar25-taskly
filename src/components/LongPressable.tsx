@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { StyleSheet, Text, Pressable, ViewStyle, TextStyle} from "react-native";
-import { AppContext } from "../App";
+import { AppContext } from "../../App";
 
 interface LongPressableProps {
     textProps: string;

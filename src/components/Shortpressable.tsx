@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { StyleSheet, Text, Pressable} from "react-native";
-import { AppContext } from "../App";
+import { AppContext } from "../../App";
 
 interface ShortPressableProps {
     textProps: string;

@@ -11,7 +11,7 @@ import DarkAndLigthMode from '../Modal/DarkAndLightMode';
 import ReturnLeft from '../../assets/caretLeft.svg';
 import { WebView } from 'react-native-webview';
 
-import { AppContext } from "../../App";
+import { AppContext } from "../../../App";
 import { RootStackParamList } from "../../types/routingTypes";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 

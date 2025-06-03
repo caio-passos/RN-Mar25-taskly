@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Image, View, StyleSheet, Text, ImageStyle } from 'react-native';
 import { useAuthStore, useUserStore } from '../services/cache/stores/storeZustand';
-import { AppContext } from '../App';
+import { AppContext } from '../../App';
 
 interface AvatarProp {
     style?: ImageStyle;

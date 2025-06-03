@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { useAnimatedStyle, withTiming } from "react-native-reanimated";
-import { AppContext } from "../App";
+import { AppContext } from "../../App";
 
 interface ProgressBarProps {
     progress: number;

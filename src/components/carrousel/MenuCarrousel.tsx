@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, useMemo} from "react";
 import { StyleSheet, View, FlatList, Pressable } from "react-native";
-import { AppContext } from "../../App";
+import { AppContext } from "../../../App";
 import type { CarrouselTypes } from "../../types/carrouselTypes";
 import { useThemedIcons } from "./carrouselIcons";
 

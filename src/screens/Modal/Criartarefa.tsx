@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { AppContext } from '../../App';
+import { AppContext } from '../../../App';
 import { useTaskStore } from '../../services/cache/stores/storeZustand';
 import { TaskTypes } from '../../types/taskTypes';
 import Tasks from '../../components/Tasks';

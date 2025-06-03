@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   KeyboardAvoidingView
 } from 'react-native';
-import { AppContext } from '../../App';
+import { AppContext } from '../../../App';
 import ModalCriarTarefas from '../Modal/Criartarefa';
 import Tasks from '../../components/Tasks';
 import DetalhesTask from '../../components/DetalhesTask';
