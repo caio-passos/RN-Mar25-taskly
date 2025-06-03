@@ -10,8 +10,7 @@ import React, {
 import { AppContext } from '../../App';
 import LongNoFillPressable from './LongNoFillPressable';
 import LongPressable from './LongPressable';
-import { View, Text, StyleSheet, BackHandler, TextInput, Pressable, ScrollView, KeyboardAvoidingView } from 'react-native';
-import { data } from '../services/db/mockData';
+import { View, Text, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
 import { TaskTypes } from '../types/taskTypes';
 import { PrioridadeType } from '../types/taskTypes';
 import { useTaskStore } from '../services/cache/stores/storeZustand';
@@ -21,14 +20,11 @@ import Swipeable, {
   SwipeableMethods,
 } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Animated, {
-  SharedValue,
   useSharedValue,
-  useAnimatedStyle,
   interpolate,
   Extrapolation,
 } from 'react-native-reanimated';
 import { useIcon } from '../hooks/useIcon';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import EditarTask from '../screens/Modal/EditarTask';
 
 type DetalhesProps = {
@@ -43,8 +39,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     editYellow: IconEditYellow,
     checkboxUnchecked: IconCheckboxUnchecked,
     checkboxChecked: IconCheckboxChecked,
-    greenArrow: IconGreenArrow
-
+    greenArrow: IconGreenArrow,
   } = useIcon(['trash', 'edit', 'editYellow', 'checkboxUnchecked', 'checkboxChecked', 'greenArrow'], darkMode);
 
   const showSubtasks = useTaskStore.getState()
@@ -76,6 +71,10 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   };
 
   const handleAddSubtask = () => {
+    if (newSubtaskText.length > 200) {
+        return;
+    }
+
     if (newSubtaskText.trim() && item) {
       const newSubtask = {
         id: generateUniqueId(),
@@ -255,11 +254,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     },
     ContentContainer: {
       paddingTop: 24,
-      paddingHorizontal: 32,
+      paddingHorizontal: 22,
       paddingBottom: 15,
       borderRadius: 8,
       elevation: 2,
       backgroundColor: colors.SecondaryBG,
+      width: '100%',
     },
     topBar: {
       flexDirection: 'row',
@@ -275,24 +275,28 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     SubtaskContentContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingHorizontal: 30,
-      paddingTop: 24,
+      paddingHorizontal: 18,
+      paddingTop: 15,
       paddingBottom: 15,
       borderRadius: 8,
       elevation: 2,
       backgroundColor: colors.SecondaryBG,
     },
     subtaskTitle: {
-      color: colors.MainText
+      color: colors.MainText,
+      textAlign: 'left',
+      width: '78%'
+      
     },
     TaskStyle: {
       color: colors.MainText,
-      fontSize: 18,
+      fontSize: 17,
       fontWeight: 600,
       paddingBottom: 16,
     },
     TitleStyle: {
-      fontSize: 20,
+      fontWeight: 500,
+      fontSize: 16,
       color: colors.SecondaryText,
     },
     ColorText: {
@@ -305,20 +309,19 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       paddingBottom: 16,
     },
     PrioridadeTextColor: {
-      backgroundColor: getCorPrioridade(item?.Prioridade),
+      backgroundColor: colors.SecondaryAccent,
       width: 45,
       height: 27,
       textAlign: 'center',
       textAlignVertical: 'center',
       borderRadius: 8,
       opacity: 0.8,
-      color: colors.MainText
+      color: colors.SecondaryBG,
     },
     SubtaskContainer: {
       marginTop: 24,
     },
     SubtaskListContainer: {
-
       paddingTop: 16,
       borderRadius: 8,
       marginTop: 16,
@@ -372,12 +375,11 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       bottom: 20,
       left: 0,
       right: 0,
-      paddingHorizontal: 32,
     },
     addButton: {
       justifyContent: 'center',
       width: '100%',
-      height: 50,
+      height: 30,
     },
   });
 
@@ -423,7 +425,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
   return (
     <>
-
       {editMode && (
           <EditarTask
             visible={editMode}
@@ -456,7 +457,8 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                 renderRightActions={renderRightActions}
                 onSwipeableOpen={direction => {
                   console.log('Swiped', direction);
-                }}>
+                }}
+                containerStyle={{ paddingVertical: 5, paddingHorizontal: 3 }}>
 
                 <View style={styles.ShadowContainer}>
                   <View style={styles.ContentContainer}>
@@ -469,26 +471,26 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                     <Text style={styles.TaskStyle}>{item?.Task}</Text>
 
                     <View style={styles.DescriçãoStyle}>
-                      <Text style={styles.ColorText}>Descrição</Text>
+                      <Text style={[styles.ColorText, styles.TitleStyle]}>Descrição</Text>
                       <Text style={styles.ColorText}>{item?.Descricao}</Text>
                     </View>
 
                     <View style={styles.TagsStyle}>
-                      <Text style={styles.ColorText}>Tags</Text>
+                      <Text style={[styles.ColorText, styles.TitleStyle]}>Tags</Text>
                       <View style={styles.tagsContainer}>
                         {item?.Tags?.map((tag, index) => (
                           <Text key={index} style={styles.tagStyle}>
-                            {tag}
+                            {tag.toUpperCase()}
                           </Text>
                         ))}
                       </View>
                     </View>
 
                     <View>
-                      <Text style={styles.ColorText}>Prioridade</Text>
+                      <Text style={[styles.ColorText, styles.TitleStyle]}>Prioridade</Text>
                       {item?.Prioridade && (
                         <Text style={styles.PrioridadeTextColor}>
-                          {getNomePrioridade(item?.Prioridade)}
+                          {getNomePrioridade(item?.Prioridade).toUpperCase()}
                         </Text>
                       )}
                       {!item?.Prioridade && (

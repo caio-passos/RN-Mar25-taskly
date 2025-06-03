@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Pressable,
   BackHandler,
-  SafeAreaView,
   KeyboardAvoidingView
 } from 'react-native';
 import { AppContext } from '../../../App';
@@ -18,7 +17,6 @@ import AvatarDisplay from '../../components/AvatarDisplay';
 import FilterModal from '../Modal/Filter';
 import { TaskFilters } from '../../types/taskTypes';
 import { filterTasks } from '../../services/filterTasks';
-import { useIcon } from '../../hooks/useIcon';
 import { getThemedIcon } from '../../services/IconService';
 import { useUserStore } from '../../services/cache/stores/storeZustand';
 
@@ -102,7 +100,7 @@ const InicioContent = () => {
       flex: 1,
       bottom: 60,
       paddingTop: 80,
-      paddingHorizontal: 32,
+      paddingHorizontal: 27,
       backgroundColor: colors.Background,
     },
     topBar: {
