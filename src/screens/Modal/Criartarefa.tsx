@@ -106,16 +106,17 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      paddingHorizontal: 32,
+      paddingHorizontal: 18,
     },
     modalView: {
       width: '90%',
-      paddingVertical: 30,
+      paddingTop: 25,
       paddingHorizontal: 20,
       alignItems: 'center',
       elevation: 5,
       backgroundColor: colors.Background,
       borderRadius: 12,
+      height: 455,
     },
     boxButtons: {
       flexDirection: 'row',
@@ -133,8 +134,6 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
     },
     inputForm: {
       width: '100%',
-      marginBottom: 5,
-      gap: 2,
     },
     boxInput: {
       flexDirection: 'row',
@@ -144,7 +143,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
       width: '100%',
       minHeight: 47,
       justifyContent: 'center',
-      marginBottom: 33,
+      marginBottom: 28,
       flexWrap: 'wrap',
       alignItems: 'flex-start',
     },
@@ -166,9 +165,40 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
       width: '100%',
       fontSize: 17,
       marginBottom: 15,
-      textAlign: 'center',
       fontWeight: 'bold',
       color: colors.MainText
+    },
+    inputTitle: {
+        color: colors.MainText,
+        paddingLeft: 18,
+        paddingRight: 18,
+        borderWidth: 0,
+        width: '100%',
+    },
+    inputDescription: {
+        color: colors.MainText,
+        textDecorationLine: 'none',
+        width: '100%',
+        paddingLeft: 18,
+        paddingRight: 18,
+    },
+    inputTerm: {
+        color: colors.MainText,
+        textDecorationLine: 'none',
+        width: '100%',
+        paddingLeft: 18,
+        paddingRight: 18,
+    },
+    labelTitle: {
+        color: colors.MainText,
+        marginBottom: 5,
+        fontSize: 12,
+    },
+    createButton: {
+        color: colors.SecondaryBG,
+    },
+    lastInput: {
+        marginBottom: 0,
     },
   });
   return (
@@ -184,40 +214,36 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
           </Text>
 
           <View style={styles.inputForm}>
-            <Text style={{ color: colors.MainText }}>Título</Text>
+            <Text style={styles.labelTitle}>Título</Text>
             <View style={styles.boxInput}>
               <TextInput
                 placeholder="Ex: bater o ponto"
                 placeholderTextColor={colors.MainText}
                 onChangeText={value => setTitulo(String(value))}
                 underlineColorAndroid="transparent"
-                style={{
-                  color: colors.MainText,
-                  padding: 10,
-                  borderWidth: 0
-                }}
+                style={styles.inputTitle}
               />
             </View>
             <View style={styles.inputForm}>
-              <Text style={{ color: colors.MainText }}>Descricao</Text>
+              <Text style={styles.labelTitle}>Descricao</Text>
               <View style={styles.boxInput}>
                 <TextInput
                   placeholder="bater o ponto pelo site do kairos e depois tenho que sair para tomar café"
                   placeholderTextColor={colors.MainText}
                   multiline={true}
-                  style={{ color: colors.MainText, textDecorationLine: 'none' }}
+                  style={styles.inputDescription}
                   onChangeText={value => setDescricao(String(value))}
                 />
               </View>
             </View>
             <View style={styles.inputForm}>
-              <Text style={{ color: colors.MainText }}>Prazo </Text>
-              <View style={styles.boxInput}>
+              <Text style={styles.labelTitle}>Prazo </Text>
+              <View style={[styles.boxInput, styles.lastInput]}>
                 <TextInput
                   placeholder="28/04/2025"
                   placeholderTextColor={colors.MainText}
                   keyboardType="numeric"
-                  style={{ color: colors.MainText, textDecorationLine: 'none' }}
+                  style={styles.inputTerm}
                   onChangeText={value => setPrazo(String(value))}
                 />
               </View>
@@ -238,7 +264,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
                 </Pressable>
               </Pressable>
               <Pressable style={styles.buttonFilled} onPress={handleCreateTask}>
-                <Text style={[styles.buttonText, { color: colors.MainText }]}>
+                <Text style={[styles.buttonText, styles.createButton]}>
                   CRIAR
                 </Text>
               </Pressable>
