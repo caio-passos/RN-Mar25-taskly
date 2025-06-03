@@ -5,8 +5,8 @@ import IconGreenArrow from '../assets/icons/lightmode/ArrowCircleRight.svg';
 // Light mode icons
 import IconTrashLight from '../assets/icons/lightmode/trash.svg';
 import IconEditLight from '../assets/icons/lightmode/pencil.svg';
-import IconCheckboxUncheckedLight from '../assets/icons/lightmode/uncheckedcircle.svg';
-import IconCheckboxCheckedLight from '../assets/icons/lightmode/checkedcircle.svg';
+import IconCheckboxUncheckedLight from '../assets/icons/lightmode/uncheckedsquare.svg';
+import IconCheckboxCheckedLight from '../assets/icons/lightmode/checksquare.svg';
 import IconNoTasks from '../assets/icons/darkmode/nocontent.svg';
 import IconFilterLight from '../assets/icons/lightmode/filter.svg';
 
@@ -14,8 +14,8 @@ import IconFilterLight from '../assets/icons/lightmode/filter.svg';
 // Dark mode icons
 import IconTrashDark from '../assets/icons/darkmode/trashdarkmode.svg';
 import IconEditDark from '../assets/icons/darkmode/pencildarkmode.svg';
-import IconCheckboxUncheckedDark from '../assets/icons/lightmode/uncheckedcircle.svg';
-import IconCheckboxCheckedDark from '../assets/icons/lightmode/checkedcircle.svg';
+import IconCheckboxUncheckedDark from '../assets/icons/lightmode/uncheckedsquare.svg';
+import IconCheckboxCheckedDark from '../assets/icons/lightmode/checksquare.svg';
 import IconFilterDark from '../assets/icons/lightmode/filter.svg';
 
 type IconRegistry = {

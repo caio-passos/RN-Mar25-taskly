@@ -1,5 +1,4 @@
 import React, {useContext, useState, useMemo} from 'react';
-import {data} from '../services/db/mockData';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import type {TaskTypes} from '../types/taskTypes';
 import {AppContext} from '../../App';
@@ -15,9 +14,6 @@ interface SubtaskProps {
 
 const Subtask = ({
   data,
-  onAddSubtask,
-  subtaskText,
-  onSubtaskTextChange,
 }: SubtaskProps) => {
 
   const { colors, darkMode } = useContext(AppContext)!;
@@ -75,8 +71,8 @@ const Subtask = ({
 
   } = useIcon(['trash', 'edit', 'editYellow', 'checkboxUnchecked', 'checkboxChecked', 'greenArrow'], darkMode);
 
-  return (
-    <View>
+    return (
+        <View>
         {processedSubtasks.map(subtask => (
           <View key={subtask?.id} style={styles.SubtaskContainer}>
             <Pressable
