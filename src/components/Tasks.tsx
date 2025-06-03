@@ -35,7 +35,7 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
       shadowRadius: 11.14,
     },
     ContentContainer: {
-      paddingHorizontal: 32,
+      paddingHorizontal: 12,
       paddingBottom: 15,
       borderRadius: 8,
       elevation: 2,
@@ -55,17 +55,20 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
       fontSize: 14,
       fontWeight: 500,
       color: colors.MainText,
+      marginBottom: 13,
+      marginTop: 13,
     },
     tagsContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap',
       gap: 8,
+      marginBottom: 5,
     },
     tagStyle: {
       backgroundColor: colors.PrimaryLight,
-      paddingHorizontal: 12,
-      paddingVertical: 4,
-      borderRadius: 16,
+      paddingHorizontal: 6,
+      paddingVertical: 3,
+      borderRadius: 10,
     },
     ContainerShortPressable: {
       paddingTop: 10,
@@ -93,7 +96,7 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
           <View style={styles.tagsContainer}>
             {item?.Tags?.map((tag, index) => (
               <Text key={index} style={styles.tagStyle}>
-                {tag}
+                {tag.toUpperCase()}
               </Text>
             ))}
           </View>
