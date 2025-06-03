@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import {
-  Alert,
   Modal,
   StyleSheet,
   Text,
@@ -8,12 +7,9 @@ import {
   Pressable,
   View,
 } from 'react-native';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../../App';
 import { useTaskStore } from '../../services/cache/stores/storeZustand';
 import { TaskTypes } from '../../types/taskTypes';
-import Tasks from '../../components/Tasks';
 
 interface ModalCriarTarefas {
   visible: boolean;
@@ -33,13 +29,69 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
 
     const newTask: TaskTypes = {
       id: newTaskId,
-      Task: titulo,
-      Descricao: descricao,
+      Task: String(titulo),
+      Descricao: String(descricao),
       Prazo: prazo || '',
       Checked: false,
       Tags: [],
       Subtask: [],
     };
+
+    if (isEmoji()) {
+        return;
+    }
+
+    function isEmoji(): boolean {
+        const emojiRegex = /^(?:\p{Emoji_Presentation}|\p{Emoji}\uFE0F)$/u;
+
+        if (emojiRegex.test(titulo)) {
+            return true;
+        }
+
+        if (emojiRegex.test(descricao)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    if (checkLength()) {
+        return;
+    }
+
+    function checkLength(): boolean {
+        if (titulo.length > 100) {
+            return true;
+        }
+
+        if (descricao.length > 500) {
+            return true;
+        }
+
+        return false;
+    }
+
+    if (isDateValid()) {
+        return;
+    }
+
+    function isDateValid(): boolean {
+        const dateNowString = new Date(Date.now());
+        const newPrazo = prazo.replace('/', '').replace('/', '');
+        const dateDayInput = newPrazo.slice(0, 2);
+        const dateMonthInput = newPrazo.slice(2, 4);
+        const dateYearInput = newPrazo.slice(4, 8);
+        const dataStr = `${dateYearInput}-${dateMonthInput}-${dateDayInput}T${dateNowString.toLocaleTimeString()}Z`; // exemplo de string ISO
+        const data = new Date(dataStr);
+        const milissegundos = data.getTime();
+
+        if (milissegundos < dateNowString.getTime()) {
+            return true;
+        }
+
+        return false;
+    }
+
     CreateTask(newTask);
 
     setTitulo('');
