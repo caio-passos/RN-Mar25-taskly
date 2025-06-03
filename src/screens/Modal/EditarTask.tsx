@@ -18,6 +18,7 @@ import LongPressable from '../../components/LongPressable';
 import LongNoFillPressable from '../../components/LongNoFillPressable';
 import IconGreenArrow from '../../assets/icons/lightmode/ArrowCircleRight.svg';
 import AvatarDisplay from '../../components/AvatarDisplay';
+import CloseRed from '../../assets/icons/close-red.svg';
 
 interface EditarTaskProps {
     visible: boolean;
@@ -60,6 +61,14 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
     };
 
     const handleAddTag = () => {
+        if (newTag.includes(' ')) {
+            return;
+        }
+
+        if (!isNaN(Number(newTag) + 1)) {
+            return;
+        }
+
         if (newTag.trim() && !editedTask.Tags?.includes(newTag.trim())) {
             setEditedTask(prev => ({
                 ...prev,
@@ -127,10 +136,12 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             color: colors.SecondaryText,
             marginBottom: 8,
             fontSize: 16,
+            fontWeight: 500,
         },
         input: {
             flexDirection: 'row',
             justifyContent: 'space-between',
+            alignItems: 'center',
             borderWidth: 2,
             borderColor: colors.Primary,
             color: colors.MainText,
@@ -146,18 +157,19 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             flexDirection: 'row',
             flexWrap: 'wrap',
             gap: 8,
-            marginBottom: 16,
+            marginTop: 15,
         },
         tag: {
             backgroundColor: colors.PrimaryLight,
-            paddingHorizontal: 12,
-            paddingVertical: 6,
+            paddingHorizontal: 5,
+            paddingVertical: 3,
             borderRadius: 8,
             flexDirection: 'row',
             alignItems: 'center',
         },
         tagText: {
             color: '#000',
+            marginRight: 5
         },
         priorityContainer: {
             flexDirection: 'row',
@@ -247,17 +259,6 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
 
                                     <View style={styles.inputContainer}>
                                         <Text style={styles.label}>Tags</Text>
-                                        <View style={styles.tagsContainer}>
-                                            {editedTask.Tags?.map((tag, index) => (
-                                                <Pressable
-                                                    key={index}
-                                                    style={styles.tag}
-                                                    onPress={() => handleRemoveTag(tag)}
-                                                >
-                                                    <Text style={styles.tagText}>{tag}</Text>
-                                                </Pressable>
-                                            ))}
-                                        </View>
                                         <View style={styles.input}>
                                             <TextInput
                                                 style={{ flex: 1, color: colors.MainText, padding: 0 }}
@@ -271,6 +272,18 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                                 <IconGreenArrow height={26} width={26} />
                                             </Pressable>
                                         </View>
+                                        {editedTask.Tags?.length! > 0 && <View style={styles.tagsContainer}>
+                                            {editedTask.Tags?.map((tag, index) => (
+                                                <View
+                                                    key={index}
+                                                    style={styles.tag}
+                                                >
+                                                    <Text style={styles.tagText}>{tag.toUpperCase()}</Text>
+                                                    <Pressable onPress={() => handleRemoveTag(tag)}><CloseRed /></Pressable>
+                                                </View>
+                                            ))}
+                                        </View>
+                                        }
                                     </View>
 
                                     <View style={styles.inputContainer}>
