@@ -10,6 +10,7 @@ import {
 import { AppContext } from '../../../App';
 import { useTaskStore } from '../../services/cache/stores/storeZustand';
 import { TaskTypes } from '../../types/taskTypes';
+import { formatDate } from '../../utils/formatDate';
 
 interface ModalCriarTarefas {
   visible: boolean;
@@ -244,7 +245,10 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
                   placeholderTextColor={colors.MainText}
                   keyboardType="numeric"
                   style={styles.inputTerm}
-                  onChangeText={value => setPrazo(String(value))}
+                  value={prazo}
+                  onChangeText={value => {
+                      value.length <= 10 ? setPrazo(formatDate(String(value))) : setPrazo(prazo);
+                  }}
                 />
               </View>
             </View>
