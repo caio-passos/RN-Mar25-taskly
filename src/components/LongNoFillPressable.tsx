@@ -17,7 +17,7 @@ function LongNoFillPressable({ textProps, onPress, style, Tap}: LongNoFillPressa
         buttonFilled: {
             borderRadius: 8,
             borderColor: colors.SecondaryBG,
-            borderWidth:2,
+            borderWidth: 2,
             width: '100%',
             justifyContent: 'center',
             alignItems: 'center',
@@ -26,10 +26,10 @@ function LongNoFillPressable({ textProps, onPress, style, Tap}: LongNoFillPressa
             color: colors.Primary,
             textAlign: 'center',
             fontWeight: '600',
-            includeFontPadding:false
-            
-        }
-    })
+            includeFontPadding: false,
+            fontSize: 16,
+        },
+    });
 
     return (
         <Pressable onPress={onPress} style={[styles.buttonFilled, style]}>
@@ -37,7 +37,7 @@ function LongNoFillPressable({ textProps, onPress, style, Tap}: LongNoFillPressa
                 {textProps}
             </Text>
         </Pressable>
-    )
+    );
 }
 
 export default LongNoFillPressable;

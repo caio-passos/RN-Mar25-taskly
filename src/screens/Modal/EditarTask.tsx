@@ -118,9 +118,9 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
         ContentContainer: {
             width: '100%',
             marginTop: 40,
-            paddingHorizontal: 32,
-            paddingBottom: 15,
-            paddingTop: 24,
+            paddingHorizontal: 25,
+            paddingBottom: 8,
+            paddingTop: 20,
             borderRadius: 8,
             elevation: 2,
             backgroundColor: colors.SecondaryBG,
@@ -134,7 +134,7 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
         },
         label: {
             color: colors.SecondaryText,
-            marginBottom: 8,
+            marginBottom: 3,
             fontSize: 16,
             fontWeight: 500,
         },
@@ -174,41 +174,54 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
         priorityContainer: {
             flexDirection: 'row',
             justifyContent: 'space-between',
+            gap: 8,
         },
         priorityButton: {
-            flex: 1,
-            marginHorizontal: 4,
-            padding: 8,
+            flexGrow: 1,
+            maxWidth: 80,
+            paddingBottom: 1,
+            paddingTop: 1,
+            paddingLeft: 5,
+            paddingRight: 5,
             borderRadius: 8,
             alignItems: 'center',
+            justifyContent: 'center',
             backgroundColor: 'transparent',
-            borderWidth: 1,
+            borderWidth: 2,
             borderColor: colors.Primary,
         },
+        priorityButtonBorderless: {
+            borderWidth: 0,
+        },
         priorityButtonText: {
-            color: colors.MainText,
+            color: colors.Primary,
         },
-        selectedPriorityBaixa: {
+        priorityButtonTextActive: {
+            color: colors.SecondaryBG,
+        },
+        selectedPriority: {
             backgroundColor: colors.SecondaryAccent,
-        },
-        selectedPriorityMedia: {
-            backgroundColor: '#FFD700',
-        },
-        selectedPriorityAlta: {
-            backgroundColor: colors.Error,
         },
         buttonsContainer: {
             flexDirection: 'row',
-            paddingHorizontal: 32,
-            marginTop: 20,
-            gap: 8
+            marginTop: 32,
+            gap: 25,
         },
         errorInput: {
-            borderColor: colors.Error
+            borderColor: colors.Error,
         },
         errorText: {
             color: colors.Error,
-            marginTop: 5
+            marginTop: 5,
+        },
+        textButtonCancel: {
+            flex: 1,
+            height: 42,
+            borderColor: colors.Primary,
+        },
+        textButtonConfirm: {
+            flex: 1,
+            height: 42,
         },
     });
 
@@ -289,20 +302,17 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                     <View style={styles.inputContainer}>
                                         <Text style={styles.label}>Prioridade</Text>
                                         <View style={styles.priorityContainer}>
-                                            {(['baixa', 'média', 'alta'] as PrioridadeType[]).map(priority => (
+                                            {(['alta', 'média', 'baixa'] as PrioridadeType[]).map(priority => (
                                                 <Pressable
                                                     key={priority}
                                                     style={[
                                                         styles.priorityButton,
-                                                        editedTask.Prioridade === priority &&
-                                                        (priority === 'baixa' ? styles.selectedPriorityBaixa :
-                                                            priority === 'média' ? styles.selectedPriorityMedia :
-                                                                styles.selectedPriorityAlta)
+                                                        editedTask.Prioridade === priority && [styles.priorityButtonBorderless, styles.selectedPriority],
                                                     ]}
                                                     onPress={() => handlePriorityChange(priority)}
                                                 >
-                                                    <Text style={styles.priorityButtonText}>
-                                                        {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                                                    <Text style={editedTask.Prioridade === priority ? styles.priorityButtonTextActive : styles.priorityButtonText}>
+                                                        {priority.toUpperCase()}
                                                     </Text>
                                                 </Pressable>
                                             ))}
@@ -326,22 +336,21 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                         {dateError && (
                                             <Text style={styles.errorText}>{dateError}</Text>
                                         )}
-                                    <View style={styles.buttonsContainer}>
-                                        <LongNoFillPressable
-                                            textProps="CANCELAR"
-                                            onPress={onCancel}
-                                            style={{ flex: 1, height: 50, borderColor: colors.Primary }}
-                                        />
-                                        <LongPressable
-                                            textProps="SALVAR"
-                                            onPress={handleSave}
-                                            style={{ flex: 1, height: 50 }}
-                                            textStyle={{ color: colors.MainText }}
-                                        />
                                     </View>
+                                </View>
 
-                                    </View>
-
+                                <View style={styles.buttonsContainer}>
+                                    <LongNoFillPressable
+                                        textProps="CANCELAR"
+                                        onPress={onCancel}
+                                        style={styles.textButtonCancel}
+                                    />
+                                    <LongPressable
+                                        textProps="CONFIRMAR"
+                                        onPress={handleSave}
+                                        style={styles.textButtonConfirm}
+                                        textStyle={{ color: colors.SecondaryBG, fontSize: 16 }}
+                                    />
                                 </View>
                             </View>
                         </View>
