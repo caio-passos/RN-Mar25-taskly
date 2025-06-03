@@ -12,7 +12,7 @@ import {
     Platform
 } from 'react-native';
 import MaskedTextInput from 'react-native-mask-input';
-import { AppContext } from '../../App';
+import { AppContext } from '../../../App';
 import { TaskTypes, PrioridadeType } from '../../types/taskTypes';
 import LongPressable from '../../components/LongPressable';
 import LongNoFillPressable from '../../components/LongNoFillPressable';

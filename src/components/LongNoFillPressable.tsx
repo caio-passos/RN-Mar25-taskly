@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { StyleSheet, Text, Pressable, ViewStyle} from "react-native";
-import { AppContext } from "../App";
+import { AppContext } from "../../App";
 import type { TapGesture } from "react-native-gesture-handler";
 
 interface LongNoFillPressableProps {

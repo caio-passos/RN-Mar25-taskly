@@ -12,7 +12,7 @@ import type { RootStackParamList } from '../../types/routingTypes';
 import { useAuthStore } from '../../services/cache/stores/storeZustand';
 import { useUserStore } from '../../services/cache/stores/storeZustand';
 import { AvatarData } from '../../types/userTypes';
-import { AppContext } from '../../App';
+import { AppContext } from '../../../App';
 
 interface AvatarProps {
   navigation?: NativeStackScreenProps<RootStackParamList, 'Avatar'>;

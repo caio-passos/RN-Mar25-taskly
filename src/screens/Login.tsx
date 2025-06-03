@@ -5,7 +5,7 @@ import Logo from '../assets/taskly.svg';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
-import { AppContext } from '../App';
+import { AppContext } from '../../App';
 import { useUserStore } from '../services/cache/stores/storeZustand';
 import { UserDataTypes } from '../types/userTypes';
 

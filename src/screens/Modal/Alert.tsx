@@ -2,7 +2,7 @@ import React, { useState, useContext} from 'react';
 import { Alert, Modal, StyleSheet, Text, TextStyle, Pressable, View, StyleProp, ViewStyle } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { AppContext } from '../../App';
+import { AppContext } from '../../../App';
 
 interface ModalAlertProps {
     visible: boolean;

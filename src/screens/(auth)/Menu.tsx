@@ -13,7 +13,7 @@ import MenuCarrousel from '../../components/carrousel/MenuCarrousel';
 import IconRightArrow from '../../assets/icons/lightmode/rightArrow.svg';
 import ModalAlert from '../Modal/Alert';
 import { useUserStore, useAuthStore } from '../../services/cache/stores/storeZustand';
-import { AppContext } from '../../App';
+import { AppContext } from '../../../App';
 import { RootStackParamList } from '../../types/routingTypes';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Terms from '../../screens/(auth)/Terms';

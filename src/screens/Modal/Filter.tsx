@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput } from 'react-native';
 import MaskedTextInput from 'react-native-mask-input';
 import DropIcon from '../../assets/icons/lightmode/dropmenu.svg';
-import { AppContext } from '../../App';
+import { AppContext } from '../../../App';
 import IconCheckboxUnchecked from '../../assets/icons/lightmode/uncheckedcircle.svg';
 import IconCheckboxChecked from '../../assets/icons/lightmode/checkedcircle.svg';
 import { TaskFilters } from '../../types/taskTypes';

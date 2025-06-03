@@ -8,7 +8,7 @@ import {
     View,
 } from 'react-native';
 import { useAuthStore } from "../services/cache/stores/storeZustand";
-import { AppContext } from '../App';
+import { AppContext } from '../../App';
 import { useUserStore } from '../services/cache/stores/storeZustand';
 import type { UserDataTypes } from '../types/userTypes';
 import Avatar from '../screens/(auth)/Avatar';

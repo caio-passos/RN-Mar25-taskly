@@ -7,7 +7,7 @@ import React, {
   createRef,
   RefObject,
 } from 'react';
-import { AppContext } from '../App';
+import { AppContext } from '../../App';
 import LongNoFillPressable from './LongNoFillPressable';
 import LongPressable from './LongPressable';
 import { View, Text, StyleSheet, BackHandler, TextInput, Pressable, ScrollView, KeyboardAvoidingView } from 'react-native';

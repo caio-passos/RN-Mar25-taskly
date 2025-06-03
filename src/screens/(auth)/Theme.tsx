@@ -10,7 +10,7 @@ import ModalAlert from "../Modal/Alert";
 import DarkAndLightMode from '../Modal/DarkAndLightMode';
 import ReturnLeft from '../../assets/caretLeft.svg';
 
-import { AppContext } from "../../App";
+import { AppContext } from "../../../App";
 
 interface ThemeProps {
     setControlTheme: Function

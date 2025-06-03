@@ -2,7 +2,7 @@ import React, {useContext, useState, useMemo} from 'react';
 import {data} from '../services/db/mockData';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import type {TaskTypes} from '../types/taskTypes';
-import {AppContext} from '../App';
+import {AppContext} from '../../App';
 import {useTaskStore} from '../services/cache/stores/storeZustand';
 import {useIcon} from '../hooks/useIcon';
 
