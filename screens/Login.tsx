@@ -8,15 +8,13 @@ import type { RootStackParamList } from '../types/routingTypes';
 import { AppContext } from '../App';
 import { useUserStore } from '../services/cache/stores/storeZustand';
 import { UserDataTypes } from '../types/userTypes';
+import { LoginData } from '../model/loginModel';
+import { loginUser } from '../services/db/api/api';
+import { useSessionStore } from '../services/cache/stores/sessionStore';
+import { fetchUserProfile } from '../services/db/api/api';
 
 interface LoginProps {
     navigation: NativeStackScreenProps<RootStackParamList, 'Login'>;
-}
-
-
-interface loginData {
-    email: string,
-    password: string
 }
 
 function Login({ navigation }: LoginProps) {
@@ -101,37 +99,28 @@ function Login({ navigation }: LoginProps) {
         },
     });
 
-    function login(data: loginData) {
+    async function login(data: LoginData) {
         const { isValid, errors } = verifyData(data);
-
         if (!isValid) {
             showErrors(isValid, errors);
             return;
-        }
-
-        hideErrors();
-        const storedUserData = useUserStore.getState().userData;
-
-        if (
-            storedUserData &&
-            storedUserData.email === data.email &&
-            storedUserData.senha === data.password
-        ) {
-            useUserStore.getState().partialUpdate({
-                loggedIn: true
-            });
-
-            navigation.navigate('Inicio');
-
         } else {
-            Alert.alert(
-                'Erro de Login',
-                'Credenciais inválidas. Verifique seu e-mail e senha.'
-            );
+            const responseLogin = await loginUser(data);
+            if (!responseLogin === null) {
+                return
+            } 
+                hideErrors();
+                    await useSessionStore.getState().setItemSessionData({
+                        id_token: responseLogin?.id_token,
+                        refresh_token: responseLogin?.refresh_token,
+                        expiresIn: responseLogin?.expiresIn
+                    });
+                    await fetchUserProfile()
+                    navigation.navigate('Inicio');
+            }
         }
-    }
 
-    function verifyData(data: loginData) {
+    function verifyData(data: LoginData) {
         const regexEmail: RegExp = /^[\w.-]+@[\w.-]+\.\w{2,}$/;
         const errors: Array<{ tag: string, error: string }> = [];
 

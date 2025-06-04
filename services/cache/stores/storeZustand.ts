@@ -4,12 +4,14 @@ import { mmkvStorage } from '../../db/storageMMKV';
 import { produce } from 'immer';
 import { AvatarData, UserDataTypes } from '../../../types/userTypes';
 import { TaskTypes } from '../../../types/taskTypes';
+import { UserTypes } from '../../../model/userModel';
+import { fetchTasks } from '../../db/api/api';
 
 interface UserStore {
-  userData: UserDataTypes | null;
-  setItemUserData: (data: UserDataTypes) => void;
+  userData: UserTypes | null;
+  setItemUserData: (data: UserTypes) => void;
   clearUserData: () => void;
-  updateUserData: (updater: (draft: UserDataTypes) => void) => void;
+  updateUserData: (updater: (draft: UserTypes) => void) => void;
   partialUpdate: (data: Partial<UserDataTypes>) => void;
 }
 
@@ -65,6 +67,8 @@ interface TaskStore {
   toggleSubtaskStatus: (taskId: string, subtaskId: string) => void;
   deleteSubtask: (taskId: string, subtaskId: string) => void;
   clearAllTasks: () => void;
+  loadTasks: (tasks: TaskTypes[]) => void;
+  fetchAndLoadTasks: () => Promise<void>;
 }
 
 export const useTaskStore = create<TaskStore>()(
@@ -72,9 +76,14 @@ export const useTaskStore = create<TaskStore>()(
     (set, get) => ({
       tasks: [],
 
-      loadTasks: (tasks: TaskTypes[]) =>
+      loadTasks: (tasks) =>
         set({ tasks }),
-
+      fetchAndLoadTasks: async () => {
+        const tasks = await fetchTasks();
+        if (tasks) {
+          set({ tasks });
+        }
+      },
       addTask: (task) =>
         set(produce((state) => {
           state.tasks.push(task);

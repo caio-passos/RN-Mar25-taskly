@@ -80,7 +80,7 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
       <View style={styles.ShadowContainer}>
         <View style={styles.ContentContainer}>
           <View style={styles.ContainerTitle}>
-            <Text style={styles.TitleStyle}>{item.Task}</Text>
+            <Text style={styles.TitleStyle}>{item.title}</Text>
             <Pressable onPress={handleSelection}>
               {isSelected ? (
                 <IconCheckboxChecked width={24} height={24} />
@@ -89,9 +89,9 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
               )}
             </Pressable>
           </View>
-          <Text style={styles.DescricaoStyle}>{item.Descricao}</Text>
+          <Text style={styles.DescricaoStyle}>{item.description}</Text>
           <View style={styles.tagsContainer}>
-            {item?.Tags?.map((tag, index) => (
+            {item?.tags?.map((tag, index) => (
               <Text key={index} style={styles.tagStyle}>
                 {tag}
               </Text>

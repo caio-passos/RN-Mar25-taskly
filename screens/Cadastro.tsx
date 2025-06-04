@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Button, Pressable, Modal, SafeAreaView, KeyboardAvoidingView } from 'react-native';
 import MaskTextInput from 'react-native-mask-input';
-import Icon from '@react-native-vector-icons/ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/routingTypes';
 import { AppContext } from '../App';
@@ -10,58 +9,54 @@ import ModalAlert from './Modal/Alert';
 import { useUserStore } from '../services/cache/stores/storeZustand';
 import { UserDataTypes } from '../types/userTypes';
 import { mmkvStorage } from '../services/db/storageMMKV';
+import { UserTypes } from '../model/userModel';
+import { registerUser } from '../services/db/api/api';
+import MaskInput, { Masks } from 'react-native-mask-input';
 
-interface CadastroProps extends NativeStackScreenProps<RootStackParamList, 'Cadastro'> {}
-
-type dataUser = { uid: string, nome: string, email: string, telefone: string, senha: string, checkSenha?: string }
-type DataInfoUser = { nameAndSurname: string, email: string, numberPhone: string, password: string, confirmPassword: string }
+interface CadastroProps extends NativeStackScreenProps<RootStackParamList, 'Cadastro'> { }
 
 function Cadastro({ navigation }: CadastroProps) {
     const { colors, darkMode } = useContext(AppContext)!;
     const error: Array<{ tag: string, error: string }> = [];
 
     const [uid, setUid] = useState('');
-    const [nome, setNome] = useState('');
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [emailValidation, setEmailValidation] = useState('');
-    const [telefone, setTelefone] = useState('');
-    const [senha, setSenha] = useState('');
-    const [checkSenha, setCheckSenha] = useState('');
+    const [phone, setPhone] = useState('');
+    const [password, setPassword] = useState('');
+    const [checkPassword, setCheckPassword] = useState('');
 
     const [nameAndSurname, setNameAndSurname] = useState('');
     const [numberPhone, setNumberPhone] = useState('');
-    const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const [errorsNome, setErrorsNameAndSurname] = useState(error);
+    const [errorsname, setErrorsNameAndSurname] = useState(error);
     const [errorsEmail, setErrorsEmail] = useState(error);
-    const [errorsTelefone, setErrorsTelefone] = useState(error);
-    const [errorsSenha, setErrorsSenha] = useState(error);
-    const [errorsCheckSenha, setErrorsCheckSenha] = useState(error);
-    const [senhaError, setSenhaError] = useState(false);
+    const [errorsphone, setErrorsPhone] = useState(error);
+    const [errorspassword, setErrorsPassword] = useState(error);
+    const [errorscheckPassword, setErrorsCheckPassword] = useState(error);
+    const [passwordError, setPasswordError] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [isFilled, setIsFilled] = useState(false);
 
-    useEffect(() => {
-        setFormData({
-            uid: uid,
-            nome: nome,
-            email: email,
-            telefone: telefone,
-            senha: senha,
-            checkSenha: checkSenha
-        });
-    }, [nome, email, telefone, senha, checkSenha]);
+    const [userData, setUserData] = useState<UserTypes>({ email: '', password: '', name: '', phone_number: '' });
 
-    const [formData, setFormData] = useState<UserDataTypes>({
-        uid: '',
-        nome: '',
-        email: '',
-        telefone: '',
-        senha: '',
-        checkSenha: ''
-    });
+    console.log('Phone number:', phone)
+    const sanitizePhone = (phone: string) => {
+        return phone.replace(/\D/g, '');
+    };
+
+    useEffect(() => {
+        setUserData({
+            email: email,
+            password: password,
+            name: name,
+            phone_number: sanitizePhone(phone)
+        });
+        console.log('User data updated:', userData);
+    }, [name, email, phone, password]);
 
     const { setItemUserData } = useUserStore();
     console.log('user data')
@@ -72,47 +67,39 @@ function Cadastro({ navigation }: CadastroProps) {
         console.log('Current stored user data:', userData);
     }, []);
 
-    const handleFormSubmit = () => {
-        if (isFilled && !senhaError) {
-            createAccount(formData);
-            console.log('Formulário enviado com sucesso!');
-            navigation.navigate('Dashboard');
-        }
-    }
-
     useEffect(() => {
-        setNameAndSurname(nome);
-        setNumberPhone(telefone);
-        setPassword(senha);
-        setConfirmPassword(checkSenha);
+        setNameAndSurname(name);
+        setNumberPhone(phone);
+        setPassword(password);
+        setConfirmPassword(checkPassword);
         setEmailValidation(email);
-    }, [nome, telefone, senha, checkSenha, email]);
+    }, [name, phone, password, checkPassword, email]);
 
     useEffect(() => {
         const verifyPasswords = () => {
-            if (checkSenha === '') {
-                setSenhaError(false);
+            if (checkPassword === '') {
+                setPasswordError(false);
                 return;
             }
-            if (senha !== checkSenha) {
-                setSenhaError(true);
+            if (password !== checkPassword) {
+                setPasswordError(true);
             } else {
-                setSenhaError(false);
+                setPasswordError(false);
             }
         };
         verifyPasswords();
-    }, [senha, checkSenha]);
+    }, [password, checkPassword]);
 
     useEffect(() => {
         const handleFormValidation = () => {
-            if (nome && email && telefone && senhaError === false) {
+            if (name && email && phone && passwordError === false) {
                 setIsFilled(true);
             } else {
                 setIsFilled(false);
             }
         }
         handleFormValidation();
-    }, [nome, email, telefone, senhaError]);
+    }, [name, email, phone, passwordError]);
 
     const handleOpenModal = () => {
         setModalVisible(true);
@@ -139,8 +126,7 @@ function Cadastro({ navigation }: CadastroProps) {
         },
         headerContainer: {
             width: '100%',
-            flexDirection: 'row',
-            alignItems: 'center',
+            flexDirection: 'row', alignItems: 'center',
             alignSelf: 'flex-start',
         },
         returnPressable: {
@@ -224,20 +210,23 @@ function Cadastro({ navigation }: CadastroProps) {
         },
     });
 
-    async function createAccount(data: dataUser, dataVerifiy: DataInfoUser) {
-        const { isValid, errors } = verifyData(dataVerifiy);
-
-        if (!isValid) {
-            showErrors(isValid, errors);
-        } else {
-            hideErrors();
-            setItemUserData({ ...data, loggedIn: true });
+    const createAccount = async (userData: UserTypes) => {
+        try {
+            const registerResponse = await registerUser(userData);
+            if (!registerResponse) {
+                return { success: false, error: 'Registration failed' };
+            }
+            return { success: true}
+        } catch (error) {
+            console.error('Account creation failed:', error);
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error'
+            };
         }
+    };
 
-        return isValid;
-    }
-
-    function verifyData(data: DataInfoUser) {
+    function verifyData(data: UserTypes, confirmPassword: string) {
         const regexEmail: RegExp = /^[\w.-]+@[\w.-]+\.\w{2,}$/;
         const errors: Array<{ tag: string, error: string }> = [];
         const regexPasswordSpecial = /[^a-zA-Z0-9]/;
@@ -245,7 +234,7 @@ function Cadastro({ navigation }: CadastroProps) {
         const regexPasswordLower = /[a-z]/;
 
         function verifyName() {
-            const name = data.nameAndSurname.split(' ');
+            const name = data.name.split(' ');
             const errors = { notSurname: '', notLength: '' };
 
             if (name.length < 2 || name[1] === '') {
@@ -261,7 +250,7 @@ function Cadastro({ navigation }: CadastroProps) {
 
         function verifyPhone() {
             const errors = { notLength: '' };
-            const lenghtPhone = data.numberPhone.replace('(', '').replace(')', '').replace('-', '').replace(' ', '').length;
+            const lenghtPhone = data.phone_number.replace('(', '').replace(')', '').replace('-', '').replace(' ', '').length;
 
             if (lenghtPhone < 10 || lenghtPhone < 11) {
                 errors.notLength = 'notLength';
@@ -287,7 +276,7 @@ function Cadastro({ navigation }: CadastroProps) {
         }
 
         if (verifyName().notSurname === 'notSurname') {
-            errors.push({ tag: 'name', error: 'O nome deve ser composto (mínimo dois nomes)' });
+            errors.push({ tag: 'name', error: 'O name deve ser composto (mínimo dois nomes)' });
         }
 
         if (verifyName().notLength === 'notLength') {
@@ -303,21 +292,21 @@ function Cadastro({ navigation }: CadastroProps) {
         }
 
         if (data.password.length < 8) {
-            errors.push({ tag: 'password', error: 'A senha deve ter no mínimo 8 caracteres' });
+            errors.push({ tag: 'password', error: 'A password deve ter no mínimo 8 caracteres' });
         } else if (data.password.length >= 8 && data.password.length > 20) {
-            errors.push({ tag: 'password', error: 'A senha deve ter no máximo 20 caracteres' });
+            errors.push({ tag: 'password', error: 'A password deve ter no máximo 20 caracteres' });
         } else if (data.password !== '' && !isSequence(data.password)) {
-            errors.push({ tag: 'password', error: 'A senha não pode ser uma sequência igual' });
+            errors.push({ tag: 'password', error: 'A password não pode ser uma sequência igual' });
         } else if (!regexPasswordUpper.test(data.password)) {
-            errors.push({ tag: 'password', error: 'A senha deve ter uma letra maiúscula' });
+            errors.push({ tag: 'password', error: 'A password deve ter uma letra maiúscula' });
         } else if (!regexPasswordLower.test(data.password)) {
-            errors.push({ tag: 'password', error: 'A senha deve ter uma letra minúscula' });
+            errors.push({ tag: 'password', error: 'A password deve ter uma letra minúscula' });
         } else if (!regexPasswordSpecial.test(data.password)) {
-            errors.push({ tag: 'password', error: 'A senha deve ter um caractere especial' });
+            errors.push({ tag: 'password', error: 'A password deve ter um caractere especial' });
         }
 
-        if (data.confirmPassword !== data.password || data.confirmPassword === '') {
-            errors.push({ tag: 'passwordConfirm', error: 'A senhas devem ser iguais' });
+        if (confirmPassword !== data.password || confirmPassword === '') {
+            errors.push({ tag: 'passwordConfirm', error: 'A passwords devem ser iguais' });
         }
 
         const isValid = errors.length <= 0;
@@ -326,32 +315,30 @@ function Cadastro({ navigation }: CadastroProps) {
             isValid,
             errors,
         };
-        //console.log("DEBUG: Skipping validation, assuming valid.");
-        //return { isValid: true, errors: [] };
     }
 
     function showErrors(isValid: boolean, errors: Array<{ tag: string, error: string }>) {
         if (!isValid) {
-            const errorsNome = errors.filter((value) => value.tag === 'name');
+            const errorsname = errors.filter((value) => value.tag === 'name');
             const errorsEmail = errors.filter((value) => value.tag === 'email');
-            const errorsTelefone = errors.filter((value) => value.tag === 'phone');
-            const errorssenha = errors.filter((value) => value.tag === 'password');
-            const errorssenhaConfirm = errors.filter((value) => value.tag === 'passwordConfirm');
+            const errorsPhone = errors.filter((value) => value.tag === 'phone');
+            const errorsPassword = errors.filter((value) => value.tag === 'password');
+            const errorsPasswordConfirm = errors.filter((value) => value.tag === 'passwordConfirm');
 
-            setErrorsNameAndSurname(errorsNome);
+            setErrorsNameAndSurname(errorsname);
             setErrorsEmail(errorsEmail);
-            setErrorsTelefone(errorsTelefone);
-            setErrorsSenha(errorssenha);
-            setErrorsCheckSenha(errorssenhaConfirm);
+            setErrorsPhone(errorsPhone);
+            setErrorsPassword(errorsPassword);
+            setErrorsCheckPassword(errorsPasswordConfirm);
         }
     }
 
     function hideErrors() {
-        setNome('');
+        setName('');
         setEmailValidation('');
-        setTelefone('');
-        setSenha('');
-        setCheckSenha('');
+        setPhone('');
+        setPassword('');
+        setCheckPassword('');
     }
 
     function formatPhone(data: string) {
@@ -365,9 +352,9 @@ function Cadastro({ navigation }: CadastroProps) {
             digitNumber = phoneNumber.slice(phoneNumber.length - 9, phoneNumber.length);
             ddd = phoneNumber.slice(0, phoneNumber.length - 9);
 
-            setTelefone(`(${ddd}) ${digitNumber.slice(0, 5)}-${digitNumber.slice(5, 9)}`);
+            setPhone(`(${ddd}) ${digitNumber.slice(0, 5)}-${digitNumber.slice(5, 9)}`);
         } else {
-            phoneNumber.length <= 10 ? setTelefone(phoneNumber) : null;
+            phoneNumber.length <= 10 ? setPhone(phoneNumber) : null;
         }
 
         return String(ddd);
@@ -390,18 +377,18 @@ function Cadastro({ navigation }: CadastroProps) {
             </View>
             <Text style={styles.title}>CADASTRO</Text>
             <View style={styles.loginForm}>
-                <Text style={styles.textTitleInput}>Nome Completo</Text>
+                <Text style={styles.textTitleInput}>name Completo</Text>
                 <View style={styles.boxInput}>
                     <TextInput
-                        placeholder="Digite seu nome completo"
+                        placeholder="Digite seu name completo"
                         placeholderTextColor={colors.MainText}
                         keyboardType="default"
-                        value={nome}
-                        onChangeText={setNome}
+                        value={name}
+                        onChangeText={setName}
                         style={{ color: colors.MainText }}
                     />
                 </View>
-                {<Text style={styles.textError}>{errorsNome.map((value) => `${value.error}\n`)}</Text>}
+                {<Text style={styles.textError}>{errorsname.map((value) => `${value.error}\n`)}</Text>}
             </View>
             <View style={styles.loginForm}>
                 <Text style={styles.textTitleInput}>E-mail</Text>
@@ -428,68 +415,60 @@ function Cadastro({ navigation }: CadastroProps) {
             <View style={styles.loginForm}>
                 <Text style={styles.textTitleInput}>Número</Text>
                 <View style={styles.boxInput}>
-                    <MaskTextInput
-                        placeholder="Digite seu número de telefone"
+                    <MaskInput
+                        placeholder="Digite seu número de celular"
                         keyboardType="phone-pad"
-                        value={telefone}
-                        onChangeText={(masked, unmasked) => {
-                            setTelefone(masked);
-                        }}
+                        value={phone}
+                        onChangeText={setPhone}
+                        mask={Masks.BRL_PHONE}
                         placeholderTextColor={colorPlace}
                         style={{ color: colors.MainText }}
-                        mask={[
-                            '(', /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/
-                        ]}
                     />
                 </View>
-                {<Text style={styles.textError}>{errorsTelefone.map((value) => `${value.error}\n`)}</Text>}
+                {<Text style={styles.textError}>{errorsphone.map((value) => `${value.error}\n`)}</Text>}
             </View>
 
             <View style={styles.loginForm}>
-                <Text style={styles.textTitleInput}>Senha</Text>
+                <Text style={styles.textTitleInput}>password</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         secureTextEntry={true}
-                        placeholder="Digite sua senha"
+                        placeholder="Digite sua password"
                         placeholderTextColor={colors.MainText}
-                        value={senha}
-                        onChangeText={setSenha}
+                        value={password}
+                        onChangeText={setPassword}
                         style={{ color: colors.MainText }}
                     />
                 </View>
-                {<Text style={styles.textError}>{errorsSenha.map((value) => `${value.error}\n`)}</Text>}
+                {<Text style={styles.textError}>{errorspassword.map((value) => `${value.error}\n`)}</Text>}
             </View>
             <View style={styles.loginForm}>
-                <Text style={styles.textTitleInput}>Confirmar senha</Text>
+                <Text style={styles.textTitleInput}>Confirmar password</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         secureTextEntry={true}
-                        placeholder="Confirme sua senha"
-                        value={checkSenha}
-                        onChangeText={setCheckSenha}
+                        placeholder="Confirme sua password"
+                        value={checkPassword}
+                        onChangeText={setCheckPassword}
                         placeholderTextColor={colorPlace}
                         style={{ color: colors.MainText }}
                     />
                 </View>
-                {<Text style={styles.textError}>{errorsCheckSenha.map((value) => `${value.error}\n`)}</Text>}
+                {<Text style={styles.textError}>{errorscheckPassword.map((value) => `${value.error}\n`)}</Text>}
             </View>
 
             <Pressable
                 style={styles.buttonFilled}
-                onPress={() => {
-                    //if (isFilled && !senhaError) {
-                    let { isValid } = verifyData({ nameAndSurname: nameAndSurname, email: emailValidation, numberPhone: numberPhone, password: password, confirmPassword: confirmPassword });
-                    createAccount(formData, { nameAndSurname: nameAndSurname, email: emailValidation, numberPhone: numberPhone, password: password, confirmPassword: confirmPassword });
-
-                    if (!isValid) {
-                        return;
+                onPress={async() => {
+                    try {
+                        const result = await createAccount(userData);
+                        console.log('Account creation result:', result);
+                        if (result?.success) {
+                            handleOpenModal();
+                        }
+                    } catch (error) {
+                        console.error('Error during account creation:', error);
                     }
-
-                    handleOpenModal();
-                        //add api post to-do
-                    //} else {
-                    //    console.log("Submit blocked: isFilled=", isFilled, "senhaError=", senhaError);
-                    //}
                 }}>
                 <Text style={styles.textCriarConta}>CRIAR CONTA</Text>
             </Pressable>
@@ -503,11 +482,10 @@ function Cadastro({ navigation }: CadastroProps) {
                     navigation.navigate('Avatar');
                 }}
                 title='Ative o Desbloqueio por Biometria'
-                description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua senha sempre que quiser.'
+                description='Use sua impressão digital para acessar seu app de tarefas com rapidez e segurança. Se preferir, você ainda poderá usar sua password sempre que quiser.'
                 leftButtonText='Agora não'
                 rightButtonText='ATIVAR'
             />
-
         </SafeAreaView>
 
     );

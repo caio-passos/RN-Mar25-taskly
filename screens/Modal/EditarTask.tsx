@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import MaskedTextInput from 'react-native-mask-input';
 import { AppContext } from '../../App';
-import { TaskTypes, PrioridadeType } from '../../types/taskTypes';
+import { TaskTypes, PriorityType } from '../../types/taskTypes';
 import LongPressable from '../../components/LongPressable';
 import LongNoFillPressable from '../../components/LongNoFillPressable';
 import IconGreenArrow from '../../assets/icons/lightmode/ArrowCircleRight.svg';
@@ -44,9 +44,9 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
         return new Date(year, month, day);
     };
 
-    const handleSave = () => {
-        if (editedTask.Prazo) {
-            const inputDate = parseDate(editedTask.Prazo);
+    const handleSave = (task: TaskTypes) => {
+        if (editedTask.deadline) {
+            const inputDate = parseDate(editedTask.deadline);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             
@@ -56,14 +56,14 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
             }
         }
 
-        onSave(task.id, editedTask);
+        onSave(task.id!, editedTask);
     };
 
     const handleAddTag = () => {
-        if (newTag.trim() && !editedTask.Tags?.includes(newTag.trim())) {
+        if (newTag.trim() && !editedTask.tags?.includes(newTag.trim())) {
             setEditedTask(prev => ({
                 ...prev,
-                Tags: [...(prev.Tags || []), newTag.trim()]
+                Tags: [...(prev.tags || []), newTag.trim()]
             }));
             setNewTag('');
         }
@@ -72,14 +72,14 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
     const handleRemoveTag = (tagToRemove: string) => {
         setEditedTask(prev => ({
             ...prev,
-            Tags: prev.Tags?.filter(tag => tag !== tagToRemove) || []
+            Tags: prev.tags?.filter(tag => tag !== tagToRemove) || []
         }));
     };
 
-    const handlePriorityChange = (priority: PrioridadeType) => {
+    const handlePriorityChange = (priority: PriorityType) => {
         setEditedTask(prev => ({
             ...prev,
-            Prioridade: priority
+            priority: priority
         }));
     };
 
@@ -226,7 +226,7 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                         <Text style={styles.label}>Título</Text>
                                         <TextInput
                                             style={styles.input}
-                                            value={editedTask.Task}
+                                            value={editedTask.title}
                                             onChangeText={text => setEditedTask(prev => ({ ...prev, Task: text }))}
                                             placeholder="Título da tarefa"
                                             placeholderTextColor={colors.SecondaryText}
@@ -237,7 +237,7 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                         <Text style={styles.label}>Descrição</Text>
                                         <TextInput
                                             style={[styles.input, styles.textArea]}
-                                            value={editedTask.Descricao}
+                                            value={editedTask.description}
                                             onChangeText={text => setEditedTask(prev => ({ ...prev, Descricao: text }))}
                                             placeholder="Descrição da tarefa"
                                             placeholderTextColor={colors.SecondaryText}
@@ -248,7 +248,7 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                     <View style={styles.inputContainer}>
                                         <Text style={styles.label}>Tags</Text>
                                         <View style={styles.tagsContainer}>
-                                            {editedTask.Tags?.map((tag, index) => (
+                                            {editedTask.tags?.map((tag, index) => (
                                                 <Pressable
                                                     key={index}
                                                     style={styles.tag}
@@ -276,20 +276,21 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                     <View style={styles.inputContainer}>
                                         <Text style={styles.label}>Prioridade</Text>
                                         <View style={styles.priorityContainer}>
-                                            {(['baixa', 'média', 'alta'] as PrioridadeType[]).map(priority => (
+                                            {([1,2,3] as PriorityType[]).map((priority) => (
                                                 <Pressable
                                                     key={priority}
                                                     style={[
                                                         styles.priorityButton,
-                                                        editedTask.Prioridade === priority &&
-                                                        (priority === 'baixa' ? styles.selectedPriorityBaixa :
-                                                            priority === 'média' ? styles.selectedPriorityMedia :
-                                                                styles.selectedPriorityAlta)
+                                                        editedTask.priority === priority &&
+                                                        (priority === 3 ? styles.selectedPriorityAlta :
+                                                            priority === 2 ? styles.selectedPriorityMedia :
+                                                                styles.selectedPriorityBaixa)
                                                     ]}
                                                     onPress={() => handlePriorityChange(priority)}
                                                 >
                                                     <Text style={styles.priorityButtonText}>
-                                                        {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                                                        {priority === 1 ? 'Baixa' : 
+                                                         priority === 2 ? 'Média' : 'Alta'}
                                                     </Text>
                                                 </Pressable>
                                             ))}
@@ -297,12 +298,12 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                     </View>
 
                                     <View style={styles.inputContainer}>
-                                        <Text style={styles.label}>Prazo</Text>
+                                        <Text style={styles.label}>deadline</Text>
                                         <MaskedTextInput
                                             style={[styles.input, dateError && styles.errorInput]}
-                                            value={editedTask.Prazo || ''}
+                                            value={editedTask.deadline || ''}
                                             onChangeText={(text: string, rawText: string) => {
-                                                setEditedTask(prev => ({ ...prev, Prazo: text }));
+                                                setEditedTask(prev => ({ ...prev, deadline: text }));
                                                 setDateError(null);
                                             }}
                                             mask={[/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/]}
@@ -321,7 +322,7 @@ const EditarTask: React.FC<EditarTaskProps> = ({ visible, task, onSave, onCancel
                                         />
                                         <LongPressable
                                             textProps="SALVAR"
-                                            onPress={handleSave}
+                                            onPress={() => handleSave(editedTask)}
                                             style={{ flex: 1, height: 50 }}
                                             textStyle={{ color: colors.MainText }}
                                         />

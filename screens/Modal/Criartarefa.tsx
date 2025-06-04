@@ -8,12 +8,10 @@ import {
   Pressable,
   View,
 } from 'react-native';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
 import { useTaskStore } from '../../services/cache/stores/storeZustand';
 import { TaskTypes } from '../../types/taskTypes';
-import Tasks from '../../components/Tasks';
+import { createTaskOnApi } from '../../services/db/api/api';
 
 interface ModalCriarTarefas {
   visible: boolean;
@@ -22,30 +20,53 @@ interface ModalCriarTarefas {
 
 const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
   const { colors, darkMode } = useContext(AppContext)!;
-  const [titulo, setTitulo] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [prazo, setPrazo] = useState('');
+  const [task, setTask] = useState('');
+  const [description, setDescription] = useState('');
+  const [deadline, setDeadline] = useState('');
 
   const CreateTask = useTaskStore().addTask;
 
-  const handleCreateTask = () => {
-    const newTaskId = `task_${Date.now()}`;
+  const validateDeadline = (date: string): boolean => {
+    return /^\d{2}\/\d{2}\/\d{4}$/.test(date);
+  };
+
+  const handleCreateTask = async () => {
+    if (!validateDeadline(deadline)) {
+      Alert.alert('Erro', 'Formato de prazo inválido. Use dd/mm/yyyy');
+      return;
+    }
 
     const newTask: TaskTypes = {
-      id: newTaskId,
-      Task: titulo,
-      Descricao: descricao,
-      Prazo: prazo || '',
-      Checked: false,
-      Tags: [],
-      Subtask: [],
+      title: task,
+      description: description || '',
+      deadline: deadline,
+      priority: 3,
+      done: false,
+      createdAt: new Date().toISOString(),
+      tags: [],
+      subtasks: [],
     };
-    CreateTask(newTask);
 
-    setTitulo('');
-    setDescricao('');
-    setPrazo('');
-    onClose();
+    try {
+      const taskId = await createTaskOnApi(newTask);
+      console.log('Task created with ID:', taskId);
+      if (taskId) {
+        CreateTask({
+          ...newTask,
+          id: taskId
+        });
+        setTask('');
+        setDescription('');
+        setDeadline('');
+        onClose();
+      } else {
+        Alert.alert('Erro', 'Falha ao criar tarefa');
+      }
+    } catch (error: any) {
+      console.error('Error creating task:', error);
+      const errorMsg = error?.details?.message || 'Ocorreu um erro ao criar a tarefa';
+      Alert.alert('Erro', errorMsg);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -137,7 +158,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
               <TextInput
                 placeholder="Ex: bater o ponto"
                 placeholderTextColor={colors.MainText}
-                onChangeText={value => setTitulo(String(value))}
+                onChangeText={value => setTask(String(value))}
                 underlineColorAndroid="transparent"
                 style={{
                   color: colors.MainText,
@@ -147,27 +168,28 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
               />
             </View>
             <View style={styles.inputForm}>
-              <Text style={{ color: colors.MainText }}>Descricao</Text>
+              <Text style={{ color: colors.MainText }}>Descrição</Text>
               <View style={styles.boxInput}>
                 <TextInput
                   placeholder="bater o ponto pelo site do kairos e depois tenho que sair para tomar café"
                   placeholderTextColor={colors.MainText}
                   multiline={true}
                   style={{ color: colors.MainText, textDecorationLine: 'none' }}
-                  onChangeText={value => setDescricao(String(value))}
+                  onChangeText={value => setDescription(String(value))}
                 />
               </View>
             </View>
             <View style={styles.inputForm}>
-              <Text style={{ color: colors.MainText }}>Prazo </Text>
+              <Text style={{ color: colors.MainText }}>Prazo</Text>
               <View style={styles.boxInput}>
-                <TextInput
-                  placeholder="28/04/2025"
-                  placeholderTextColor={colors.MainText}
-                  keyboardType="numeric"
-                  style={{ color: colors.MainText, textDecorationLine: 'none' }}
-                  onChangeText={value => setPrazo(String(value))}
-                />
+              <TextInput
+                placeholder="28/04/2025"
+                placeholderTextColor={colors.MainText}
+                keyboardType="numeric"
+                style={{ color: colors.MainText, textDecorationLine: 'none' }}
+                onChangeText={value => setDeadline(String(value))}
+                value={deadline}
+              />
               </View>
             </View>
             <View style={styles.boxButtons}>

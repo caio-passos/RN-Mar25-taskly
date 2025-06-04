@@ -1,19 +1,19 @@
-export type PrioridadeType = 'baixa' | 'média' | 'alta';
+export type PriorityType = 1 | 2 | 3; // 1=alta, 2=média, 3=baixa
 
 export type TaskTypes = {
-    id: string;
-    Task: string;    
-    Descricao: string;
-    Prazo?: string;
-    Tags?: string[];
-    Subtask?: {
-        id: string;
+    id?: string;
+    title: string;    
+    description?: string;
+    deadline: string;
+    priority?: PriorityType;
+    done: boolean;
+    createdAt: string;
+    subtasks?: {
         title: string;
         done: boolean;
     }[];
-    Prioridade?: PrioridadeType;
-    Checked?: Boolean;
-    toDelete?: Boolean;
+    tags?: string[];
+    sharedWith?: string;
 }
 export interface TaskFilters{
     order?: 'baixaParaAlta' | 'altaParaBaixa';

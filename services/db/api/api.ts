@@ -1,35 +1,44 @@
-import { MMKV } from 'react-native-mmkv';
-import { UserDataTypes } from '../../../types/userTypes';
-import { TaskTypes } from '../../../types/taskTypes';
 import { useAuthStore } from '../../cache/stores/storeZustand';
+import { UserTypes } from '../../../model/userModel';
+import { useUserStore } from '../../cache/stores/storeZustand';
+import { useSessionStore } from '../../cache/stores/sessionStore';
+import { useTaskStore } from '../../cache/stores/storeZustand';
+import { sessionTypes } from '../../../types/sessionTypes';
+import { LoginData } from '../../../model/loginModel';
+import { TaskTypes } from '../../../types/taskTypes';
 
 // URL base
-const API_URL = 'http://15.229.11.44:3000';
 
-const saveTokens = (idToken: string, refreshToken: string) => {
-    useAuthStore.getState().updateTokens(idToken, refreshToken);
+const API_URL = 'http://15.228.16.167:3000';
+
+const saveTokens = (sessionData: sessionTypes) => {
+    useSessionStore.getState().setItemSessionData(sessionData);
 };
-
+const saveUserInfo = (userData: UserTypes) => {
+    useUserStore.getState().setItemUserData(userData);
+};
+const updateUserInfo = (userData: UserTypes) => {
+    useUserStore.getState().partialUpdate(userData);
+}
+const clearUserInfo = () => {
+    useUserStore.getState().clearUserData();
+};
 const getIdToken = (): string | null => {
-    return useAuthStore.getState().tokens.idToken;
+    return useSessionStore.getState().sessionData?.id_token || null;
 };
-
 const getRefreshToken = (): string | null => {
     return useAuthStore.getState().tokens.refreshToken;
 };
-
 const clearTokens = () => {
-    useAuthStore.getState().clearAuthData();
+    useSessionStore.getState().clearSessionData();
 };
 
-// --- Helper da API ---
 interface ApiError {
     message: string;
     status?: number;
     details?: any;
 }
 
-// 3. Gera o header de autenticação pros requests
 const getAuthHeader = (): HeadersInit_ | undefined => {
     const token = getIdToken();
     if (!token) {
@@ -61,83 +70,101 @@ const handleApiResponse = async (response: Response) => {
 };
 
 // --- API p/ Auth ---
-interface RegisterRequestBody { email: string; password: string; name: string; phone_number: string; }
-interface RegisterResponse { uid: string; idToken: string; refreshToken?: string; }
-export const registerUser = async (userData: RegisterRequestBody): Promise<RegisterResponse | null> => { return null; };
+interface RegisterResponse { uid: string; idToken: string }
+export const registerUser = async (userData: UserTypes): Promise<RegisterResponse | null> => {
+    let registerResponse: RegisterResponse | null = null;
+    try {
+        const response = await fetch(`${API_URL}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+        const registerResponse = await handleApiResponse(response);
+        if (registerResponse) {
+            saveTokens(registerResponse);
+        }
+    } catch (error) {
+        console.error('Register failed! : ', error)
+        if (useUserStore.getState().userData) {
+            clearTokens();
+            clearUserInfo();
+        }
+    }
+    return registerResponse;
+};
 
-interface LoginRequestBody {
-    email: string;
-    password: string;
-}
-interface LoginResponse {
-    id_token: string;
-    refresh_token: string;
-}
-
-export const loginUser = async (credentials: LoginRequestBody): Promise<LoginResponse | null> => {
+export const loginUser = async (credentials: LoginData): Promise<sessionTypes | null> => {
     try {
         const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(credentials)
         });
-        
+
         const data = await handleApiResponse(response);
-        
+
         if (data) {
+            const sessionData: sessionTypes = {
+                id_token: data.id_token,
+                refresh_token: data.refresh_token,
+                expiresIn: 3600
+            };
             const userProfile = await fetchUserProfile();
-            
             if (userProfile) {
-                useAuthStore.getState().setAuthData(
-                    userProfile, 
-                    data.id_token, 
-                    data.refresh_token
-                );
+                saveTokens(sessionData);
+                saveUserInfo(userProfile as UserTypes)
             }
-            
-            return data;
+            return sessionData;
         }
-        
         return null;
     } catch (error) {
         console.error('Login failed:', error);
         return null;
     };
 };
-interface RefreshTokenResponse { idToken: string; refreshToken: string; expiresIn: string; }
-export const refreshAuthToken = async (): Promise<RefreshTokenResponse | null> => { return null;};
-// --- API de Perfil ---
-interface ApiUserProfile { uid: string; email: string; name: string; picture: string; phone?: string; }
-export const fetchUserProfile = async (): Promise<ApiUserProfile | null> => { return null;  };
-export const updateUserProfileName = async (name: string): Promise<boolean> => { return false;  };
-export const updateUserProfileAvatar = async (picture: string): Promise<boolean> => { return false;  };
+
+export const fetchUserProfile = async (): Promise<UserTypes | null> => {
+    const Authorization = getIdToken()
+    try {
+        const response = await fetch(`${API_URL}/profile`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${Authorization}`
+            },
+        });
+        const data = await handleApiResponse(response);
+        if (data) {
+            const userData: UserTypes = {
+                email: data.email,
+                password: '',
+                name: data.name,
+                phone_number: data.phone_number,
+                picture: data.picture,
+                uid: data.uid
+            };
+            useUserStore.getState().setItemUserData(userData);
+            return userData;
+        }
+        return null;
+    } catch (error) {
+        console.error('Failed to fetch profile:', error);
+        return null;
+    };
+};
+
+export const updateUserProfileName = async (name: string): Promise<boolean> => { return false; }
+export const updateUserProfileAvatar = async (picture: string): Promise<boolean> => { return false; }
 interface FullProfileBody { name: string; phone: string; picture: string; }
-export const createOrUpdateUserProfile = async (profileData: FullProfileBody): Promise<boolean> => { return false;};
+export const createOrUpdateUserProfile = async (profileData: FullProfileBody): Promise<boolean> => { return false }
 
-
-
-
-
-
-
-interface ApiTask {
-    id: string;
-    title: string;
-    description?: string;
-    done: boolean;
-    createdAt: string;
-    subtasks?: { title: string; done: boolean }[];
-    tags?: string[];
-    sharedWith?: string[];
-}
-
-interface CreateTaskBody {
-    title: string;
-    description?: string;
-    done?: boolean;
-    subtasks?: { title: string; done: boolean }[];
-    tags?: string[];
-}
+// interface CreateTaskBody {
+//     title: string;
+//     description?: string;
+//     done?: boolean;
+//     subtasks?: { title: string; done: boolean }[];
+//     tags?: string[];
+// }
 
 interface UpdateTaskBody {
     title?: string;
@@ -147,37 +174,53 @@ interface UpdateTaskBody {
     tags?: string[];
 }
 
-export const fetchTasks = async (): Promise<ApiTask[] | null> => {
-    const headers = getAuthHeader();
-    if (!headers) return null;
-
+export const fetchTasks = async (): Promise<TaskTypes | null> => {
+    const Authorization = getIdToken()
+    if (!Authorization) return null;
     try {
         const response = await fetch(`${API_URL}/tasks`, {
             method: 'GET',
-            headers: headers,
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${Authorization}`
+            }
         });
-        return await handleApiResponse(response) as ApiTask[];
+        const data = await handleApiResponse(response); 
+          if (data) {
+            return data.map((task: any) => ({
+                id: task.id,
+                title: task.title,
+                description: task.description,
+                deadline: task.deadline,
+                priority: task.priority,
+                done: task.done,
+                createdAt: task.createdAt,
+                subtasks: task.subtasks || [],
+                tags: task.tags || [],
+                sharedWith: task.sharedWith || []
+            }));
+        }
+        return null;
     } catch (error) {
-        console.error('Falha ao buscar tarefas:', error);
+        console.error('Failed to fetch tasks:', error);
         return null;
     }
 };
 
-export const createTaskOnApi = async (taskData: CreateTaskBody): Promise<boolean> => {
+export const createTaskOnApi = async (taskData: TaskTypes): Promise<string | null> => {
     const headers = getAuthHeader();
-    if (!headers) return false;
-
+    if (!headers) return null;
     try {
         const response = await fetch(`${API_URL}/tasks`, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(taskData),
         });
-        await handleApiResponse(response);
-        return true;
+        const { id } = await handleApiResponse(response);
+        return id;
     } catch (error) {
         console.error('Falha ao criar tarefa:', error);
-        return false;
+        return null;
     }
 };
 

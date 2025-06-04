@@ -13,7 +13,7 @@ import LongPressable from './LongPressable';
 import { View, Text, StyleSheet, BackHandler, TextInput, Pressable, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { data } from '../services/db/mockData';
 import { TaskTypes } from '../types/taskTypes';
-import { PrioridadeType } from '../types/taskTypes';
+import { PriorityType } from '../types/taskTypes';
 import { useTaskStore } from '../services/cache/stores/storeZustand';
 import { RectButton } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -49,7 +49,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
   const showSubtasks = useTaskStore.getState()
   const handleToggleSubtaskStatus = (subtaskId: string) => {
-    useTaskStore.getState().toggleSubtaskStatus(item!.id, subtaskId);
+    useTaskStore.getState().toggleSubtaskStatus(item!.id!, subtaskId);
     triggerUpdate();
   };
 
@@ -64,7 +64,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   const updateCount = useRef(0);
   const [subtaskRefs, setSubtaskRefs] = useState<RefObject<SwipeableMethods>[]>([]);
   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
-  const [editedSubtaskTitle, setEditedSubtaskTitle] = useState('');
+  const [editedSubtaskTitle, setEditedSubtaskTitle] = useState<boolean>();
   const [editMode, setEditMode] = useState(false);
 
 
@@ -83,7 +83,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
         done: false,
       };
 
-      useTaskStore.getState().addSubtask(item.id, newSubtask);
+      useTaskStore.getState().addSubtask(item.id!, newSubtask);
 
       setNewSubtaskText('');
       setIsAddingSubtask(false);
@@ -91,9 +91,9 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
     }
   };
 
-  const handleEditSubtask = (subtask: { id: string; title: string }) => {
-    setEditingSubtaskId(subtask.id);
-    setEditedSubtaskTitle(subtask.title);
+  const handleEditSubtask = (subtask: { title: string; done: boolean }) => {
+    setEditingSubtaskId(subtask.title);
+    setEditedSubtaskTitle(subtask.done);
   };
 
   const saveSubtaskEdit = () => {
@@ -183,11 +183,11 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
     //refs para todas as tasks
     useEffect(() => {
-      const validSubtaskRefs = currentTask?.Subtask?.map(() =>
+      const validSubtaskRefs = currentTask?.subtasks?.map(() =>
         createRef<SwipeableMethods>() as React.RefObject<SwipeableMethods>
       ) || [];
       setSubtaskRefs(validSubtaskRefs);
-    }, [currentTask?.Subtask]);
+    }, [currentTask?.subtasks]);
 
     return (
       <Animated.View style={{ transform: [{ scale }] }}>
@@ -204,25 +204,25 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       </Animated.View>
     );
   };
-  const getNomePrioridade = (priority?: PrioridadeType) => {
+  const getNomePrioridade = (priority?: PriorityType) => {
     switch (priority) {
-      case 'baixa':
+      case 1:
         return 'Baixa';
-      case 'média':
+      case 2:
         return 'Média';
-      case 'alta':
+      case 3:
         return 'Alta';
       default: return 'Não definida';
     }
   };
 
-  const getCorPrioridade = (priority?: PrioridadeType) => {
+  const getCorPrioridade = (priority?: PriorityType) => {
     switch (priority) {
-      case 'baixa':
+      case 1:
         return colors.SecondaryAccent;
-      case 'média':
+      case 2:
         return colors.Warning;
-      case 'alta':
+      case 3:
         return colors.Error;
       default:
         return undefined;
@@ -305,7 +305,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
       paddingBottom: 16,
     },
     PrioridadeTextColor: {
-      backgroundColor: getCorPrioridade(item?.Prioridade),
+      backgroundColor: getCorPrioridade(item?.priority),
       width: 45,
       height: 27,
       textAlign: 'center',
@@ -423,7 +423,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
   return (
     <>
-
       {editMode && (
           <EditarTask
             visible={editMode}
@@ -436,7 +435,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
           />
 
       )}
-
       {!editMode && (
 
         <View style={{ flex: 1 }}>
@@ -466,17 +464,17 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                         <IconEditYellow height={25} width={25} />
                       </Pressable>
                     </View>
-                    <Text style={styles.TaskStyle}>{item?.Task}</Text>
+                    <Text style={styles.TaskStyle}>{item?.title}</Text>
 
                     <View style={styles.DescriçãoStyle}>
                       <Text style={styles.ColorText}>Descrição</Text>
-                      <Text style={styles.ColorText}>{item?.Descricao}</Text>
+                      <Text style={styles.ColorText}>{item?.description}</Text>
                     </View>
 
                     <View style={styles.TagsStyle}>
                       <Text style={styles.ColorText}>Tags</Text>
                       <View style={styles.tagsContainer}>
-                        {item?.Tags?.map((tag, index) => (
+                        {item?.tags?.map((tag, index) => (
                           <Text key={index} style={styles.tagStyle}>
                             {tag}
                           </Text>
@@ -486,12 +484,12 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
                     <View>
                       <Text style={styles.ColorText}>Prioridade</Text>
-                      {item?.Prioridade && (
+                      {item?.priority&& (
                         <Text style={styles.PrioridadeTextColor}>
-                          {getNomePrioridade(item?.Prioridade)}
+                          {getNomePrioridade(item?.priority)}
                         </Text>
                       )}
-                      {!item?.Prioridade && (
+                      {!item?.priority&& (
                         <Text style={{ color: 'gray' }}>Não definida</Text>
                       )}
                       <LongNoFillPressable
@@ -513,23 +511,23 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                 </View>
               </Swipeable>
               <View style={styles.SubtaskContainer}>
-                {currentTask?.Subtask && currentTask.Subtask.length > 0 && (
+                {currentTask?.subtasks && currentTask.subtasks.length > 0 && (
                   <View style={styles.SubtaskListContainer}>
-                    {currentTask.Subtask.map((subtask, index) => (
+                    {currentTask.subtasks.map((subtask, index) => (
                       <Swipeable
-                        key={subtask.id || `subtask-${index}`}
+                        key={subtask.title || `subtask-${index}`}
                         ref={subtaskRefs[index]} //referenciar o index certo
                         friction={2}
                         rightThreshold={40}
                         renderRightActions={(progress, dragX) =>
-                          renderRightActionsSubtask(progress, dragX, subtask.id || `subtask-${index}`)
+                          renderRightActionsSubtask(progress, dragX, subtask.title || `subtask-${index}`)
                         }>
 
                         <View style={styles.subtaskItem}>
                           <View style={styles.SubtaskContentContainer}>
                             <Pressable
                               onPress={() => {
-                                handleToggleSubtaskStatus(subtask.id)
+                                handleToggleSubtaskStatus(subtask.title)
                                 //ambos funcionam
                                 if (!subtask.done) {
                                   subtaskRefs[index]?.current?.openRight();
@@ -544,7 +542,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                               </View>
 
                             </Pressable>
-                            {editingSubtaskId === subtask.id ? (
+                            {editingSubtaskId === subtask.title ? (
                               <TextInput
                                 value={editedSubtaskTitle}
                                 onChangeText={setEditedSubtaskTitle}
