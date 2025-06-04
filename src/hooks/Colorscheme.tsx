@@ -22,7 +22,6 @@ const Colorscheme = () => ({
         SecondaryText: '#D9D9D9',
         Error: '#E63946',
         Warning: 'yellow',
-
     },
 });
 

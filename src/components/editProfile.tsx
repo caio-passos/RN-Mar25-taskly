@@ -4,7 +4,6 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    useColorScheme,
     View,
 } from 'react-native';
 import { useAuthStore } from "../services/cache/stores/storeZustand";
@@ -141,6 +140,28 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
         },
     });
     const colorPlace = styles.textTitleInput.color;
+
+    function validData(name: string, email: string, phone: string): boolean {
+        const dataError: Array<string> = [];
+
+        if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)+$/.test(name.trim())) {
+            dataError.push('name');
+            return true;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            dataError.push('email');
+            return true;
+        }
+
+        if (phone.length < 11) {
+            dataError.push('phone');
+            return true;
+        }
+
+        return false;
+    }
+
     return (
         <View style={styles.container}>
             {continuar ? (
@@ -202,7 +223,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                                 keyboardType="phone-pad"
                                 value={phone}
                                 onChangeText={(value) => {
-                                    setPhone(value)
+                                    setPhone(value);
                                 }}
                                 placeholderTextColor={colorPlace}
                                 style={styles.textInput}
@@ -210,7 +231,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                         </View>
                         <LongPressable
                             textProps='Continuar'
-                            onPress={() => setContinuar(true)}
+                                onPress={() => !validData(name, email, phone) && setContinuar(true)}
                             style={{
                                 marginTop: 30,
                                 justifyContent: 'center',
