@@ -21,6 +21,7 @@ import { filterTasks } from '../../services/filterTasks';
 import { useIcon } from '../../hooks/useIcon';
 import { getThemedIcon } from '../../services/IconService';
 import { useUserStore } from '../../services/cache/stores/storeZustand';
+import { shallow } from 'zustand/shallow';
 
 const InicioContent = () => {
 

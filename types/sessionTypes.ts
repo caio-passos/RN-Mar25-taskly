@@ -1,5 +1,5 @@
 export type sessionTypes = {
-    id_token?: string | null,
-    refresh_token?: string | null,
-    expiresIn?: number | null
+    id_token?: string,
+    refresh_token?: string,
+    expiresIn?: number
 }

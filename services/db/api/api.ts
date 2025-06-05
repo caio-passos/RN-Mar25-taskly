@@ -9,7 +9,8 @@ import { TaskTypes } from '../../../types/taskTypes';
 
 // URL base
 
-const API_URL = 'http://15.228.16.167:3000';
+const PUBLIC_IP = '54.233.170.218'
+const API_URL = `http://54.233.170.218:3000`;
 
 const saveTokens = (sessionData: sessionTypes) => {
     useSessionStore.getState().setItemSessionData(sessionData);
@@ -71,8 +72,7 @@ const handleApiResponse = async (response: Response) => {
 
 // --- API p/ Auth ---
 interface RegisterResponse { uid: string; idToken: string }
-export const registerUser = async (userData: UserTypes): Promise<RegisterResponse | null> => {
-    let registerResponse: RegisterResponse | null = null;
+export const registerUser = async (userData: UserTypes): Promise<sessionTypes | null> => {
     try {
         const response = await fetch(`${API_URL}/auth/register`, {
             method: 'POST',
@@ -80,17 +80,26 @@ export const registerUser = async (userData: UserTypes): Promise<RegisterRespons
             body: JSON.stringify(userData)
         });
         const registerResponse = await handleApiResponse(response);
+        if (!registerResponse) return null;
         if (registerResponse) {
-            saveTokens(registerResponse);
+            const transformedResponse: sessionTypes = {
+                id_token: registerResponse.idToken,
+                refresh_token: registerResponse.refreshToken || '',
+                expiresIn: registerResponse.expiresIn || 3600
+            };
+            saveTokens(transformedResponse);
+            return transformedResponse;
         }
+        return null;
     } catch (error) {
         console.error('Register failed! : ', error)
         if (useUserStore.getState().userData) {
             clearTokens();
             clearUserInfo();
         }
+
+        return null;
     }
-    return registerResponse;
 };
 
 export const loginUser = async (credentials: LoginData): Promise<sessionTypes | null> => {
@@ -100,9 +109,7 @@ export const loginUser = async (credentials: LoginData): Promise<sessionTypes | 
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(credentials)
         });
-
         const data = await handleApiResponse(response);
-
         if (data) {
             const sessionData: sessionTypes = {
                 id_token: data.id_token,
@@ -136,12 +143,13 @@ export const fetchUserProfile = async (): Promise<UserTypes | null> => {
         const data = await handleApiResponse(response);
         if (data) {
             const userData: UserTypes = {
+
+                uid: data.uid,
                 email: data.email,
                 password: '',
                 name: data.name,
                 phone_number: data.phone_number,
                 picture: data.picture,
-                uid: data.uid
             };
             useUserStore.getState().setItemUserData(userData);
             return userData;
@@ -174,19 +182,19 @@ interface UpdateTaskBody {
     tags?: string[];
 }
 
-export const fetchTasks = async (): Promise<TaskTypes | null> => {
+export const fetchTasks = async (): Promise<TaskTypes[] | null> => {
     const Authorization = getIdToken()
     if (!Authorization) return null;
     try {
         const response = await fetch(`${API_URL}/tasks`, {
             method: 'GET',
             headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${Authorization}`
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${Authorization}`
             }
         });
-        const data = await handleApiResponse(response); 
-          if (data) {
+        const data = await handleApiResponse(response);
+        if (data) {
             return data.map((task: any) => ({
                 id: task.id,
                 title: task.title,
@@ -233,7 +241,6 @@ export const updateTaskOnApi = async (taskId: string, taskUpdateData: UpdateTask
         console.warn("Sem novos dados para update");
         return true;
     }
-
     try {
         const response = await fetch(`${API_URL}/tasks/${taskId}`, {
             method: 'PUT',

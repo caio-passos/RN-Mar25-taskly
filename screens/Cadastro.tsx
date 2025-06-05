@@ -43,7 +43,6 @@ function Cadastro({ navigation }: CadastroProps) {
 
     const [userData, setUserData] = useState<UserTypes>({ email: '', password: '', name: '', phone_number: '' });
 
-    console.log('Phone number:', phone)
     const sanitizePhone = (phone: string) => {
         return phone.replace(/\D/g, '');
     };
@@ -55,16 +54,13 @@ function Cadastro({ navigation }: CadastroProps) {
             name: name,
             phone_number: sanitizePhone(phone)
         });
-        console.log('User data updated:', userData);
+
     }, [name, email, phone, password]);
 
     const { setItemUserData } = useUserStore();
-    console.log('user data')
-    console.log("Stored data after creation: ", mmkvStorage.getItem('user-storage'));
 
     useEffect(() => {
         const userData = mmkvStorage.getItem('user-storage');
-        console.log('Current stored user data:', userData);
     }, []);
 
     useEffect(() => {
@@ -105,7 +101,6 @@ function Cadastro({ navigation }: CadastroProps) {
         setModalVisible(true);
     }
 
-    { console.log('Modal visible: ', modalVisible); }
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -213,7 +208,7 @@ function Cadastro({ navigation }: CadastroProps) {
     const createAccount = async (userData: UserTypes) => {
         try {
             const registerResponse = await registerUser(userData);
-            if (!registerResponse) {
+            if (!registerResponse?.id_token) {
                 return { success: false, error: 'Registration failed' };
             }
             return { success: true}
@@ -377,7 +372,7 @@ function Cadastro({ navigation }: CadastroProps) {
             </View>
             <Text style={styles.title}>CADASTRO</Text>
             <View style={styles.loginForm}>
-                <Text style={styles.textTitleInput}>name Completo</Text>
+                <Text style={styles.textTitleInput}>Nome Completo</Text>
                 <View style={styles.boxInput}>
                     <TextInput
                         placeholder="Digite seu name completo"
@@ -462,9 +457,8 @@ function Cadastro({ navigation }: CadastroProps) {
                 onPress={async() => {
                     try {
                         const result = await createAccount(userData);
-                        console.log('Account creation result:', result);
                         if (result?.success) {
-                            handleOpenModal();
+                            await handleOpenModal();
                         }
                     } catch (error) {
                         console.error('Error during account creation:', error);
