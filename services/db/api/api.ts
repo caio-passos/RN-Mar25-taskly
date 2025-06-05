@@ -1,38 +1,13 @@
 import { useAuthStore } from '../../cache/stores/storeZustand';
 import { UserTypes } from '../../../model/userModel';
-import { useUserStore } from '../../cache/stores/storeZustand';
-import { useSessionStore } from '../../cache/stores/sessionStore';
-import { useTaskStore } from '../../cache/stores/storeZustand';
 import { sessionTypes } from '../../../types/sessionTypes';
 import { LoginData } from '../../../model/loginModel';
 import { TaskTypes } from '../../../types/taskTypes';
+import { getIdToken, saveTokens, clearTokens, saveUserInfo, clearUserInfo } from '../../dataHandler';
 
 // URL base
-
 const PUBLIC_IP = '54.233.170.218'
 const API_URL = `http://54.233.170.218:3000`;
-
-const saveTokens = (sessionData: sessionTypes) => {
-    useSessionStore.getState().setItemSessionData(sessionData);
-};
-const saveUserInfo = (userData: UserTypes) => {
-    useUserStore.getState().setItemUserData(userData);
-};
-const updateUserInfo = (userData: UserTypes) => {
-    useUserStore.getState().partialUpdate(userData);
-}
-const clearUserInfo = () => {
-    useUserStore.getState().clearUserData();
-};
-const getIdToken = (): string | null => {
-    return useSessionStore.getState().sessionData?.id_token || null;
-};
-const getRefreshToken = (): string | null => {
-    return useAuthStore.getState().tokens.refreshToken;
-};
-const clearTokens = () => {
-    useSessionStore.getState().clearSessionData();
-};
 
 interface ApiError {
     message: string;
@@ -61,7 +36,7 @@ const handleApiResponse = async (response: Response) => {
             status: response.status,
             details: errorDetails || await response.text(),
         };
-        console.error('Erro na resposta da API:', error);
+        console.error('API error response:', error);
         throw error;
     }
     if (response.status === 204 || response.headers.get('content-length') === '0') {
@@ -71,7 +46,6 @@ const handleApiResponse = async (response: Response) => {
 };
 
 // --- API p/ Auth ---
-interface RegisterResponse { uid: string; idToken: string }
 export const registerUser = async (userData: UserTypes): Promise<sessionTypes | null> => {
     try {
         const response = await fetch(`${API_URL}/auth/register`, {
@@ -93,11 +67,8 @@ export const registerUser = async (userData: UserTypes): Promise<sessionTypes | 
         return null;
     } catch (error) {
         console.error('Register failed! : ', error)
-        if (useUserStore.getState().userData) {
-            clearTokens();
-            clearUserInfo();
-        }
-
+        clearTokens();
+        clearUserInfo();
         return null;
     }
 };
@@ -114,11 +85,12 @@ export const loginUser = async (credentials: LoginData): Promise<sessionTypes | 
             const sessionData: sessionTypes = {
                 id_token: data.id_token,
                 refresh_token: data.refresh_token,
-                expiresIn: 3600
             };
+            if (sessionData) {
+                saveTokens(sessionData);
+            }
             const userProfile = await fetchUserProfile();
             if (userProfile) {
-                saveTokens(sessionData);
                 saveUserInfo(userProfile as UserTypes)
             }
             return sessionData;
@@ -131,7 +103,7 @@ export const loginUser = async (credentials: LoginData): Promise<sessionTypes | 
 };
 
 export const fetchUserProfile = async (): Promise<UserTypes | null> => {
-    const Authorization = getIdToken()
+    const Authorization = await getIdToken()
     try {
         const response = await fetch(`${API_URL}/profile`, {
             method: 'GET',
@@ -143,7 +115,6 @@ export const fetchUserProfile = async (): Promise<UserTypes | null> => {
         const data = await handleApiResponse(response);
         if (data) {
             const userData: UserTypes = {
-
                 uid: data.uid,
                 email: data.email,
                 password: '',
@@ -151,7 +122,7 @@ export const fetchUserProfile = async (): Promise<UserTypes | null> => {
                 phone_number: data.phone_number,
                 picture: data.picture,
             };
-            useUserStore.getState().setItemUserData(userData);
+            await saveUserInfo(userData);
             return userData;
         }
         return null;

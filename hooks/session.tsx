@@ -17,7 +17,7 @@ export const SessionProvider: React.FC<{ children: ReactNode }> = ({ children })
     const userData = useUserStore(); 
 
     const user: User | null = userData?.userData ? {
-        nome: userData.userData.nome,
+        nome: userData.userData.name,
         email: userData.userData.email,
     } : null;
     const loggedAccount: SessionContextType = {

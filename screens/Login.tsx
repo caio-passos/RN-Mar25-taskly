@@ -106,7 +106,7 @@ function Login({ navigation }: LoginProps) {
             return;
         } else {
             const responseLogin = await loginUser(data);
-            if (!responseLogin === null) {
+            if (!responseLogin?.id_token) {
                 return
             } 
                 hideErrors();

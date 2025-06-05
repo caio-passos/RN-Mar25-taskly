@@ -23,6 +23,7 @@ import AvatarDisplay from '../../components/AvatarDisplay';
 import { useThemedIcons } from '../../components/carrousel/carrouselIcons';
 import Avatar from './Avatar';
 import EditProfile from '../../components/editProfile';
+import { clearTokens } from '../../services/dataHandler';
 
 interface MenuProps {
   navigation: NativeStackScreenProps<RootStackParamList, 'Login', 'Menu'>;
@@ -64,13 +65,12 @@ const Menu = ({ navigation }: MenuProps) => {
   const handleDisableBiometria = () => {
     setBiometria(true);
   };
-  const handleLogout = () => {
-    useUserStore.getState().partialUpdate({
-      loggedIn: false,
-    });
+  const handleLogout = async () => {
+    await clearTokens()
     navigation.navigate('Login');
   };
-  const HandleDeleteAccount = () => {
+  const HandleDeleteAccount = async () => {
+    await clearTokens();
     useUserStore.getState().clearUserData();
     navigation.navigate('Login');
   };
@@ -81,7 +81,7 @@ const Menu = ({ navigation }: MenuProps) => {
       flex: 1,
       justifyContent: 'center',
       backgroundColor: colors.Background,
-      
+
     },
     Header: {
       flexDirection: 'column',
@@ -226,7 +226,7 @@ const Menu = ({ navigation }: MenuProps) => {
                 leftButtonText="Agora não"
                 rightButtonText="HABILITAR"
                 rightButtonStyle={{ backgroundColor: colors.SecondaryAccent }}
-                styleFont={{fontFamily: 'Roboto-Regular'}}
+                styleFont={{ fontFamily: 'Roboto-Regular' }}
               />
             ) : (
               <ModalAlert
@@ -240,7 +240,7 @@ const Menu = ({ navigation }: MenuProps) => {
                 leftButtonText="Agora não"
                 rightButtonText="DESABILITAR"
                 rightButtonStyle={{ backgroundColor: colors.Error }}
-                styleFont={{fontFamily: 'Roboto-Regular'}}
+                styleFont={{ fontFamily: 'Roboto-Regular' }}
               />
             ))}
 
@@ -260,8 +260,8 @@ const Menu = ({ navigation }: MenuProps) => {
               handleLogout();
             }}
             rightButtonStyle={{ backgroundColor: colors.Error }}
-            styleFont={{fontFamily: 'Roboto-Medium'}}
-            colorFont={{color: colors.Primary}}
+            styleFont={{ fontFamily: 'Roboto-Medium' }}
+            colorFont={{ color: colors.Primary }}
           />
           {activeModal === 'Excluir' && (
             <ModalAlert
@@ -275,8 +275,8 @@ const Menu = ({ navigation }: MenuProps) => {
               leftButtonText="Agora não"
               rightButtonText="EXCLUIR"
               rightButtonStyle={{ backgroundColor: colors.Error }}
-              style={{ backgroundColor: colors.Background}}
-              styleFont={{fontFamily:'Roboto-Regular'}}
+              style={{ backgroundColor: colors.Background }}
+              styleFont={{ fontFamily: 'Roboto-Regular' }}
             />
           )}
 
