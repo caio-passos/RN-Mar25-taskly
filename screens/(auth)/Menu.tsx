@@ -61,7 +61,6 @@ const Menu = ({ navigation }: MenuProps) => {
   const handleOpenModal = (modalId: string) => {
     setActiveModal(activeModal === modalId ? null : modalId);
   };
-
   const handleDisableBiometria = () => {
     setBiometria(true);
   };
@@ -70,11 +69,9 @@ const Menu = ({ navigation }: MenuProps) => {
       loggedIn: false,
     });
     navigation.navigate('Login');
-    console.log('Navigation reset to Login');
   };
   const HandleDeleteAccount = () => {
     useUserStore.getState().clearUserData();
-    useAuthStore.getState().setAvatar();
     navigation.navigate('Login');
   };
 
@@ -165,13 +162,13 @@ const Menu = ({ navigation }: MenuProps) => {
               <View style={styles.Header}>
                 <AvatarDisplay style={{ width: 150, height: 150 }} />
                 <View style={styles.ContainerTitle}>
-                  <Text style={styles.Title}>{userData?.nome}</Text>
+                  <Text style={styles.Title}>{userData?.name}</Text>
                 </View>
                 <View>
                   <Text style={styles.EmailAndPhone}>{userData?.email}</Text>
                 </View>
                 <View>
-                  <Text style={styles.EmailAndPhone}>{userData?.telefone}</Text>
+                  <Text style={styles.EmailAndPhone}>{userData?.phone_number}</Text>
                 </View>
               </View>
               <View style={styles.ContainerCarrousel}>
