@@ -117,7 +117,7 @@ function Login({ navigation }: LoginProps) {
                     });
                     await fetchUserProfile()
                     await fetchTasks();
-                    navigation.navigate('Inicio');
+                    navigation.navigate('MainTabs');
             }
         }
 

@@ -73,7 +73,7 @@ const InicioContent = () => {
   };
   const handleShowDetalhes = (item: TaskTypes) => {
     setSelectedTask(item);
-    navigation.navigate('Tasks')
+    navigation.navigate('Tasks', { item })
   };
 
   useEffect(() => {
