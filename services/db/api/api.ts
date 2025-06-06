@@ -3,7 +3,7 @@ import { UserTypes } from '../../../model/userModel';
 import { sessionTypes } from '../../../types/sessionTypes';
 import { LoginData } from '../../../model/loginModel';
 import { TaskTypes } from '../../../types/taskTypes';
-import { getIdToken, saveTokens, clearTokens, saveUserInfo, clearUserInfo } from '../../dataHandler';
+import { getIdToken, saveTokens, clearTokens, saveUserInfo, clearUserInfo, saveTaskData } from '../../dataHandler';
 
 // URL base
 const PUBLIC_IP = '54.233.170.218'
@@ -45,7 +45,6 @@ const handleApiResponse = async (response: Response) => {
     return await response.json();
 };
 
-// --- API p/ Auth ---
 export const registerUser = async (userData: UserTypes): Promise<sessionTypes | null> => {
     try {
         const response = await fetch(`${API_URL}/auth/register`, {
@@ -165,6 +164,7 @@ export const fetchTasks = async (): Promise<TaskTypes[] | null> => {
             }
         });
         const data = await handleApiResponse(response);
+        console.log('fetched tasks', data);
         if (data) {
             return data.map((task: any) => ({
                 id: task.id,
@@ -179,6 +179,7 @@ export const fetchTasks = async (): Promise<TaskTypes[] | null> => {
                 sharedWith: task.sharedWith || []
             }));
         }
+        await saveTaskData(data);
         return null;
     } catch (error) {
         console.error('Failed to fetch tasks:', error);

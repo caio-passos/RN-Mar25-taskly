@@ -196,7 +196,6 @@ export const useTaskStore = create<TaskStore>()(
           }
         }));
       },
-
       clearAllTasks: () =>
         set({ tasks: [] }),
     }),

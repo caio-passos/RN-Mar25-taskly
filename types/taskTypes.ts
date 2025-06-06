@@ -16,7 +16,7 @@ export type TaskTypes = {
     sharedWith?: string;
 }
 export interface TaskFilters{
-    order?: 'baixaParaAlta' | 'altaParaBaixa';
+    order?: 'lowToHigh' | 'highToLow';
     tags?: string[];
     date?: string;
 }

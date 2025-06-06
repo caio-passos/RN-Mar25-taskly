@@ -23,7 +23,7 @@ import AvatarDisplay from '../../components/AvatarDisplay';
 import { useThemedIcons } from '../../components/carrousel/carrouselIcons';
 import Avatar from './Avatar';
 import EditProfile from '../../components/editProfile';
-import { clearTokens } from '../../services/dataHandler';
+import { clearTaskData, clearTokens, clearUserInfo} from '../../services/dataHandler';
 
 interface MenuProps {
   navigation: NativeStackScreenProps<RootStackParamList, 'Login', 'Menu'>;
@@ -66,12 +66,14 @@ const Menu = ({ navigation }: MenuProps) => {
     setBiometria(true);
   };
   const handleLogout = async () => {
-    await clearTokens()
+    await clearTokens();
+    await clearUserInfo();
     navigation.navigate('Login');
   };
   const HandleDeleteAccount = async () => {
     await clearTokens();
-    useUserStore.getState().clearUserData();
+    await clearUserInfo();
+    await clearTaskData();
     navigation.navigate('Login');
   };
 

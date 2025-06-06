@@ -21,7 +21,6 @@ import { filterTasks } from '../../services/filterTasks';
 import { useIcon } from '../../hooks/useIcon';
 import { getThemedIcon } from '../../services/IconService';
 import { useUserStore } from '../../services/cache/stores/storeZustand';
-import { shallow } from 'zustand/shallow';
 
 const InicioContent = () => {
 
@@ -34,6 +33,13 @@ const InicioContent = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const [filters, setFilters] = useState<TaskFilters>({});
   const tasks = useTaskStore(state => state.tasks);
+  const fetchAndLoadTasks = useTaskStore(state => state.fetchAndLoadTasks);
+
+  useEffect(() => {
+    fetchAndLoadTasks();
+  }, [fetchAndLoadTasks]);
+
+  console.log('tasks', tasks)
 
   const filteredTasks = useMemo(() => {
     return filterTasks(tasks, filters);
@@ -48,7 +54,6 @@ const InicioContent = () => {
   };
 
   useEffect(() => {
-    console.log('Tasks update: ', tasks.length);
     if (ShowDetalhes && selectedTask) {
       const updatedTask = tasks.find(task => task.id === selectedTask.id);
       if (!updatedTask) {

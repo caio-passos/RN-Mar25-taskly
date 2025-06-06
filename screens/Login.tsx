@@ -9,7 +9,7 @@ import { AppContext } from '../App';
 import { useUserStore } from '../services/cache/stores/storeZustand';
 import { UserDataTypes } from '../types/userTypes';
 import { LoginData } from '../model/loginModel';
-import { loginUser } from '../services/db/api/api';
+import { fetchTasks, loginUser } from '../services/db/api/api';
 import { useSessionStore } from '../services/cache/stores/sessionStore';
 import { fetchUserProfile } from '../services/db/api/api';
 
@@ -116,6 +116,7 @@ function Login({ navigation }: LoginProps) {
                         expiresIn: responseLogin?.expiresIn
                     });
                     await fetchUserProfile()
+                    await fetchTasks();
                     navigation.navigate('Inicio');
             }
         }
