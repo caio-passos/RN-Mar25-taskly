@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { AppContext } from '../../App';
 import ModalCriarTarefas from '../Modal/Criartarefa';
-import Tasks from '../../components/Tasks';
+import Tasks from './Tasks';
 import DetalhesTask from '../../components/DetalhesTask';
 import type { TaskTypes } from '../../types/taskTypes';
 import { useTaskStore } from '../../services/cache/stores/storeZustand';
@@ -21,8 +21,11 @@ import { filterTasks } from '../../services/filterTasks';
 import { useIcon } from '../../hooks/useIcon';
 import { getThemedIcon } from '../../services/IconService';
 import { useUserStore } from '../../services/cache/stores/storeZustand';
+import {useNavigation} from '@react-navigation/native';
+import { Screen } from 'react-native-screens';
 
 const InicioContent = () => {
+  const navigation = useNavigation();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalCriarTarefa, setModalCriarTarefa] = useState(false);
@@ -70,7 +73,7 @@ const InicioContent = () => {
   };
   const handleShowDetalhes = (item: TaskTypes) => {
     setSelectedTask(item);
-    setShowDetalhes(true);
+    navigation.navigate('Tasks')
   };
 
   useEffect(() => {
@@ -179,15 +182,11 @@ const InicioContent = () => {
                   />
                 </View>
               )}
-              {ShowDetalhes ? (
-                <DetalhesTask item={selectedTask} />
-              ) : (
-                <Tasks
-                  tasks={filteredTasks}
-                  onOpenModal={() => setModalCriarTarefa(true)}
-                  onOpenDetalhes={handleShowDetalhes}
-                />
-              )}
+              <Tasks
+                tasks={filteredTasks}
+                onOpenModal={() => setModalCriarTarefa(true)}
+                onOpenDetalhes={handleShowDetalhes}
+              />
               <ModalCriarTarefas
                 visible={modalCriarTarefa}
                 onClose={() => setModalCriarTarefa(false)}

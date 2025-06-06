@@ -1,14 +1,14 @@
 import React, {useContext, useEffect, useMemo,useState} from 'react';
 import {FlatList, View, Text, StyleSheet, Pressable, Task} from 'react-native';
-import {AppContext} from '../App';
-import IconCheckboxUnchecked from '../assets/icons/lightmode/uncheckedcircle.svg';
-import IconCheckboxChecked from '../assets/icons/lightmode/checkedcircle.svg';
-import ShortPressable from './Shortpressable';
-import LongPressable from './LongPressable';
-import type {TaskFilters, TaskTypes} from '../types/taskTypes';
-import {useTaskStore} from '../services/cache/stores/storeZustand';
-import NoTasks from '../assets/icons/darkmode/nocontent.svg';
-import { filterTasks } from '../services/filterTasks';
+import {AppContext} from '../../App';
+import IconCheckboxUnchecked from '../../assets/icons/lightmode/uncheckedcircle.svg';
+import IconCheckboxChecked from '../../assets/icons/lightmode/checkedcircle.svg';
+import ShortPressable from '../../components/Shortpressable';
+import LongPressable from '../../components/LongPressable';
+import type {TaskFilters, TaskTypes} from '../../types/taskTypes';
+import {useTaskStore} from '../../services/cache/stores/storeZustand';
+import NoTasks from '../../assets/icons/darkmode/nocontent.svg';
+import { filterTasks } from '../../services/filterTasks';
 
 type ItemProps = {
   item: TaskTypes;
