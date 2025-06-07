@@ -4,10 +4,10 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  BackHandler,
-  SafeAreaView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  BackHandler
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../App';
 import ModalCriarTarefas from '../Modal/Criartarefa';
 import Tasks from './Tasks';
@@ -21,19 +21,14 @@ import { filterTasks } from '../../services/filterTasks';
 import { useIcon } from '../../hooks/useIcon';
 import { getThemedIcon } from '../../services/IconService';
 import { useUserStore } from '../../services/cache/stores/storeZustand';
-import {useNavigation} from '@react-navigation/native';
-import { Screen } from 'react-native-screens';
 
 const InicioContent = () => {
-  const navigation = useNavigation();
 
-  const [modalVisible, setModalVisible] = useState(false);
   const [modalCriarTarefa, setModalCriarTarefa] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<TaskTypes | null>(null);
-  const [ShowDetalhes, setShowDetalhes] = useState(false);
   const [control, setControl] = useState(false);
   const [controlTheme, setControlTheme] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
+  const navigation = useNavigation();
   const [filters, setFilters] = useState<TaskFilters>({});
   const tasks = useTaskStore(state => state.tasks);
   const fetchAndLoadTasks = useTaskStore(state => state.fetchAndLoadTasks);
@@ -56,35 +51,14 @@ const InicioContent = () => {
     setFilters({});
   };
 
-  useEffect(() => {
-    if (ShowDetalhes && selectedTask) {
-      const updatedTask = tasks.find(task => task.id === selectedTask.id);
-      if (!updatedTask) {
-        setShowDetalhes(false);
-        setSelectedTask(null);
-      } else if (updatedTask !== selectedTask) {
-        setSelectedTask(updatedTask);
-      }
-    }
-  }, [tasks, selectedTask, ShowDetalhes]);
-
-  const handleModalOpen = () => {
-    setModalVisible(true);
-  };
   const handleShowDetalhes = (item: TaskTypes) => {
-    setSelectedTask(item);
-    navigation.navigate('Tasks', { item })
+    navigation.navigate('DetalhesTask', {item});
   };
 
   useEffect(() => {
     function backAction() {
       if (modalCriarTarefa) {
         setModalCriarTarefa(false);
-        return true;
-      }
-      if (ShowDetalhes) {
-        setShowDetalhes(false);
-        setSelectedTask(null);
         return true;
       }
       setControl(false);
@@ -97,7 +71,7 @@ const InicioContent = () => {
     );
 
     return () => backHandler.remove();
-  }, [modalCriarTarefa, ShowDetalhes]);
+  }, [modalCriarTarefa]);
 
   const { colors, darkMode } = useContext(AppContext)!;
   const isDarkMode = useUserStore(state => state.userData?.theme);
@@ -162,14 +136,12 @@ const InicioContent = () => {
       <View style={styles.backgroundFixer}>
         <View style={styles.container}>
           <View style={styles.topBar}>
-            {ShowDetalhes && null}
             <Text style={styles.title}>Taskly</Text>
             <AvatarDisplay />
           </View>
           <View style={styles.middleSection}>
             <View style={styles.TasksStyle}>
-              {!ShowDetalhes && (
-                <View style={styles.IconFilterStyle}>
+              <View style={styles.IconFilterStyle}>
                   <Pressable
                     onPress={() => setFilterVisible(true)}>
                     {React.createElement(getThemedIcon('filter', isDarkMode), { width: 24, height: 24 })}
@@ -181,12 +153,10 @@ const InicioContent = () => {
                     onClear={handleClearFilters}
                   />
                 </View>
-              )}
               <Tasks
-                tasks={filteredTasks}
-                onOpenModal={() => setModalCriarTarefa(true)}
-                onOpenDetalhes={handleShowDetalhes}
-              />
+              tasks={filteredTasks}
+              onOpenModal={() => setModalCriarTarefa(true)}
+            />
               <ModalCriarTarefas
                 visible={modalCriarTarefa}
                 onClose={() => setModalCriarTarefa(false)}

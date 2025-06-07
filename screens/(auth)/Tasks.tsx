@@ -9,14 +9,15 @@ import type {TaskFilters, TaskTypes} from '../../types/taskTypes';
 import {useTaskStore} from '../../services/cache/stores/storeZustand';
 import NoTasks from '../../assets/icons/darkmode/nocontent.svg';
 import { filterTasks } from '../../services/filterTasks';
+import {useNavigation} from '@react-navigation/native';
 
 type ItemProps = {
   item: TaskTypes;
-  onOpenDetalhes?: (item: TaskTypes) => void;
 };
 
-const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
+const TaskItem = ({item}: ItemProps) => {
   const [isSelected, setIsSelected] = useState(false);
+  const navigation =  useNavigation();
   const handleSelection = () => {
     setIsSelected(!isSelected);
   };
@@ -100,7 +101,7 @@ const TaskItem = ({item, onOpenDetalhes}: ItemProps) => {
           <View style={styles.ContainerShortPressable}>
             <ShortPressable
               textProps="VER DETALHES"
-              onPress={() => onOpenDetalhes?.(item)}
+              onPress={() => navigation.navigate('DetalhesTask', {item} )}
             />
           </View>
         </View>
@@ -134,14 +135,12 @@ const { colors, darkMode } = useContext(AppContext)!;
 const Tasks = ({
   tasks,
   onOpenModal,
-  onOpenDetalhes,
 }: {
   onOpenModal: () => void;
-  onOpenDetalhes: (item: TaskTypes) => void;
   tasks: TaskTypes[];
 }) => {
     const renderItem = ({item}: {item: TaskTypes}) => {
-    return <TaskItem item={item} onOpenDetalhes={onOpenDetalhes} />;
+    return <TaskItem item={item} />;
   };
   return (
     <FlatList

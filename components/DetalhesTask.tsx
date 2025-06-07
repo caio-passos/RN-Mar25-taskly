@@ -28,14 +28,18 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated';
 import { useIcon } from '../hooks/useIcon';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import EditarTask from '../screens/Modal/EditarTask';
+import {useNavigation, RouteProp} from '@react-navigation/native';
+import { RootStackParamList } from '../types/routingTypes';
 
+type DetalhesScreenRouterProp = RouteProp<RootStackParamList, 'DetalhesTask'>;
 type DetalhesProps = {
-  item: TaskTypes | null;
+  route: DetalhesScreenRouterProp;
 };
-
-const DetalhesTask = ({ item }: DetalhesProps) => {
+const DetalhesTask = ({ route }: DetalhesProps) => {
+  const {item} = route.params;
+  const navigation = useNavigation();
+  console.log('Item at DetalhesTask', item)
   const { colors, darkMode } = useContext(AppContext)!;
   const {
     trash: IconTrash,
@@ -64,7 +68,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
   const updateCount = useRef(0);
   const [subtaskRefs, setSubtaskRefs] = useState<RefObject<SwipeableMethods>[]>([]);
   const [editingSubtaskId, setEditingSubtaskId] = useState<string | null>(null);
-  const [editedSubtaskTitle, setEditedSubtaskTitle] = useState<boolean>();
+  const [editedSubtaskTitle, setEditedSubtaskTitle] = useState<string>('');
   const [editMode, setEditMode] = useState(false);
 
 
@@ -93,13 +97,13 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
 
   const handleEditSubtask = (subtask: { title: string; done: boolean }) => {
     setEditingSubtaskId(subtask.title);
-    setEditedSubtaskTitle(subtask.done);
+    setEditedSubtaskTitle(subtask.title);
   };
 
   const saveSubtaskEdit = () => {
-    if (editingSubtaskId && editedSubtaskTitle.trim()) {
+    if (editingSubtaskId && editedSubtaskTitle) {
       (useTaskStore.getState() as any).updateSubtask(item!.id, editingSubtaskId, {
-        title: editedSubtaskTitle.trim()
+        title: editedSubtaskTitle
       });
       setEditingSubtaskId(null);
       triggerUpdate();
@@ -459,7 +463,10 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                 <View style={styles.ShadowContainer}>
                   <View style={styles.ContentContainer}>
                     <View style={styles.topBar}>
-                      <Text style={styles.TitleStyle}>Título</Text>
+                      <Pressable onPress={navigation.goBack}>
+                        <IconEditYellow height={25} width={25} />
+                      </Pressable>
+                      <Text style={styles.TitleStyle}>{item?.title}</Text>
                       <Pressable onPress={() => setEditMode(true)}>
                         <IconEditYellow height={25} width={25} />
                       </Pressable>
@@ -516,7 +523,7 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                     {currentTask.subtasks.map((subtask, index) => (
                       <Swipeable
                         key={subtask.title || `subtask-${index}`}
-                        ref={subtaskRefs[index]} //referenciar o index certo
+                        ref={subtaskRefs[index]} 
                         friction={2}
                         rightThreshold={40}
                         renderRightActions={(progress, dragX) =>
@@ -528,7 +535,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                             <Pressable
                               onPress={() => {
                                 handleToggleSubtaskStatus(subtask.title)
-                                //ambos funcionam
                                 if (!subtask.done) {
                                   subtaskRefs[index]?.current?.openRight();
                                 }
@@ -540,7 +546,6 @@ const DetalhesTask = ({ item }: DetalhesProps) => {
                                   <IconCheckboxUnchecked height={25} width={25} />
                                 }
                               </View>
-
                             </Pressable>
                             {editingSubtaskId === subtask.title ? (
                               <TextInput

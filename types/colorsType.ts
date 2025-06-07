@@ -8,4 +8,5 @@ export type colorsTypes = {
     MainText: string;
     SecondaryText: string;
     Error: string;
+    Warning: string;
 };

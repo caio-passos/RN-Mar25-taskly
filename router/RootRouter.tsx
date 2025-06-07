@@ -17,7 +17,7 @@ import IconNotification from '../assets/icons/lightmode/notification.svg';
 import IconMenu from '../assets/icons/lightmode/menu.svg';
 import { AppContext } from '../App';
 import { useContext } from 'react';
-
+import DetalhesTask from '../components/DetalhesTask';
 
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -118,7 +118,7 @@ export default function RootNavigator() {
         component={MainTabs}
         options={{ animation: 'slide_from_right' }} 
       />
-      <RootStack.Screen name="Tasks" component={Tasks} />
+      <RootStack.Screen name="DetalhesTask" component={DetalhesTask} />
       <RootStack.Screen name="Menu" component={Menu} />
       <RootStack.Screen name="Theme" component={Theme} />
       <RootStack.Screen name="Terms" component={Terms} />

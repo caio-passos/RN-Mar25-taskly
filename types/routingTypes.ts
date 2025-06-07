@@ -10,6 +10,7 @@ export type RootStackParamList = {
     Terms: undefined;
     Tasks: { item: TaskTypes };
     Menu: undefined;
+    DetalhesTask: {item: TaskTypes};
 };
   
   declare global {

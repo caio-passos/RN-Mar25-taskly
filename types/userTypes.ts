@@ -14,3 +14,9 @@ export interface UserDataTypes {
   avatar?: AvatarData;
   theme?: boolean;
 }
+
+export interface UserTypes extends UserDataTypes {
+  id: string;
+  name: string;
+  theme?: boolean;
+}
