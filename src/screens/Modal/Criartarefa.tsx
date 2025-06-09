@@ -172,6 +172,7 @@ const ModalCriarTarefas = ({ visible, onClose }: ModalCriarTarefas) => {
               <View style={styles.boxInput}>
                 <TextInput
                   placeholder="bater o ponto pelo site do kairos e depois tenho que sair para tomar café"
+                  maxLength={100}
                   placeholderTextColor={colors.MainText}
                   multiline={true}
                   style={{ color: colors.MainText, textDecorationLine: 'none' }}

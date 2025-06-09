@@ -67,15 +67,10 @@ export const registerUser = async (userData: UserDataTypes): Promise<sessionType
                 refresh_token: refreshToken,
                 expiresIn: registerResponse.expiresIn || 3600
             };
-            await useAuthStore.getState().setAuthData(registerResponse.user, registerResponse.id_token!, registerResponse.refresh_token!);
-            
-            // Verify token persistence
-            const token = getIdToken();
-            if (!token) {
-                throw new Error('Token persistence failed');
-            }
+            const { id_token, refresh_token } = registerResponse;
+            await useAuthStore.getState().setAuthData(registerResponse.user, id_token!, refresh_token!);
 
-            const userProfile = await fetchUserProfile(); 
+            const userProfile = await fetchUserProfile();
             if (userProfile) {
                 useUserStore.getState().setItemUserData(userProfile);
             } else {
@@ -118,20 +113,32 @@ export const loginUser = async (credentials: LoginData): Promise<sessionTypes | 
 };
 
 export const fetchUserProfile = async (): Promise<UserTypes | null> => {
-    const Authorization = await getIdToken()
+    const token = await getIdToken();
+    const userId = useAuthStore.getState().userData?.uid;
+    
+    if (!token || !userId) {
+        console.error('Missing token or user ID for profile fetch');
+        return null;
+    }
+
     try {
-        const response = await fetch(`${API_URL}/profile`, {
+        const response = await fetch(`${API_URL}/profile?userId=${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${Authorization}`
+                'Authorization': `Bearer ${token}`
             },
         });
         const data = await handleApiResponse(response);
         if (data) {
+            if (!data.uid || data.uid !== userId) {
+                console.error('Profile fetch returned mismatched user ID');
+                return null;
+            }
+
             const userData: UserTypes = {
-                id: data.uid,
-                uid: data.uid,
+                id: userId,
+                uid: userId,
                 email: data.email,
                 password: '',
                 name: data.name,
@@ -151,17 +158,31 @@ export const updateUserOnApi = async (userData: Partial<UserTypes>): Promise<boo
     const headers = getAuthHeader();
     if (!headers) return false;
 
+    const apiData: any = {...userData};
+    if (apiData.phone_number) {
+        apiData.phone_number = apiData.phone_number.replace(/\D/g, '').slice(0,11);
+    }
+    if (apiData.avatar?.id) {
+        apiData.avatar_id = `avatar_${apiData.avatar.id}`;
+        delete apiData.avatar;
+    }
     try {
         const response = await fetch(`${API_URL}/profile`, {
             method: 'PUT',
             headers: headers,
-            body: JSON.stringify(userData),
+            body: JSON.stringify(apiData),
         });
-        await handleApiResponse(response);
+        const result = await handleApiResponse(response);
+        if (!result) {
+            throw new Error('Failed to update profile - no response');
+        }
         return true;
     } catch (error) {
         console.error('Failed to update user profile:', error);
-        return false;
+        if (error instanceof Error) {
+            throw error;
+        }
+        throw new Error('Failed to update profile');
     }
 };
 

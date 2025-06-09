@@ -18,6 +18,8 @@ import AvatarDisplay from '../../components/AvatarDisplay';
 import { useThemedIcons } from '../../components/carrousel/carrouselIcons';
 import EditProfile from '../../components/editProfile';
 import { clearTaskData, clearTokens, clearUserInfo } from '../../services/dataHandler';
+import Theme from './Theme';
+import Terms from './Terms';
 
 interface MenuProps {
   navigation: NativeStackScreenProps<RootStackParamList, 'Login', 'Menu'>;

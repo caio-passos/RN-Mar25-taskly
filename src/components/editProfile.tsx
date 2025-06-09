@@ -184,6 +184,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                                 keyboardType="ascii-capable"
                                 value={name}
                                 onChangeText={setName}
+                                maxLength={50}
                                 cursorColor={colors.MainText}
                                 underlineColorAndroid='transparent'
                                 style={styles.textInput}
@@ -198,6 +199,7 @@ const EditProfile = ({ onCloseEdit }: editProfileProps) => {
                                 placeholderTextColor={colors.MainText}
                                 keyboardType="email-address"
                                 value={email}
+                                maxLength={40}
                                 onChangeText={setEmail}
                                 style={styles.textInput}
                             />
