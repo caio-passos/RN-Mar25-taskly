@@ -18,10 +18,10 @@ export type SyncAction =
   | { type: 'delete'; payload: string }; 
 
 export interface UserStore {
-  userData: UserTypes | null;
-  setItemUserData: (data: UserTypes) => void;
+  userData: UserDataTypes | null;
+  setItemUserData: (data: UserDataTypes) => void;
   clearUserData: () => void;
-  updateUserData: (updater: (draft: UserTypes) => void) => void;
+  updateUserData: (updater: (draft: UserDataTypes) => void) => void;
   partialUpdate: (data: Partial<UserDataTypes>) => void;
   syncUserUpdate: (data: Partial<UserDataTypes>) => Promise<void>;
 }
@@ -340,7 +340,7 @@ export const useAuthStore = create<AuthStore>()(
         set({
           userData,
           tokens: { idToken, refreshToken }
-        }),
+       }),
 
       updateUserData: (updater) =>
         set(produce((state) => {

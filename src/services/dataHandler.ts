@@ -3,13 +3,13 @@ import { useSessionStore } from './cache/stores/sessionStore';
 import { useTaskStore } from './cache/stores/storeZustand';
 import { useAuthStore } from './cache/stores/storeZustand';
 import {sessionTypes} from '../types/sessionTypes';
-import { UserTypes } from '../types/userTypes';
+import { UserDataTypes } from '../types/userTypes';
 import { TaskTypes } from '../types/taskTypes';
 
-export const saveUserInfo = (userData: UserTypes) => {
+export const saveUserInfo = (userData: UserDataTypes) => {
     useUserStore.getState().setItemUserData(userData);
 };
-export const updateUserInfo = (userData: UserTypes) => {
+export const updateUserInfo = (userData: UserDataTypes) => {
     useUserStore.getState().partialUpdate(userData);
 }
 export const getIdToken = () => {

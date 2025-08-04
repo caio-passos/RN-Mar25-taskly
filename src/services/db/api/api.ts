@@ -7,8 +7,9 @@ import { getIdToken, clearTokens, saveUserInfo, clearUserInfo } from '../../data
 import { API_DATE_FORMAT, isValidDateString, formatDateForAPI, sanitizeDateString } from '../../../utils/dateUtils';
 import { UserDataTypes } from '../../../types/userTypes';
 
-const PUBLIC_IP = '54.233.170.218'
-const API_URL = `http://54.233.170.218:3000`;
+const PUBLIC_IP = '18.231.186.87'
+const API_URL = 'http://18.231.186.87:3000';
+console.log('API_URL:', API_URL);
 
 interface ApiError {
     message: string;
@@ -114,15 +115,15 @@ export const loginUser = async (credentials: LoginData): Promise<sessionTypes | 
 
 export const fetchUserProfile = async (): Promise<UserTypes | null> => {
     const token = await getIdToken();
-    const userId = useAuthStore.getState().userData?.uid;
     
-    if (!token || !userId) {
-        console.error('Missing token or user ID for profile fetch');
+    if (!token) {
+        console.error('Missing token or user ID for profile fetch %d %d', token);
+
         return null;
     }
 
     try {
-        const response = await fetch(`${API_URL}/profile?userId=${userId}`, {
+        const response = await fetch(`${API_URL}/profile?userId=${token}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -131,14 +132,13 @@ export const fetchUserProfile = async (): Promise<UserTypes | null> => {
         });
         const data = await handleApiResponse(response);
         if (data) {
-            if (!data.uid || data.uid !== userId) {
+            if (!data.uid) {
                 console.error('Profile fetch returned mismatched user ID');
                 return null;
             }
 
-            const userData: UserTypes = {
-                id: userId,
-                uid: userId,
+            const userData: UserDataTypes = {
+                uid: data.uid,
                 email: data.email,
                 password: '',
                 name: data.name,
